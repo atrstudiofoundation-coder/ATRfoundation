@@ -1,0 +1,180 @@
+import React from 'react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import { Button } from '@/components/ui/Button';
+import { 
+  Sun, 
+  Moon, 
+  Compass, 
+  BookOpen, 
+  CheckSquare, 
+  BarChart2, 
+  Settings, 
+  LogOut
+} from 'lucide-react';
+
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
+
+export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
+  const { user, loginAsEmployee, loginAsAdmin, logout } = useAuth();
+  const { theme, toggleTheme } = useTheme();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  const navItems = [
+    { name: 'Dashboard', path: '/dashboard', icon: Compass, roles: ['employee', 'admin'] },
+    { name: 'Modules', path: '/modules', icon: BookOpen, roles: ['employee', 'admin'] },
+    { name: 'Resources', path: '/resources', icon: BookOpen, roles: ['employee', 'admin'] },
+    { name: 'Assessments', path: '/assessments', icon: CheckSquare, roles: ['employee'] },
+    { name: 'Analytics', path: '/analytics', icon: BarChart2, roles: ['admin'] },
+    { name: 'Admin Hub', path: '/admin', icon: Settings, roles: ['admin'] },
+  ];
+
+  const visibleNavItems = navItems.filter(item => {
+    if (!user) return false;
+    return item.roles.includes(user.role);
+  });
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background text-foreground transition-all duration-300">
+      {/* Dev Switcher Header Bar */}
+      <div className="bg-charcoal-900 dark:bg-black text-earth-100 py-1.5 px-4 text-xs flex justify-between items-center border-b border-charcoal-800">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-sage-400">FOUNDATION MODE:</span>
+          <span>Switch mock roles to test different views</span>
+        </div>
+        <div className="flex gap-2">
+          <button 
+            onClick={loginAsEmployee}
+            className={`px-2 py-0.5 rounded transition ${user?.role === 'employee' ? 'bg-primary text-primary-foreground font-semibold' : 'bg-charcoal-800 hover:bg-charcoal-700'}`}
+          >
+            Employee View
+          </button>
+          <button 
+            onClick={loginAsAdmin}
+            className={`px-2 py-0.5 rounded transition ${user?.role === 'admin' ? 'bg-primary text-primary-foreground font-semibold' : 'bg-charcoal-800 hover:bg-charcoal-700'}`}
+          >
+            Admin View
+          </button>
+        </div>
+      </div>
+
+      {/* Main Navigation Header */}
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+          <div className="flex items-center gap-8">
+            <Link to="/" className="flex items-center gap-2">
+              <span className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-lg">A</span>
+              <div className="flex flex-col">
+                <span className="font-display font-semibold tracking-wider text-sm leading-tight">ATR STUDIO</span>
+                <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Foundation</span>
+              </div>
+            </Link>
+
+            {user && (
+              <nav className="hidden md:flex items-center gap-1">
+                {visibleNavItems.map((item) => {
+                  const Icon = item.icon;
+                  const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                        isActive
+                          ? 'bg-accent text-accent-foreground font-semibold border-b-2 border-primary rounded-b-none'
+                          : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+                      }`}
+                    >
+                      <Icon className="w-4 h-4" />
+                      {item.name}
+                    </Link>
+                  );
+                })}
+              </nav>
+            )}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleTheme}
+              className="rounded-full hover:bg-accent"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
+            </Button>
+
+            {user ? (
+              <div className="flex items-center gap-3">
+                <div className="hidden lg:flex flex-col text-right">
+                  <span className="text-xs font-semibold">{user.name}</span>
+                  <span className="text-[10px] text-muted-foreground capitalize">{user.role} • {user.department}</span>
+                </div>
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    alt={user.name}
+                    className="w-8 h-8 rounded-full border border-border object-cover"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center text-xs font-semibold">
+                    {user.name.charAt(0)}
+                  </div>
+                )}
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleLogout}
+                  className="text-muted-foreground hover:text-destructive"
+                  title="Logout"
+                >
+                  <LogOut className="h-[1.2rem] w-[1.2rem]" />
+                </Button>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Button variant="outline" size="sm" onClick={loginAsEmployee}>
+                  Demo Employee
+                </Button>
+                <Button variant="default" size="sm" onClick={loginAsAdmin}>
+                  Demo Admin
+                </Button>
+              </div>
+            )}
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-7xl mx-auto px-6 py-8">
+        {children}
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border bg-card py-6 mt-12">
+        <div className="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-2">
+            <span>© 2026 ATR Design Studio. All rights reserved.</span>
+            <span>•</span>
+            <span className="font-semibold text-primary">ATR Foundation v1.0.0</span>
+          </div>
+          <div className="flex gap-4">
+            <span className="hover:underline cursor-pointer">Internal Standards</span>
+            <span className="hover:underline cursor-pointer">Privacy Policy</span>
+            <span className="hover:underline cursor-pointer">Support</span>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+};

@@ -1,0 +1,92 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+
+  --font-sans: 'Plus Jakarta Sans', system-ui, sans-serif;
+  --font-display: 'Outfit', system-ui, sans-serif;
+}
+
+@layer base {
+  * {
+    border-color: hsl(var(--border));
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    font-family: var(--font-sans);
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-display);
+    font-weight: 600;
+  }
+}
+
+:root {
+  --background: 36 28% 97%; /* Warm beige cream */
+  --foreground: 30 10% 12%; /* Charcoal */
+  --card: 36 28% 99%;
+  --card-foreground: 30 10% 12%;
+  --popover: 36 28% 99%;
+  --popover-foreground: 30 10% 12%;
+  --primary: 135 18% 28%; /* Sage green */
+  --primary-foreground: 36 28% 97%;
+  --secondary: 35 15% 90%; /* Neutral earthy beige */
+  --secondary-foreground: 30 10% 12%;
+  --muted: 35 10% 90%;
+  --muted-foreground: 30 5% 45%;
+  --accent: 135 15% 92%; /* Very soft sage accent */
+  --accent-foreground: 135 18% 28%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 30 10% 86%;
+  --input: 30 10% 86%;
+  --ring: 135 18% 28%;
+  --radius: 0.75rem; /* rounded corners */
+}
+
+.dark {
+  --background: 30 8% 10%; /* Dark charcoal/warm black */
+  --foreground: 36 15% 90%; /* Soft warm white */
+  --card: 30 8% 12%;
+  --card-foreground: 36 15% 90%;
+  --popover: 30 8% 12%;
+  --popover-foreground: 36 15% 90%;
+  --primary: 135 22% 42%; /* Soft green */
+  --primary-foreground: 30 8% 10%;
+  --secondary: 30 6% 18%;
+  --secondary-foreground: 36 15% 90%;
+  --muted: 30 6% 18%;
+  --muted-foreground: 30 5% 60%;
+  --accent: 135 12% 18%;
+  --accent-foreground: 135 22% 42%;
+  --destructive: 0 72% 51%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 30 6% 18%;
+  --input: 30 6% 18%;
+  --ring: 135 22% 42%;
+}
