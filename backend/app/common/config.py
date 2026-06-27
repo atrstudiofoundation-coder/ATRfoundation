@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     )
 
     PROJECT_NAME: str = "ATR Foundation"
-    API_V1_STR: str = "/api"
+    API_V1_STR: str = "/api/v1"
 
     # Security & Authentication
     SECRET_KEY: str = "supersecretkeychangeinproduction1234567890"
