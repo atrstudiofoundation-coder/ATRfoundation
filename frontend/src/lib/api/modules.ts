@@ -25,4 +25,9 @@ export const modulesApi = {
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/modules/${id}`);
   },
+
+  complete: async (id: string): Promise<{ status: string; message: string }> => {
+    const response = await apiClient.post<{ status: string; message: string }>(`/modules/${id}/complete`);
+    return response.data;
+  },
 };
