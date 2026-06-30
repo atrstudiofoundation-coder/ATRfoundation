@@ -18,12 +18,14 @@ interface ModuleStepProps {
   module: EmployeeModule;
   onBackToTimeline: () => void;
   onStartCompetencyCheck: () => void;
+  onMarkAsCompleted?: () => void;
 }
 
 export const ModuleStep: React.FC<ModuleStepProps> = ({
   module,
   onBackToTimeline,
   onStartCompetencyCheck,
+  onMarkAsCompleted,
 }) => {
   const [activeTab, setActiveTab] = useState<'intro' | 'video' | 'resources'>('intro');
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
@@ -270,22 +272,41 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
               </div>
             )}
 
-            <div className="p-6 bg-[#5E8C61]/10 border border-[#5E8C61]/25 rounded-card flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
-              <div className="space-y-1 text-center sm:text-left">
-                <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5 justify-center sm:justify-start">
-                  <ShieldCheck className="w-4 h-4 text-primary" /> Ready for Assessment?
-                </h4>
-                <p className="text-xs text-muted-foreground">Verify your mastery by taking the module Competency Check.</p>
-              </div>
+            {module.assessment ? (
+              <div className="p-6 bg-[#5E8C61]/10 border border-[#5E8C61]/25 rounded-card flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <div className="space-y-1 text-center sm:text-left">
+                  <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5 justify-center sm:justify-start">
+                    <ShieldCheck className="w-4 h-4 text-primary" /> Ready for Assessment?
+                  </h4>
+                  <p className="text-xs text-muted-foreground">Verify your mastery by taking the module Competency Check.</p>
+                </div>
 
-              <button
-                onClick={onStartCompetencyCheck}
-                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 shrink-0 transition-all hover:scale-[1.02] active:scale-95 duration-200"
-              >
-                <span>Begin Competency Check</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
+                <button
+                  onClick={onStartCompetencyCheck}
+                  className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 shrink-0 transition-all hover:scale-[1.02] active:scale-95 duration-200"
+                >
+                  <span>Begin Competency Check</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <div className="p-6 bg-primary/10 border border-primary/20 rounded-card flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+                <div className="space-y-1 text-center sm:text-left">
+                  <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5 justify-center sm:justify-start">
+                    <ShieldCheck className="w-4 h-4 text-primary" /> Ready to Complete Module?
+                  </h4>
+                  <p className="text-xs text-muted-foreground">This is a resource-only training module. Click below to mark it as completed.</p>
+                </div>
+
+                <button
+                  onClick={onMarkAsCompleted}
+                  className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 shrink-0 transition-all hover:scale-[1.02] active:scale-95 duration-200"
+                >
+                  <span>Mark Module as Completed</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

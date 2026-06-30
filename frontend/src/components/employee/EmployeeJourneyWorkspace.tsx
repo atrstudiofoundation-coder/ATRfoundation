@@ -216,6 +216,23 @@ export const EmployeeJourneyWorkspace: React.FC<EmployeeJourneyWorkspaceProps> =
           module={activeModule}
           onBackToTimeline={() => setCurrentStep('timeline')}
           onStartCompetencyCheck={() => setCurrentStep('competency_check')}
+          onMarkAsCompleted={async () => {
+            try {
+              const { modulesApi } = await import('@/lib/api/modules');
+              await modulesApi.complete(activeModule.id);
+              
+              setCompletedModuleIds(prev => {
+                const updated = new Set(prev);
+                updated.add(activeModule.id);
+                return updated;
+              });
+              
+              await restoreSession();
+              setCurrentStep('timeline');
+            } catch (err) {
+              console.error("Failed to mark module as completed manually:", err);
+            }
+          }}
         />
       )}
 
