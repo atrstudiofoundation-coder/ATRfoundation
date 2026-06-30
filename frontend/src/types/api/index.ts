@@ -207,3 +207,19 @@ export interface AnalyticsOverview {
   average_pass_rate: number;
   completed_assessments_count: number;
 }
+
+export interface CohortProgressItem {
+  user_name: string;
+  department: string;
+  progress_percent: number;
+  average_score_percent: number;
+  status: string;
+}
+
+export interface SystemComplianceStats {
+  total_onboardees?: number;
+  average_quiz_score?: number;
+  overall_compliance_rate?: number;
+  cohort_progress: CohortProgressItem[];
+}
+

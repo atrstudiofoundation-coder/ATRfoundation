@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { EmployeeJourney, EmployeeModule, JourneyStep } from './employeeTypes';
 import { WelcomeStep } from './WelcomeStep';
 import { LearningJourneyTimeline } from './LearningJourneyTimeline';
@@ -7,6 +7,7 @@ import { CompetencyCheckStep } from './CompetencyCheckStep';
 import { CompetencyReportStep } from './CompetencyReportStep';
 import { FoundationCompleteStep } from './FoundationCompleteStep';
 import { useLearningPaths } from '@/hooks/useLearningPaths';
+import { useAuth } from '@/contexts/AuthContext';
 import { SkeletonCard, EmptyState, ErrorState } from '@/components/ui/States';
 import type { AttemptRead } from '@/types/api';
 import type { AdminLearningPath } from '@/components/admin/adminTypes';
@@ -22,12 +23,25 @@ export const EmployeeJourneyWorkspace: React.FC<EmployeeJourneyWorkspaceProps> =
   previewPath = null,
   onExitPreview,
 }) => {
+  const { user, restoreSession } = useAuth();
   const { learningPaths, isLoading, isError, error, refetch } = useLearningPaths();
 
   const [currentStep, setCurrentStep] = useState<JourneyStep>('welcome');
   const [activeModuleId, setActiveModuleId] = useState<string | null>(null);
-  const [completedModuleIds, setCompletedModuleIds] = useState<Set<string>>(new Set());
-  const [moduleScores, setModuleScores] = useState<Record<string, number>>({});
+  const [completedModuleIds, setCompletedModuleIds] = useState<Set<string>>(new Set(user?.completedModuleIds || []));
+  const [moduleScores, setModuleScores] = useState<Record<string, number>>(user?.moduleScores || {});
+
+  // Sync state with user progress on mount or session restore
+  useEffect(() => {
+    if (user) {
+      if (user.completedModuleIds) {
+        setCompletedModuleIds(new Set(user.completedModuleIds));
+      }
+      if (user.moduleScores) {
+        setModuleScores(user.moduleScores);
+      }
+    }
+  }, [user]);
 
   // Report state
   const [lastAttemptResult, setLastAttemptResult] = useState<AttemptRead | null>(null);
@@ -120,6 +134,9 @@ export const EmployeeJourneyWorkspace: React.FC<EmployeeJourneyWorkspaceProps> =
       }));
     }
 
+    // Refresh user session state to update progress metrics globally
+    restoreSession().catch(err => console.error("Failed to refresh session progress:", err));
+
     setCurrentStep('competency_report');
   };
 
@@ -164,14 +181,14 @@ export const EmployeeJourneyWorkspace: React.FC<EmployeeJourneyWorkspaceProps> =
     <div className="min-h-screen bg-background text-foreground relative">
       {/* Admin Preview Floating Header */}
       {isPreviewMode && (
-        <div className="sticky top-0 z-50 bg-amber-500/90 text-amber-95 backdrop-blur-md px-6 py-2.5 shadow-md flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-wider text-black">
+        <div className="sticky top-0 z-50 bg-[#D8A24A] text-[#FCFBF8] px-6 py-3 shadow-universal flex items-center justify-between">
+          <div className="flex items-center gap-2 text-xs font-bold font-mono uppercase tracking-wider">
             <span>⚠️ Admin Live Preview Mode — Viewing "{primaryPath?.title}"</span>
           </div>
           {onExitPreview && (
             <button
               onClick={onExitPreview}
-              className="px-3 py-1 bg-black text-white hover:bg-black/80 text-xs font-semibold rounded-lg shadow-sm"
+              className="px-3 py-1.5 bg-[#2F3A33] hover:bg-[#2F3A33]/90 text-white text-xs font-semibold rounded-button shadow-sm transition-all duration-200"
             >
               Exit Preview
             </button>

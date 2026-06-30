@@ -19,13 +19,13 @@ interface MainLayoutProps {
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
-  const { user, loginAsEmployee, loginAsAdmin, logout } = useAuth();
+  const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const handleLogout = () => {
-    logout();
+  const handleLogout = async () => {
+    await logout();
     navigate('/');
   };
 
@@ -45,42 +45,21 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
 
   return (
     <div className="min-h-screen flex flex-col bg-background text-foreground transition-all duration-300">
-      {/* Dev Switcher Header Bar */}
-      <div className="bg-charcoal-900 dark:bg-black text-earth-100 py-1.5 px-4 text-xs flex justify-between items-center border-b border-charcoal-800">
-        <div className="flex items-center gap-2">
-          <span className="font-semibold text-sage-400">FOUNDATION MODE:</span>
-          <span>Switch mock roles to test different views</span>
-        </div>
-        <div className="flex gap-2">
-          <button 
-            onClick={loginAsEmployee}
-            className={`px-2 py-0.5 rounded transition ${user?.role === 'employee' ? 'bg-primary text-primary-foreground font-semibold' : 'bg-charcoal-800 hover:bg-charcoal-700'}`}
-          >
-            Employee View
-          </button>
-          <button 
-            onClick={loginAsAdmin}
-            className={`px-2 py-0.5 rounded transition ${user?.role === 'admin' ? 'bg-primary text-primary-foreground font-semibold' : 'bg-charcoal-800 hover:bg-charcoal-700'}`}
-          >
-            Admin View
-          </button>
-        </div>
-      </div>
 
       {/* Main Navigation Header */}
-      <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md">
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-background">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex items-center gap-2.5">
-              <img src="/logo.jpg" alt="ATR Studio Logo" className="h-9 w-9 rounded-xl object-cover shadow-sm border border-border/80" />
+              <img src="/logo.jpg" alt="ATR Studio Logo" className="h-9 w-9 rounded-[10px] object-cover shadow-sm border border-border/85" />
               <div className="flex flex-col">
-                <span className="font-display font-bold tracking-wider text-sm leading-tight">ATR STUDIO</span>
+                <span className="font-display font-bold tracking-wider text-sm leading-tight text-foreground">ATR STUDIO</span>
                 <span className="text-[10px] text-muted-foreground tracking-widest uppercase font-mono">Foundation</span>
               </div>
             </Link>
 
             {user && (
-              <nav className="hidden md:flex items-center gap-1">
+              <nav className="hidden md:flex items-center gap-1.5">
                 {visibleNavItems.map((item) => {
                   const Icon = item.icon;
                   const isActive = location.pathname === item.path || location.pathname.startsWith(item.path + '/');
@@ -88,10 +67,10 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                     <Link
                       key={item.path}
                       to={item.path}
-                      className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                      className={`flex items-center gap-2 px-4 py-2 rounded-button text-sm font-medium transition-all duration-200 hover:scale-[1.02] ${
                         isActive
-                          ? 'bg-accent text-accent-foreground font-semibold border-b-2 border-primary rounded-b-none'
-                          : 'text-muted-foreground hover:bg-accent/50 hover:text-foreground'
+                          ? 'bg-primary text-primary-foreground font-semibold shadow-universal'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -114,7 +93,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
               {theme === 'dark' ? <Sun className="h-[1.2rem] w-[1.2rem]" /> : <Moon className="h-[1.2rem] w-[1.2rem]" />}
             </Button>
 
-            {user ? (
+            {user && (
               <div className="flex items-center gap-3">
                 <div className="hidden lg:flex flex-col text-right">
                   <span className="text-xs font-semibold">{user.name}</span>
@@ -139,15 +118,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                   title="Logout"
                 >
                   <LogOut className="h-[1.2rem] w-[1.2rem]" />
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" onClick={loginAsEmployee}>
-                  Demo Employee
-                </Button>
-                <Button variant="default" size="sm" onClick={loginAsAdmin}>
-                  Demo Admin
                 </Button>
               </div>
             )}

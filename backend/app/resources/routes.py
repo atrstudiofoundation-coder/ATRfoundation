@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_db
-from app.auth.dependencies import get_current_admin_user
+from app.auth.dependencies import get_current_admin_user, get_current_user
 from app.users.models import User
 from app.common.pagination import PaginationParams, PaginatedResponse
 from app.resources.schemas import ResourceCreate, ResourceUpdate, ResourceRead
@@ -32,7 +32,7 @@ async def list_resources(
     resource_type: Optional[str] = Query(None),
     search: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     resource_repo = ResourceRepository(db)
     service = ResourceService(resource_repo)
@@ -44,7 +44,7 @@ async def list_resources(
 async def get_resource(
     resource_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     resource_repo = ResourceRepository(db)
     service = ResourceService(resource_repo)
@@ -107,7 +107,7 @@ async def unlink_resource_from_module(
 async def get_resources_for_module(
     module_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     resource_repo = ResourceRepository(db)
     module_repo = ModuleRepository(db)

@@ -37,7 +37,7 @@ export const SkeletonCard: React.FC<SkeletonCardProps> = ({ count = 1, className
       {Array.from({ length: count }).map((_, idx) => (
         <div 
           key={idx} 
-          className={`bg-card border border-border/70 rounded-2xl p-6 shadow-sm space-y-4 animate-pulse ${className}`}
+          className={`bg-card border border-border/70 rounded-card p-6 shadow-universal space-y-4 animate-pulse ${className}`}
         >
           <div className="flex justify-between items-center">
             <div className="h-4 bg-secondary rounded-md w-1/4"></div>
@@ -68,16 +68,16 @@ export interface EmptyStateProps {
 }
 
 export const EmptyState: React.FC<EmptyStateProps> = ({
-  title = 'No Data Found',
-  description = 'There are no records matching your request or criteria.',
+  title = 'Your learning journey will appear here.',
+  description = 'Check back soon as we publish curriculum details and reference standards.',
   actionLabel,
   onAction,
   icon: Icon = Inbox,
   className = '',
 }) => {
   return (
-    <div className={`text-center py-16 px-6 bg-card border border-dashed border-border/80 rounded-3xl space-y-4 max-w-lg mx-auto ${className}`}>
-      <div className="h-14 w-14 rounded-2xl bg-secondary flex items-center justify-center mx-auto text-muted-foreground">
+    <div className={`text-center py-16 px-6 bg-card border border-border/60 rounded-card shadow-universal space-y-4 max-w-lg mx-auto ${className}`}>
+      <div className="h-14 w-14 rounded-[14px] bg-secondary flex items-center justify-center mx-auto text-muted-foreground">
         <Icon className="w-7 h-7 opacity-70" />
       </div>
       <div className="space-y-1">
@@ -87,7 +87,7 @@ export const EmptyState: React.FC<EmptyStateProps> = ({
       {actionLabel && onAction && (
         <button
           onClick={onAction}
-          className="px-4 py-2 bg-primary text-primary-foreground text-xs font-semibold rounded-xl shadow-sm hover:bg-primary/90 transition-all"
+          className="px-5 py-2.5 bg-primary text-primary-foreground text-xs font-semibold rounded-button shadow-universal hover:scale-[1.02] active:scale-95 transition-all duration-200"
         >
           {actionLabel}
         </button>
@@ -104,14 +104,14 @@ export interface ErrorStateProps {
 }
 
 export const ErrorState: React.FC<ErrorStateProps> = ({
-  title = 'API Communication Error',
-  message = 'An unexpected server error occurred while retrieving information.',
+  title = 'Something went wrong',
+  message = 'We encountered an error loading this section. Please try again or contact support if the issue persists.',
   onRetry,
   className = '',
 }) => {
   return (
-    <div className={`p-6 sm:p-8 bg-destructive/5 border border-destructive/20 rounded-3xl space-y-4 max-w-xl mx-auto text-center ${className}`}>
-      <div className="h-12 w-12 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
+    <div className={`p-6 sm:p-8 bg-destructive/5 border border-destructive/20 rounded-card shadow-universal space-y-4 max-w-xl mx-auto text-center ${className}`}>
+      <div className="h-12 w-12 rounded-[14px] bg-destructive/10 text-destructive flex items-center justify-center mx-auto">
         <AlertTriangle className="w-6 h-6" />
       </div>
       <div className="space-y-1">
@@ -121,7 +121,7 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="px-5 py-2.5 bg-card hover:bg-secondary text-foreground border border-border text-xs font-semibold rounded-xl shadow-sm inline-flex items-center gap-2 transition-all"
+          className="px-5 py-2.5 bg-secondary hover:bg-secondary/90 text-secondary-foreground border border-border/80 text-xs font-semibold rounded-button shadow-sm inline-flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Retry Request
         </button>

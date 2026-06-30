@@ -37,15 +37,15 @@ export const FoundationCompleteStep: React.FC<FoundationCompleteStepProps> = ({
       </div>
 
       {/* Premium Accreditation Certificate Card */}
-      <div className="bg-card border-2 border-primary/30 rounded-3xl p-8 sm:p-10 shadow-xl relative overflow-hidden text-left space-y-8 max-w-2xl mx-auto bg-gradient-to-br from-card via-card to-accent/20">
-        <div className="absolute top-0 right-0 p-8 text-primary/10 pointer-events-none">
+      <div className="bg-card border border-border/70 rounded-card p-8 sm:p-10 shadow-universal relative overflow-hidden text-left space-y-8 max-w-2xl mx-auto">
+        <div className="absolute top-0 right-0 p-8 text-primary/5 pointer-events-none">
           <Award className="w-40 h-40 -mr-10 -mt-10" />
         </div>
 
         {/* Certificate Header */}
         <div className="flex items-center justify-between border-b border-border/80 pb-6 relative z-10">
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center font-bold text-base font-display">
+            <div className="h-10 w-10 rounded-input bg-primary text-primary-foreground flex items-center justify-center font-bold text-base font-display shadow-sm">
               ATR
             </div>
             <div>
@@ -92,7 +92,7 @@ export const FoundationCompleteStep: React.FC<FoundationCompleteStepProps> = ({
       <div className="pt-4">
         <button
           onClick={onRestartJourney}
-          className="px-6 py-3 bg-secondary hover:bg-secondary/80 text-foreground text-xs font-semibold rounded-2xl border border-border transition-all inline-flex items-center gap-2"
+          className="px-6 py-3 bg-secondary hover:bg-secondary/90 text-foreground text-xs font-semibold rounded-button border border-border/80 transition-all inline-flex items-center gap-2 hover:scale-[1.02] active:scale-95 duration-200"
         >
           <span>Review Journey Materials</span>
           <ArrowRight className="w-4 h-4" />

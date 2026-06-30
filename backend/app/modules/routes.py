@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_db
-from app.auth.dependencies import get_current_admin_user
+from app.auth.dependencies import get_current_admin_user, get_current_user
 from app.users.models import User
 from app.common.pagination import PaginationParams, PaginatedResponse
 from app.modules.schemas import (
@@ -36,7 +36,7 @@ async def list_learning_paths(
     page_size: int = Query(20, ge=1, le=100),
     search: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     path_repo = LearningPathRepository(db)
     service = LearningPathService(path_repo)
@@ -48,7 +48,7 @@ async def list_learning_paths(
 async def get_learning_path(
     path_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     path_repo = LearningPathRepository(db)
     service = LearningPathService(path_repo)
@@ -102,7 +102,7 @@ async def list_modules(
     learning_path_id: Optional[uuid.UUID] = Query(None),
     search: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     module_repo = ModuleRepository(db)
     path_repo = LearningPathRepository(db)
@@ -116,7 +116,7 @@ async def list_modules(
 async def get_module(
     module_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     module_repo = ModuleRepository(db)
     path_repo = LearningPathRepository(db)

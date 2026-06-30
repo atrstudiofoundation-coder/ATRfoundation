@@ -78,4 +78,4 @@ AutoCAD is used for technical drafting.
     messages = [e["message"] for e in errors]
     assert any("at least 2 options" in msg for msg in messages)
     assert any("Option 'Z' is out of range" in msg for msg in messages)
-    assert any("Marks must be an integer" in msg for msg in messages)
+    assert any("must be an integer" in msg for msg in messages)

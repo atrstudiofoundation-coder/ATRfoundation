@@ -74,15 +74,15 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
   return (
     <div className="max-w-2xl mx-auto py-10 px-4 space-y-8 animate-in fade-in duration-300">
       {/* Top Progress Header */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+      <div className="bg-card border border-border/60 rounded-card p-6 shadow-universal space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <ShieldCheck className="w-5 h-5 text-primary" />
             <h2 className="text-base font-bold font-display text-foreground">{assessment.title}</h2>
           </div>
           <button
             onClick={onCancel}
-            className="text-xs text-muted-foreground hover:text-foreground font-semibold"
+            className="text-xs text-muted-foreground hover:text-foreground font-semibold px-3 py-1.5 hover:bg-secondary rounded-button transition-all duration-200"
           >
             Exit Check
           </button>
@@ -95,7 +95,7 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
           </div>
           <div className="w-full h-2 bg-secondary rounded-full overflow-hidden">
             <div
-              className="h-full bg-emerald-600 rounded-full transition-all duration-300"
+              className="h-full bg-[#5E8C61] rounded-full transition-all duration-300"
               style={{ width: `${progressPercent}%` }}
             ></div>
           </div>
@@ -103,16 +103,16 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
       </div>
 
       {submitError && (
-        <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-2xl text-xs text-destructive">
+        <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-input text-xs text-destructive">
           {submitError}
         </div>
       )}
 
       {/* QUESTION CARD */}
       {currentQ && (
-        <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+        <div className="bg-card border border-border/60 rounded-card p-6 sm:p-8 shadow-universal space-y-6">
           <div className="flex items-center justify-between border-b border-border/60 pb-3">
-            <span className="text-xs font-mono font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+            <span className="text-xs font-mono font-bold text-primary bg-[#5E8C61]/10 px-3 py-1 rounded-full border border-primary/20">
               Topic: {currentQ.topic || 'General'}
             </span>
             <span className="text-xs text-muted-foreground font-mono">Required passing score: {assessment.passing_marks ?? assessment.passing_percentage}%</span>
@@ -131,15 +131,15 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
                 <button
                   key={optIdx}
                   onClick={() => handleSelectOption(optIdx)}
-                  className={`w-full text-left p-4 rounded-2xl border text-xs sm:text-sm transition-all duration-200 flex items-center justify-between ${
+                  className={`w-full text-left p-4 rounded-input border text-xs sm:text-sm transition-all duration-200 flex items-center justify-between ${
                     isSelected
-                      ? 'bg-emerald-500/10 border-emerald-500/60 text-emerald-900 dark:text-emerald-300 font-semibold shadow-sm ring-1 ring-emerald-500/30'
+                      ? 'bg-secondary border-primary/60 text-foreground font-semibold shadow-sm ring-1 ring-primary/20'
                       : 'bg-card hover:bg-secondary/40 border-border/80 text-foreground'
                   }`}
                 >
                   <span className="leading-relaxed">{opt}</span>
                   <div className={`h-5 w-5 rounded-full border flex items-center justify-center shrink-0 ml-3 ${
-                    isSelected ? 'bg-emerald-600 border-emerald-600 text-white' : 'border-border'
+                    isSelected ? 'bg-primary border-primary text-white' : 'border-border'
                   }`}>
                     {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
                   </div>
@@ -153,7 +153,7 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
             <button
               onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
               disabled={currentIndex === 0 || isSubmitting}
-              className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground disabled:opacity-30 flex items-center gap-1.5"
+              className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground disabled:opacity-30 flex items-center gap-1.5 rounded-button hover:bg-secondary transition-all duration-200"
             >
               <ArrowLeft className="w-4 h-4" /> Previous
             </button>
@@ -162,7 +162,7 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
               <button
                 onClick={() => setCurrentIndex(prev => prev + 1)}
                 disabled={!userAnswers[currentQ.id]}
-                className="px-6 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-sm disabled:opacity-40 flex items-center gap-1.5"
+                className="px-6 py-2.5 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal disabled:opacity-40 flex items-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
                 <span>Next Question</span>
                 <ArrowRight className="w-4 h-4" />
@@ -171,7 +171,7 @@ export const CompetencyCheckStep: React.FC<CompetencyCheckStepProps> = ({
               <button
                 onClick={handleFinalSubmit}
                 disabled={!userAnswers[currentQ.id] || isSubmitting}
-                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-md disabled:opacity-40 flex items-center gap-1.5"
+                className="px-6 py-2.5 bg-[#5E8C61] hover:bg-[#5E8C61]/95 text-white text-xs font-semibold rounded-button shadow-universal disabled:opacity-40 flex items-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
                 {isSubmitting ? (
                   <>

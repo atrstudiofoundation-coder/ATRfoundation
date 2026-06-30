@@ -16,6 +16,7 @@ import {
 import type { AdminAssessment, AdminQuestion } from './adminTypes';
 import { useAssessments, useAssessmentQuestions } from '@/hooks/useAssessments';
 import type { QuestionType } from '@/types/api';
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 
 interface QuestionManagerModalProps {
   assessment: AdminAssessment;
@@ -30,13 +31,14 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
   onOpenImportModal,
 }) => {
   const { addQuestion, updateQuestion, deleteQuestion } = useAssessments();
-  const { data: fetchedQuestions, isLoading: isQuestionsLoading } = useAssessmentQuestions(assessment.id);
+  const { data: fetchedQuestions } = useAssessmentQuestions(assessment.id);
 
   const questions = fetchedQuestions ?? assessment.questions ?? [];
   const [activeTab, setActiveTab] = useState<'manage' | 'preview'>('manage');
   const [editingQuestion, setEditingQuestion] = useState<AdminQuestion | null>(null);
   const [isAddingNew, setIsAddingNew] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [questionToDeleteId, setQuestionToDeleteId] = useState<string | null>(null);
 
   // Preview State
   const [previewIndex, setPreviewIndex] = useState<number>(0);
@@ -68,9 +70,11 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
     }
   };
 
-  const handleDeleteQuestion = async (questionId: string) => {
+  const handleDeleteQuestion = async () => {
+    if (!questionToDeleteId) return;
     try {
-      await deleteQuestion(questionId);
+      await deleteQuestion(questionToDeleteId);
+      setQuestionToDeleteId(null);
     } catch (err) {
       console.error('Failed to delete question:', err);
     }
@@ -392,7 +396,7 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
 
                         {/* Options List */}
                         <div className="grid grid-cols-2 gap-2 text-xs">
-                          {q.options.map((opt, optIdx) => {
+                          {q.options.map((opt: string, optIdx: number) => {
                             const isCorrect = q.answer.includes(optIdx);
                             return (
                               <div
@@ -421,7 +425,7 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
                           <Pencil className="w-3.5 h-3.5" />
                         </button>
                         <button
-                          onClick={() => handleDeleteQuestion(q.id)}
+                          onClick={() => setQuestionToDeleteId(q.id)}
                           className="p-1.5 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-lg transition-colors"
                           title="Delete Question"
                         >
@@ -478,7 +482,7 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
                   </div>
 
                   <div className="space-y-2.5">
-                    {currentPreviewQ.options.map((opt, optIdx) => {
+                    {currentPreviewQ.options.map((opt: string, optIdx: number) => {
                       const isSelected = selectedPreviewOption === optIdx;
                       const isCorrect = currentPreviewQ.answer.includes(optIdx);
                       let optionStyle = 'bg-secondary/40 border-border text-foreground hover:bg-secondary';
@@ -536,6 +540,16 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
           </button>
         </div>
       </div>
+      {questionToDeleteId && (
+        <ConfirmationModal
+          isOpen={!!questionToDeleteId}
+          title="Delete Question"
+          message="Are you sure you want to delete this question? This will permanently remove it from this assessment. This action cannot be undone."
+          confirmLabel="Delete Question"
+          onConfirm={handleDeleteQuestion}
+          onClose={() => setQuestionToDeleteId(null)}
+        />
+      )}
     </div>
   );
 };

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/Tabs';
-import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { SkeletonCard, EmptyState } from '@/components/ui/States';
 import { useResources } from '@/hooks/useResources';
@@ -111,11 +110,11 @@ export const ResourcesPage: React.FC = () => {
                       const config = getIconAndColor(res.resource_type);
                       const Icon = config.icon;
                       return (
-                        <Card key={res.id} className="hover:border-primary/50 transition-all duration-200 shadow-sm flex flex-col justify-between">
+                        <Card key={res.id} className="hover:border-primary/50 transition-all duration-300 shadow-universal flex flex-col justify-between">
                           <CardContent className="p-5 space-y-4 flex flex-col justify-between h-full">
                             <div className="space-y-3">
                               <div className="flex items-start justify-between gap-3">
-                                <div className={`p-3 rounded-xl border shrink-0 ${config.bg}`}>
+                                <div className={`p-3 rounded-input border shrink-0 ${config.bg}`}>
                                   <Icon className="w-5 h-5" />
                                 </div>
                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${config.bg}`}>
@@ -158,54 +157,54 @@ export const ResourcesPage: React.FC = () => {
                 <TabsContent key={type} value={type} className="space-y-4">
                   {filteredResources.filter(r => r.resource_type === type).length === 0 ? (
                     <EmptyState
-                      title={`No ${type.toUpperCase()} Resources`}
-                      description={`No active studio resources under this category.`}
+                      title="Resources for this module haven't been added yet."
+                      description="Check back soon for standard resources and reference assets."
                     />
                   ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                       {filteredResources.filter(r => r.resource_type === type).map(res => {
-                        const config = getIconAndColor(res.resource_type);
-                        const Icon = config.icon;
-                        return (
-                          <Card key={res.id} className="hover:border-primary/50 transition-all duration-200 shadow-sm flex flex-col justify-between">
-                            <CardContent className="p-5 space-y-4 flex flex-col justify-between h-full">
-                              <div className="space-y-3">
-                                <div className="flex items-start justify-between gap-3">
-                                  <div className={`p-3 rounded-xl border shrink-0 ${config.bg}`}>
-                                    <Icon className="w-5 h-5" />
-                                  </div>
-                                  <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${config.bg}`}>
-                                    {config.badge}
-                                  </span>
-                                </div>
-                                <div className="space-y-1">
-                                  <h3 className="font-bold text-sm leading-snug text-foreground">{res.title}</h3>
-                                  {res.description && (
-                                    <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{res.description}</p>
-                                  )}
-                                </div>
-                              </div>
+                         const config = getIconAndColor(res.resource_type);
+                         const Icon = config.icon;
+                         return (
+                           <Card key={res.id} className="hover:border-primary/50 transition-all duration-300 shadow-universal flex flex-col justify-between">
+                             <CardContent className="p-5 space-y-4 flex flex-col justify-between h-full">
+                               <div className="space-y-3">
+                                 <div className="flex items-start justify-between gap-3">
+                                   <div className={`p-3 rounded-input border shrink-0 ${config.bg}`}>
+                                     <Icon className="w-5 h-5" />
+                                   </div>
+                                   <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${config.bg}`}>
+                                     {config.badge}
+                                   </span>
+                                 </div>
+                                 <div className="space-y-1">
+                                   <h3 className="font-bold text-sm leading-snug text-foreground">{res.title}</h3>
+                                   {res.description && (
+                                     <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{res.description}</p>
+                                   )}
+                                 </div>
+                               </div>
 
-                              {res.resource_url && (
-                                <div className="pt-3 border-t border-border/60">
-                                  <a
-                                    href={res.resource_url}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-1.5 text-xs font-mono text-primary hover:underline w-full justify-between"
-                                  >
-                                    <span className="truncate max-w-[220px] flex items-center gap-1">
-                                      <LinkIcon className="w-3.5 h-3.5 shrink-0" />
-                                      <span className="truncate">{res.resource_url}</span>
-                                    </span>
-                                    <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-80" />
-                                  </a>
-                                </div>
-                              )}
-                            </CardContent>
-                          </Card>
-                        );
-                      })}
+                               {res.resource_url && (
+                                 <div className="pt-3 border-t border-border/60">
+                                   <a
+                                     href={res.resource_url}
+                                     target="_blank"
+                                     rel="noopener noreferrer"
+                                     className="inline-flex items-center gap-1.5 text-xs font-mono text-primary hover:underline w-full justify-between"
+                                   >
+                                     <span className="truncate max-w-[220px] flex items-center gap-1">
+                                       <LinkIcon className="w-3.5 h-3.5 shrink-0" />
+                                       <span className="truncate">{res.resource_url}</span>
+                                     </span>
+                                     <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-80" />
+                                   </a>
+                                 </div>
+                               )}
+                             </CardContent>
+                           </Card>
+                         );
+                       })}
                     </div>
                   )}
                 </TabsContent>

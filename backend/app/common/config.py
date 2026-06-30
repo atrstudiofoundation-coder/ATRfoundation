@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     APP_STUDIO_ACCESS_CODE: str = "ATR-STUDIO-2026"
     COOKIE_SECURE: bool = False
     AUTH_COOKIE_NAME: str = "access_token"
+    GOOGLE_CLIENT_ID: str = ""
+    ADMIN_EMAIL: str = ""
 
     # Database Configuration
     POSTGRES_SERVER: str = "localhost"

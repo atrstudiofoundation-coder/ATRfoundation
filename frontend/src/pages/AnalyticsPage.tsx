@@ -23,50 +23,50 @@ export const AnalyticsPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Card>
+        <Card className="rounded-card shadow-universal">
           <CardContent className="pt-6 flex justify-between items-center">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-medium uppercase">Average Module Score</span>
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Average Module Score</span>
               <p className="text-3xl font-display font-bold">
                 {isOverviewLoading ? '...' : `${avgScore}%`}
               </p>
             </div>
-            <div className="p-3 bg-accent rounded-full text-primary">
+            <div className="p-3 bg-secondary border border-border/60 rounded-input text-primary">
               <TrendingUp className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-card shadow-universal">
           <CardContent className="pt-6 flex justify-between items-center">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-medium uppercase">Total Registered Members</span>
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Total Registered Members</span>
               <p className="text-3xl font-display font-bold">
                 {isOverviewLoading ? '...' : totalEmployees}
               </p>
             </div>
-            <div className="p-3 bg-accent rounded-full text-primary">
+            <div className="p-3 bg-secondary border border-border/60 rounded-input text-primary">
               <Users className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-card shadow-universal">
           <CardContent className="pt-6 flex justify-between items-center">
             <div className="space-y-1">
-              <span className="text-xs text-muted-foreground font-medium uppercase">Compliance Rate</span>
+              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Compliance Rate</span>
               <p className="text-3xl font-display font-bold">
                 {isComplianceLoading ? '...' : `${complianceRate}%`}
               </p>
             </div>
-            <div className="p-3 bg-accent rounded-full text-primary">
+            <div className="p-3 bg-secondary border border-border/60 rounded-input text-primary">
               <CheckCircle className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
       </div>
 
-      <Card>
+      <Card className="rounded-card shadow-universal">
         <CardHeader>
           <CardTitle>Employee Progress Matrix</CardTitle>
           <CardDescription>Real-time progress overview for active team members.</CardDescription>
@@ -75,12 +75,12 @@ export const AnalyticsPage: React.FC = () => {
           {isComplianceLoading ? (
             <SkeletonCard />
           ) : cohortList.length === 0 ? (
-            <EmptyState title="No Employee Audit Activity" description="Evaluation records will populate automatically as team members complete module checkpoints." />
+            <EmptyState title="No employee records found" description="Evaluation records will populate automatically as team members complete module checkpoints." />
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
                 <thead>
-                  <tr className="border-b border-border text-muted-foreground">
+                  <tr className="border-b border-border/60 text-muted-foreground font-mono text-[10px] uppercase tracking-wider">
                     <th className="py-3 font-semibold">Employee</th>
                     <th className="py-3 font-semibold">Department</th>
                     <th className="py-3 font-semibold">Path Progress</th>
@@ -88,20 +88,20 @@ export const AnalyticsPage: React.FC = () => {
                     <th className="py-3 font-semibold text-right">Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-border">
+                <tbody className="divide-y divide-border/60">
                   {cohortList.map((emp, idx) => (
-                    <tr key={idx} className="hover:bg-accent/10 transition-colors">
+                    <tr key={idx} className="hover:bg-secondary/40 transition-colors duration-200">
                       <td className="py-4 font-semibold text-foreground">{emp.user_name}</td>
                       <td className="py-4 text-muted-foreground">{emp.department}</td>
-                      <td className="py-4 text-foreground font-medium">{emp.progress_percent}%</td>
-                      <td className="py-4 text-foreground font-medium">{emp.average_score_percent}%</td>
+                      <td className="py-4 text-foreground font-semibold font-mono">{emp.progress_percent}%</td>
+                      <td className="py-4 text-foreground font-semibold font-mono">{emp.average_score_percent}%</td>
                       <td className="py-4 text-right">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
                           emp.status === 'Completed' 
-                            ? 'bg-emerald-500/10 text-emerald-600' 
+                            ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' 
                             : emp.status === 'Needs Review'
-                            ? 'bg-destructive/10 text-destructive'
-                            : 'bg-amber-100 dark:bg-amber-950/20 text-amber-700 dark:text-amber-500'
+                            ? 'bg-destructive/10 text-destructive border-destructive/20'
+                            : 'bg-secondary text-foreground/80 border-border/80'
                         }`}>
                           {emp.status}
                         </span>

@@ -52,7 +52,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
       </button>
 
       {/* Module Hero Banner */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-4">
+      <div className="bg-card border border-border/60 rounded-card p-6 sm:p-8 shadow-universal space-y-4">
         <div className="flex items-center gap-2.5">
           <span className="text-xs font-mono font-bold bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
             {module.code || `MOD-${module.display_order || 1}`}
@@ -66,10 +66,10 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{module.subtitle || module.description}</p>
 
         {/* Guided Navigation Tabs */}
-        <div className="flex bg-secondary/50 p-1.5 rounded-2xl border border-border/60 max-w-md text-xs font-semibold pt-1">
+        <div className="flex bg-secondary/50 p-1.5 rounded-button border border-border/60 max-w-md text-xs font-semibold pt-1">
           <button
             onClick={() => setActiveTab('intro')}
-            className={`flex-1 py-2 rounded-xl transition-all ${
+            className={`flex-1 py-2 rounded-[10px] transition-all duration-200 ${
               activeTab === 'intro' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -77,7 +77,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('video')}
-            className={`flex-1 py-2 rounded-xl transition-all ${
+            className={`flex-1 py-2 rounded-[10px] transition-all duration-200 ${
               activeTab === 'video' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -85,7 +85,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('resources')}
-            className={`flex-1 py-2 rounded-xl transition-all ${
+            className={`flex-1 py-2 rounded-[10px] transition-all duration-200 ${
               activeTab === 'resources' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -95,7 +95,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
       </div>
 
       {/* GUIDED SECTION CONTENT */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <div className="bg-card border border-border/60 rounded-card shadow-universal p-6 sm:p-8 space-y-6">
         {activeTab === 'intro' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             <h3 className="text-lg font-bold text-foreground font-display">Module Introduction</h3>
@@ -103,8 +103,8 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
               {module.description}
             </p>
 
-            <div className="p-5 bg-accent/20 border border-accent/40 rounded-2xl space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-accent-foreground">Key Onboarding Objectives</h4>
+            <div className="p-5 bg-secondary/70 border border-border/80 rounded-input space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/80">Key Onboarding Objectives</h4>
               <ul className="space-y-2 text-xs sm:text-sm text-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
@@ -124,7 +124,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
             <div className="flex justify-end pt-4">
               <button
                 onClick={() => setActiveTab('video')}
-                className="px-6 py-3 bg-primary text-primary-foreground text-xs font-semibold rounded-xl shadow-sm flex items-center gap-2"
+                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
                 <span>Continue to Video Session</span>
                 <ArrowRight className="w-4 h-4" />
@@ -156,7 +156,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
 
               {/* Multi-Video Playlist selector bar */}
               {videoResources.length > 1 && (
-                <div className="p-3 bg-secondary/40 border border-border/80 rounded-2xl space-y-2">
+                <div className="p-3 bg-secondary/40 border border-border/80 rounded-input space-y-2">
                   <span className="text-[10px] uppercase font-mono font-bold text-muted-foreground tracking-wider block">
                     Module Playlist ({videoResources.length} Sessions)
                   </span>
@@ -165,9 +165,9 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
                       <button
                         key={vRes.id || vIdx}
                         onClick={() => setSelectedVideoIndex(vIdx)}
-                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold shrink-0 transition-all flex items-center gap-2 ${
+                        className={`px-3.5 py-2 rounded-[10px] text-xs font-semibold shrink-0 transition-all flex items-center gap-2 ${
                           selectedVideoIndex === vIdx
-                            ? 'bg-emerald-600 text-white shadow-md ring-1 ring-emerald-500/30'
+                            ? 'bg-primary text-white shadow-sm'
                             : 'bg-card text-foreground hover:bg-secondary border border-border/80'
                         }`}
                       >
@@ -180,7 +180,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
               )}
               
               {videoUrl ? (
-                <div className="relative aspect-video bg-black rounded-2xl overflow-hidden border border-border shadow-md">
+                <div className="relative aspect-video bg-black rounded-card overflow-hidden border border-border/60 shadow-universal">
                   {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') || videoUrl.includes('vimeo.com') ? (
                     <iframe
                       src={videoUrl.replace('watch?v=', 'embed/')}
@@ -201,12 +201,12 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
                   )}
                 </div>
               ) : (
-                <div className="relative aspect-video bg-charcoal-900 rounded-2xl overflow-hidden border border-border flex items-center justify-center group shadow-md">
+                <div className="relative aspect-video bg-secondary rounded-card overflow-hidden border border-border/60 flex items-center justify-center group shadow-universal">
                   <div className="text-center space-y-3 p-4">
-                    <div className="h-14 w-14 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-transform cursor-pointer">
+                    <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground flex items-center justify-center mx-auto shadow-universal group-hover:scale-105 transition-transform duration-200 cursor-pointer">
                       <Video className="w-7 h-7 ml-0.5" />
                     </div>
-                    <p className="text-xs text-earth-200 font-mono">Stream Session: {module.title}</p>
+                    <p className="text-xs text-foreground/80 font-mono">Stream Session: {module.title}</p>
                     <p className="text-[11px] text-muted-foreground">Attach a video resource in Admin Resources to stream here.</p>
                   </div>
                 </div>
@@ -215,13 +215,13 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
             <div className="flex justify-between items-center pt-4">
               <button
                 onClick={() => setActiveTab('intro')}
-                className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary rounded-xl"
+                className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary rounded-button transition-all duration-200"
               >
                 Previous
               </button>
               <button
                 onClick={() => setActiveTab('resources')}
-                className="px-6 py-3 bg-primary text-primary-foreground text-xs font-semibold rounded-xl shadow-sm flex items-center gap-2"
+                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
                 <span>Explore Resources</span>
                 <ArrowRight className="w-4 h-4" />
@@ -236,7 +236,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
             <h3 className="text-lg font-bold text-foreground font-display">Reference Assets & Links</h3>
 
             {resources.length === 0 ? (
-              <div className="p-8 text-center border border-dashed border-border rounded-2xl bg-card">
+              <div className="p-8 text-center border border-dashed border-border rounded-card bg-card">
                 <p className="text-xs text-muted-foreground">No linked reference documents or assets for this module yet.</p>
               </div>
             ) : (
@@ -249,9 +249,9 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
                       href={targetUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group p-4 bg-card hover:bg-secondary/40 border border-border/80 rounded-2xl transition-all shadow-sm flex items-start gap-3.5"
+                      className="group p-4 bg-card hover:bg-secondary/40 border border-border/80 rounded-input transition-all duration-200 shadow-sm flex items-start gap-3.5"
                     >
-                      <div className="p-3 bg-secondary rounded-xl shrink-0 border border-border/50">
+                      <div className="p-3 bg-secondary rounded-[8px] shrink-0 border border-border/50">
                         {renderResourceIcon(res.resource_type || res.type)}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -270,17 +270,17 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
               </div>
             )}
 
-            <div className="p-6 bg-emerald-500/10 border border-emerald-500/30 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
+            <div className="p-6 bg-[#5E8C61]/10 border border-[#5E8C61]/25 rounded-card flex flex-col sm:flex-row items-center justify-between gap-4 mt-6">
               <div className="space-y-1 text-center sm:text-left">
-                <h4 className="text-sm font-bold text-emerald-900 dark:text-emerald-300 flex items-center gap-1.5 justify-center sm:justify-start">
-                  <ShieldCheck className="w-4 h-4" /> Ready for Assessment?
+                <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5 justify-center sm:justify-start">
+                  <ShieldCheck className="w-4 h-4 text-primary" /> Ready for Assessment?
                 </h4>
                 <p className="text-xs text-muted-foreground">Verify your mastery by taking the module Competency Check.</p>
               </div>
 
               <button
                 onClick={onStartCompetencyCheck}
-                className="px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-xl shadow-md flex items-center gap-2 shrink-0 transition-all transform hover:-translate-y-0.5"
+                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 shrink-0 transition-all hover:scale-[1.02] active:scale-95 duration-200"
               >
                 <span>Begin Competency Check</span>
                 <ArrowRight className="w-4 h-4" />

@@ -21,9 +21,9 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
   onContinue,
 }) => {
   const passingScore = module.assessment?.passing_marks ?? module.passing_percentage ?? 80;
-  const rawPct = attemptResult ? (attemptResult.score_percentage ?? attemptResult.percentage ?? 0) : scorePercent;
+  const rawPct = attemptResult ? (attemptResult.score_percentage ?? (attemptResult as any).percentage ?? 0) : scorePercent;
   const finalScore = isNaN(rawPct) ? 0 : Math.round(rawPct);
-  const isQualified = attemptResult ? (attemptResult.passed ?? (attemptResult.status === 'pass') ?? (finalScore >= passingScore)) : finalScore >= passingScore;
+  const isQualified = attemptResult ? (attemptResult.passed || ((attemptResult as any).status === 'pass') || (finalScore >= passingScore)) : finalScore >= passingScore;
 
   // Derive topic metrics
   const topics = Object.entries(topicScores);
@@ -33,7 +33,7 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
   return (
     <div className="max-w-3xl mx-auto py-10 px-4 space-y-8 animate-in fade-in duration-300">
       {/* Header Evaluation Hero */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 text-center relative overflow-hidden">
+      <div className="bg-card border border-border/60 rounded-card p-6 sm:p-8 shadow-universal space-y-6 text-center relative overflow-hidden">
         <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
           <Sparkles className="w-3.5 h-3.5" /> Official Competency Audit Report
         </div>
@@ -59,7 +59,7 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
       {/* DETAILED DIAGNOSTIC BREAKDOWN */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Topic Breakdown Card */}
-        <div className="bg-card border border-border/80 rounded-3xl p-6 shadow-sm space-y-4">
+        <div className="bg-card border border-border/60 rounded-card p-6 shadow-universal space-y-4">
           <h3 className="text-sm font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-2">
             <Award className="w-4 h-4 text-primary" /> Topic Performance Breakdown
           </h3>
@@ -78,7 +78,7 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
                     </div>
                     <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden">
                       <div
-                        className={`h-full rounded-full ${topicPct >= 80 ? 'bg-emerald-500' : 'bg-amber-500'}`}
+                        className={`h-full rounded-full ${topicPct >= 80 ? 'bg-primary' : 'bg-amber-500'}`}
                         style={{ width: `${topicPct}%` }}
                       ></div>
                     </div>
@@ -92,7 +92,7 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
         {/* Strong Areas & Needs Improvement */}
         <div className="space-y-4">
           {/* Strong Areas */}
-          <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
+          <div className="bg-card border border-border/60 rounded-card p-5 shadow-sm space-y-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400 flex items-center gap-1.5">
               <CheckCircle2 className="w-4 h-4" /> Demonstrated Strong Areas
             </h4>
@@ -106,7 +106,7 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
           </div>
 
           {/* Needs Improvement */}
-          <div className="bg-card border border-border/80 rounded-3xl p-5 shadow-sm space-y-2">
+          <div className="bg-card border border-border/60 rounded-card p-5 shadow-sm space-y-2">
             <h4 className="text-xs font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4" /> Focus Areas for Growth
             </h4>
@@ -122,7 +122,7 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
       </div>
 
       {/* Recommendation Panel */}
-      <div className="p-6 bg-accent/20 border border-accent/40 rounded-3xl flex items-start gap-3.5">
+      <div className="p-6 bg-secondary/70 border border-border/85 rounded-card flex items-start gap-3.5 shadow-sm">
         <Lightbulb className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
         <div className="space-y-1 text-xs">
           <h4 className="font-bold text-foreground">Personalized Architectural Recommendation</h4>
@@ -138,14 +138,14 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
       <div className="flex items-center justify-between pt-4 border-t border-border/60">
         <button
           onClick={onRetry}
-          className="px-5 py-2.5 bg-secondary hover:bg-secondary/80 text-foreground text-xs font-semibold rounded-2xl border border-border flex items-center gap-2 transition-all"
+          className="px-5 py-2.5 bg-secondary hover:bg-secondary/90 text-foreground text-xs font-semibold rounded-button border border-border/80 flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
         >
           <RefreshCw className="w-3.5 h-3.5" /> Retry Assessment
         </button>
 
         <button
           onClick={onContinue}
-          className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-2xl shadow-md flex items-center gap-2 transition-all transform hover:-translate-y-0.5"
+          className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
         >
           <span>Continue Learning Journey</span>
           <ArrowRight className="w-4 h-4" />

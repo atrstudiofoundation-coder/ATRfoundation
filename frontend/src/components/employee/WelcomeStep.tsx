@@ -14,10 +14,10 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ journey, onStart }) =>
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 max-w-3xl mx-auto py-12 animate-in fade-in zoom-in-95 duration-500">
-      <img src="/logo.jpg" alt="ATR Studio Logo" className="h-20 w-20 rounded-3xl object-cover mb-6 shadow-md border-2 border-border" />
+      <img src="/logo.jpg" alt="ATR Studio Logo" className="h-20 w-20 rounded-[14px] object-cover mb-6 shadow-sm border border-border" />
 
       {/* Studio Badge */}
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/40 border border-accent text-accent-foreground text-xs font-semibold mb-8 shadow-sm">
+      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary border border-border text-foreground/85 text-xs font-semibold mb-8 shadow-sm">
         <Sparkles className="w-3.5 h-3.5 text-primary" />
         <span>ATR Design Studio Onboarding</span>
       </div>
@@ -61,7 +61,7 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ journey, onStart }) =>
       {/* Primary Action Button */}
       <button
         onClick={onStart}
-        className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-semibold rounded-2xl shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all duration-300 transform hover:-translate-y-0.5"
+        className="group relative inline-flex items-center justify-center gap-3 px-8 py-4 bg-primary hover:bg-primary/95 text-primary-foreground text-sm font-semibold rounded-button shadow-universal hover:scale-[1.02] active:scale-95 transition-all duration-200"
       >
         <span>Begin Guided Journey</span>
         <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />

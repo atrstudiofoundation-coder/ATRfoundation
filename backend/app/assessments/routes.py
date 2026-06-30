@@ -49,7 +49,7 @@ async def list_assessments(
     page_size: int = Query(20, ge=1, le=100),
     search: Optional[str] = Query(None),
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     service = get_service(db)
     params = PaginationParams(page=page, page_size=page_size)
@@ -60,7 +60,7 @@ async def list_assessments(
 async def get_assessment(
     assessment_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     service = get_service(db)
     return await service.get_assessment_by_id(assessment_id)
@@ -109,7 +109,7 @@ async def create_question(
 async def list_questions_for_assessment(
     assessment_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     service = get_service(db)
     return await service.list_questions_by_assessment(assessment_id)
@@ -119,7 +119,7 @@ async def list_questions_for_assessment(
 async def get_question(
     question_id: uuid.UUID,
     db: AsyncSession = Depends(get_db),
-    admin: User = Depends(get_current_admin_user)
+    current_user: User = Depends(get_current_user)
 ):
     service = get_service(db)
     return await service.get_question_by_id(question_id)

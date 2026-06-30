@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Award, HelpCircle, ArrowRight, RefreshCw, CheckCircle2, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Award, HelpCircle, ArrowRight } from 'lucide-react';
 import { useLearningPaths } from '@/hooks/useLearningPaths';
 import { SkeletonCard, EmptyState, ErrorState } from '@/components/ui/States';
 import { CompetencyCheckStep } from './CompetencyCheckStep';
@@ -49,7 +49,7 @@ export const EmployeeAssessmentsWorkspace: React.FC = () => {
           ...q,
           correct_answer: q.answer,
         })),
-      };
+      } as any;
       return {
         moduleTitle: m.title,
         moduleDescription: m.description,
@@ -99,9 +99,9 @@ export const EmployeeAssessmentsWorkspace: React.FC = () => {
           status: 'current',
           resources: [],
           assessment: activeAssessment,
-        }}
+        } as any}
         attemptResult={lastAttemptResult}
-        scorePercent={lastAttemptResult ? Math.round(lastAttemptResult.score_percentage ?? lastAttemptResult.percentage ?? 0) : 0}
+        scorePercent={lastAttemptResult ? Math.round(lastAttemptResult.score_percentage ?? (lastAttemptResult as any).percentage ?? 0) : 0}
         topicScores={lastTopicScores}
         onRetry={() => setViewState('taking')}
         onContinue={() => setViewState('list')}
@@ -113,8 +113,8 @@ export const EmployeeAssessmentsWorkspace: React.FC = () => {
     <div className="max-w-5xl mx-auto py-8 px-4 space-y-8 animate-in fade-in duration-300">
       {/* Header */}
       <div className="border-b border-border pb-6 space-y-2">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 border border-emerald-500/20 text-xs font-semibold">
-          <ShieldCheck className="w-3.5 h-3.5" /> Official Studio Competency Assessments
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-secondary border border-border text-foreground/80 text-xs font-semibold">
+          <ShieldCheck className="w-3.5 h-3.5 text-primary" /> Official Studio Competency Assessments
         </div>
         <h1 className="text-3xl font-bold font-display tracking-tight text-foreground">Competency Checkpoints</h1>
         <p className="text-sm text-muted-foreground max-w-2xl">
@@ -134,14 +134,14 @@ export const EmployeeAssessmentsWorkspace: React.FC = () => {
             return (
               <div
                 key={item.assessment.id}
-                className="bg-card border border-border/90 hover:border-emerald-500/50 rounded-3xl p-6 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-5"
+                className="bg-card border border-border/80 hover:border-primary/50 rounded-card p-6 shadow-universal flex flex-col justify-between space-y-5"
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-secondary text-muted-foreground">
+                    <span className="text-xs font-mono font-bold px-2.5 py-1 rounded-full bg-secondary text-muted-foreground border border-border/60">
                       Module {idx + 1} Checkpoint
                     </span>
-                    <span className="text-xs font-mono text-emerald-700 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
+                    <span className="text-xs font-mono text-primary font-bold bg-primary/10 px-2 py-0.5 rounded border border-primary/20">
                       Target: {item.assessment.passing_percentage}%
                     </span>
                   </div>
@@ -168,7 +168,7 @@ export const EmployeeAssessmentsWorkspace: React.FC = () => {
                   <button
                     onClick={() => handleLaunchAssessment(item)}
                     disabled={!hasQuestions}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 disabled:opacity-40 text-white text-xs font-semibold rounded-xl shadow-sm flex items-center gap-1.5 transition-all"
+                    className="px-4 py-2.5 bg-primary hover:bg-primary/95 text-white disabled:opacity-40 text-xs font-semibold rounded-button shadow-universal flex items-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all duration-200"
                   >
                     <span>{hasQuestions ? 'Take Checkpoint' : 'No Questions'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />

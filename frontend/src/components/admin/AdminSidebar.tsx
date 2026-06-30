@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   LayoutDashboard, 
   Compass, 
@@ -7,7 +6,8 @@ import {
   Settings, 
   Plus, 
   ChevronRight,
-  ShieldAlert
+  ShieldAlert,
+  Users
 } from 'lucide-react';
 import type { AdminLearningPath } from './adminTypes';
 
@@ -33,6 +33,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
     { id: 'paths', label: 'Learning Paths', icon: Compass, count: learningPaths.length },
     { id: 'resources', label: 'Resources Library', icon: FolderGit2 },
     { id: 'assessments', label: 'Assessments Hub', icon: FileCheck2 },
+    { id: 'users', label: 'User Accounts', icon: Users },
     { id: 'settings', label: 'Studio Settings', icon: Settings },
   ];
 
