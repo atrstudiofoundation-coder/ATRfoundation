@@ -19,7 +19,7 @@ class LearningPath(Base):
 
     # Relationships
     modules: Mapped[List["Module"]] = relationship(
-        "Module", back_populates="learning_path", cascade="all, delete-orphan"
+        "Module", back_populates="learning_path", cascade="all, delete-orphan", order_by="Module.display_order"
     )
 
 
@@ -62,6 +62,10 @@ class Module(Base):
     module_resources_assoc: Mapped[List[ModuleResource]] = relationship(
         "ModuleResource", back_populates="module", cascade="all, delete-orphan"
     )
+
+    @property
+    def resources(self) -> List:
+        return [assoc.resource for assoc in self.module_resources_assoc if assoc.resource]
     
     # 1-to-1 relationship with Assessment
     assessment: Mapped[Optional["Assessment"]] = relationship(

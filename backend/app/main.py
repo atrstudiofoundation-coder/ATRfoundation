@@ -11,6 +11,9 @@ from app.assessments.routes import router as assessments_router
 from app.analytics.routes import router as analytics_router
 from app.quiz_import.routes import router as quiz_import_router
 
+from app.database.session import engine
+from app.database.base import Base
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     description="ATR Foundation Onboarding & Technical Assessment API",
@@ -18,6 +21,11 @@ app = FastAPI(
     docs_url="/docs",
     redoc_url="/redoc"
 )
+
+@app.on_event("startup")
+async def startup_event():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
 
 # CORS Policy configuration
 app.add_middleware(

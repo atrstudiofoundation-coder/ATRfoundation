@@ -10,6 +10,7 @@ import type {
   PaginatedResponse 
 } from '@/types/api';
 import { MODULES_QUERY_KEY } from './useModules';
+import { LEARNING_PATHS_QUERY_KEY } from './useLearningPaths';
 
 export const ASSESSMENTS_QUERY_KEY = ['assessments'];
 
@@ -26,6 +27,7 @@ export const useAssessments = (params?: { page?: number; page_size?: number }) =
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ASSESSMENTS_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: MODULES_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: LEARNING_PATHS_QUERY_KEY });
     },
   });
 
@@ -51,6 +53,7 @@ export const useAssessments = (params?: { page?: number; page_size?: number }) =
       assessmentsApi.addQuestion(assessmentId, data),
     onSuccess: (_, { assessmentId }) => {
       queryClient.invalidateQueries({ queryKey: ASSESSMENTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [...ASSESSMENTS_QUERY_KEY, 'questions', assessmentId] });
       queryClient.invalidateQueries({ queryKey: [...ASSESSMENTS_QUERY_KEY, 'detail', assessmentId] });
       queryClient.invalidateQueries({ queryKey: MODULES_QUERY_KEY });
     },
@@ -83,6 +86,7 @@ export const useAssessments = (params?: { page?: number; page_size?: number }) =
       assessmentsApi.importQuizFile(assessmentId, formData),
     onSuccess: (_, { assessmentId }) => {
       queryClient.invalidateQueries({ queryKey: ASSESSMENTS_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: [...ASSESSMENTS_QUERY_KEY, 'questions', assessmentId] });
       queryClient.invalidateQueries({ queryKey: [...ASSESSMENTS_QUERY_KEY, 'detail', assessmentId] });
       queryClient.invalidateQueries({ queryKey: MODULES_QUERY_KEY });
     },
@@ -118,6 +122,14 @@ export const useAssessments = (params?: { page?: number; page_size?: number }) =
     isImportingQuiz: importQuizFileMutation.isPending,
     invalidateCache: () => queryClient.invalidateQueries({ queryKey: ASSESSMENTS_QUERY_KEY }),
   };
+};
+
+export const useAssessmentQuestions = (assessmentId: string) => {
+  return useQuery<Question[], Error>({
+    queryKey: [...ASSESSMENTS_QUERY_KEY, 'questions', assessmentId],
+    queryFn: () => assessmentsApi.getQuestionsByAssessment(assessmentId),
+    enabled: !!assessmentId,
+  });
 };
 
 export const useAssessmentDetail = (id: string) => {

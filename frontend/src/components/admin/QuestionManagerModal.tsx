@@ -14,7 +14,7 @@ import {
   Loader2
 } from 'lucide-react';
 import type { AdminAssessment, AdminQuestion } from './adminTypes';
-import { useAssessments } from '@/hooks/useAssessments';
+import { useAssessments, useAssessmentQuestions } from '@/hooks/useAssessments';
 import type { QuestionType } from '@/types/api';
 
 interface QuestionManagerModalProps {
@@ -30,8 +30,9 @@ export const QuestionManagerModal: React.FC<QuestionManagerModalProps> = ({
   onOpenImportModal,
 }) => {
   const { addQuestion, updateQuestion, deleteQuestion } = useAssessments();
+  const { data: fetchedQuestions, isLoading: isQuestionsLoading } = useAssessmentQuestions(assessment.id);
 
-  const questions = assessment.questions || [];
+  const questions = fetchedQuestions ?? assessment.questions ?? [];
   const [activeTab, setActiveTab] = useState<'manage' | 'preview'>('manage');
   const [editingQuestion, setEditingQuestion] = useState<AdminQuestion | null>(null);
   const [isAddingNew, setIsAddingNew] = useState<boolean>(false);

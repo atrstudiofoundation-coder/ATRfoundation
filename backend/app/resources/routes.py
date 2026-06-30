@@ -74,6 +74,7 @@ async def delete_resource(
     await service.delete_resource(resource_id)
 
 
+@router.post("/{resource_id}/attach/{module_id}", response_model=ModuleResourceRead)
 @router.post("/module/{module_id}/link/{resource_id}", response_model=ModuleResourceRead)
 async def link_resource_to_module(
     module_id: uuid.UUID,
@@ -88,6 +89,7 @@ async def link_resource_to_module(
     return await service.link_resource_to_module(module_id, resource_id, display_order)
 
 
+@router.delete("/{resource_id}/detach/{module_id}", status_code=status.HTTP_204_NO_CONTENT)
 @router.delete("/module/{module_id}/unlink/{resource_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def unlink_resource_from_module(
     module_id: uuid.UUID,

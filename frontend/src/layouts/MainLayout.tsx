@@ -71,11 +71,11 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur-md">
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-2">
-              <span className="h-8 w-8 rounded-full bg-primary flex items-center justify-center text-primary-foreground font-display font-bold text-lg">A</span>
+            <Link to="/" className="flex items-center gap-2.5">
+              <img src="/logo.jpg" alt="ATR Studio Logo" className="h-9 w-9 rounded-xl object-cover shadow-sm border border-border/80" />
               <div className="flex flex-col">
-                <span className="font-display font-semibold tracking-wider text-sm leading-tight">ATR STUDIO</span>
-                <span className="text-[10px] text-muted-foreground tracking-widest uppercase">Foundation</span>
+                <span className="font-display font-bold tracking-wider text-sm leading-tight">ATR STUDIO</span>
+                <span className="text-[10px] text-muted-foreground tracking-widest uppercase font-mono">Foundation</span>
               </div>
             </Link>
 

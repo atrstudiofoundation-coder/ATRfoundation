@@ -37,6 +37,11 @@ export const assessmentsApi = {
   },
 
   // Question endpoints
+  getQuestionsByAssessment: async (assessmentId: string): Promise<Question[]> => {
+    const response = await apiClient.get<Question[]>(`/assessments/${assessmentId}/questions`);
+    return response.data;
+  },
+
   addQuestion: async (assessmentId: string, data: QuestionCreate): Promise<Question> => {
     const response = await apiClient.post<Question>(`/assessments/${assessmentId}/questions`, data);
     return response.data;

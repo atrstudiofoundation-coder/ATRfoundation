@@ -1,30 +1,7 @@
 import uuid
 from datetime import datetime
-from typing import Optional, List, Dict, Any
+from typing import Optional, List, Dict, Any, Union
 from pydantic import BaseModel, ConfigDict
-
-# Assessment Schemas
-class AssessmentBase(BaseModel):
-    module_id: uuid.UUID
-    title: str
-    passing_marks: int
-    max_attempts: int
-
-class AssessmentCreate(AssessmentBase):
-    pass
-
-class AssessmentUpdate(BaseModel):
-    module_id: Optional[uuid.UUID] = None
-    title: Optional[str] = None
-    passing_marks: Optional[int] = None
-    max_attempts: Optional[int] = None
-
-class AssessmentRead(AssessmentBase):
-    id: uuid.UUID
-    created_at: datetime
-
-    model_config = ConfigDict(from_attributes=True)
-
 
 # Question Schemas
 class QuestionBase(BaseModel):
@@ -56,6 +33,31 @@ class QuestionUpdate(BaseModel):
 
 class QuestionRead(QuestionBase):
     id: uuid.UUID
+    created_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
+
+
+# Assessment Schemas
+class AssessmentBase(BaseModel):
+    module_id: uuid.UUID
+    title: str
+    passing_marks: int
+    max_attempts: int
+
+class AssessmentCreate(AssessmentBase):
+    pass
+
+class AssessmentUpdate(BaseModel):
+    module_id: Optional[uuid.UUID] = None
+    title: Optional[str] = None
+    passing_marks: Optional[int] = None
+    max_attempts: Optional[int] = None
+
+class AssessmentRead(AssessmentBase):
+    id: uuid.UUID
+    question_count: int = 0
+    questions: List[QuestionRead] = []
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -111,8 +113,12 @@ class AnswerRead(AnswerBase):
 
 
 # Route Compatibility Schemas (Pydantic v2 compatible)
+class AnswerSubmitItem(BaseModel):
+    question_id: Union[uuid.UUID, str]
+    selected_options: List[int]
+
 class AssessmentSubmitRequest(BaseModel):
-    answers: Dict[str, List[int]]  # Maps question ID (string format) to list of selected option indices
+    answers: Union[List[AnswerSubmitItem], Dict[str, List[int]]]
 
 class AssessmentAttemptRead(BaseModel):
     id: uuid.UUID
@@ -120,8 +126,11 @@ class AssessmentAttemptRead(BaseModel):
     user_id: uuid.UUID
     attempt_number: int
     score: int
+    total_marks: int = 0
     percentage: float
+    score_percentage: float
     status: str  # 'pass' or 'fail'
+    passed: bool
     started_at: datetime
     submitted_at: Optional[datetime] = None
 

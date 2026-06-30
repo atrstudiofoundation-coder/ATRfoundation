@@ -1,0 +1,54 @@
+{
+  "questions": [
+    {
+      "text": "Which of the following is considered one of the fundamental elements of design?",
+      "options": [
+        "Construction Cost",
+        "Texture",
+        "Budget",
+        "Maintenance Schedule"
+      ],
+      "answer": [1]
+    },
+    {
+      "text": "Which design principle helps create a visually cohesive and harmonious landscape?",
+      "options": [
+        "Random Placement",
+        "Maximum Variety",
+        "Unity",
+        "Irregular Scaling"
+      ],
+      "answer": [2]
+    },
+    {
+      "text": "Why is site analysis an essential step before beginning a landscape design project?",
+      "options": [
+        "To evaluate sunlight, soil, drainage, and microclimates",
+        "To estimate labor wages",
+        "To select furniture for the site",
+        "To determine the project's marketing strategy"
+      ],
+      "answer": [0]
+    },
+    {
+      "text": "Which of the following best describes the principle of proportion in landscape design?",
+      "options": [
+        "Using multiple contrasting colors in every area",
+        "Maintaining a balanced relationship between the sizes of design elements",
+        "Repeating the same plant species everywhere",
+        "Using only large plants throughout the site"
+      ],
+      "answer": [1]
+    },
+    {
+      "text": "During site analysis, which factor directly influences the selection of suitable plants?",
+      "options": [
+        "Client's favorite color",
+        "Number of nearby buildings",
+        "Sunlight exposure and soil quality",
+        "Company branding"
+      ],
+      "answer": [2]
+    }
+  ]
+}

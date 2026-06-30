@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { 
   Plus, 
   BookOpen, 
@@ -24,7 +25,8 @@ import { SkeletonCard, EmptyState, ErrorState } from '@/components/ui/States';
 import type { LearningPathCreate, LearningPathUpdate, ModuleCreate, ResourceCreate, ContentStatus } from '@/types/api';
 
 export const AdminPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<string>('paths');
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState<string>(searchParams.get('tab') || 'paths');
   const [selectedPathId, setSelectedPathId] = useState<string | null>(null);
 
   // Custom Hooks
@@ -40,8 +42,8 @@ export const AdminPage: React.FC = () => {
   } = useLearningPaths();
 
   const { createModule } = useModules();
-  const { resources, createResource, attachResourceToModule } = useResources();
-  const { assessments } = useAssessments();
+  const { resources, createResource, deleteResource, attachResourceToModule } = useResources();
+  const { assessments, createAssessment } = useAssessments();
   const { analytics, isLoading: isAnalyticsLoading } = useAnalyticsOverview();
 
   // Modal states
@@ -168,33 +170,33 @@ export const AdminPage: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="bg-card border border-border p-6 rounded-2xl shadow-sm space-y-2">
                 <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="text-xs font-bold uppercase tracking-wider">Active Employees</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">Registered Users / Employees</span>
                   <Users className="w-5 h-5 text-primary" />
                 </div>
                 <div className="text-3xl font-bold font-mono">
-                  {isAnalyticsLoading ? '...' : analytics?.active_employees ?? 48}
+                  {isAnalyticsLoading ? '...' : analytics?.active_employees ?? 0}
                 </div>
-                <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">↑ +12% active studio onboarding</p>
+                <p className="text-xs text-muted-foreground font-mono">Active Studio Onboarding Members</p>
               </div>
 
               <div className="bg-card border border-border p-6 rounded-2xl shadow-sm space-y-2">
                 <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="text-xs font-bold uppercase tracking-wider">Pass Rate Average</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">Average Pass Rate</span>
                   <Award className="w-5 h-5 text-amber-500" />
                 </div>
                 <div className="text-3xl font-bold font-mono">
-                  {isAnalyticsLoading ? '...' : `${analytics?.average_pass_rate ?? 92}%`}
+                  {isAnalyticsLoading ? '...' : `${analytics?.average_pass_rate ?? 0}%`}
                 </div>
-                <p className="text-xs text-muted-foreground font-mono">Standard Threshold: 80%</p>
+                <p className="text-xs text-muted-foreground font-mono">Computed from {analytics?.completed_assessments_count ?? 0} attempt logs</p>
               </div>
 
               <div className="bg-card border border-border p-6 rounded-2xl shadow-sm space-y-2">
                 <div className="flex items-center justify-between text-muted-foreground">
-                  <span className="text-xs font-bold uppercase tracking-wider">Curriculum Assets</span>
+                  <span className="text-xs font-bold uppercase tracking-wider">Global Studio Resources</span>
                   <BookOpen className="w-5 h-5 text-sky-500" />
                 </div>
                 <div className="text-3xl font-bold font-mono">{resources.length}</div>
-                <p className="text-xs text-muted-foreground font-mono">Verified Studio References</p>
+                <p className="text-xs text-muted-foreground font-mono">Verified Studio Reference Assets</p>
               </div>
             </div>
 
@@ -251,7 +253,7 @@ export const AdminPage: React.FC = () => {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {resources.map(res => (
-                  <ResourceCard key={res.id} resource={res} showUnlink={false} />
+                  <ResourceCard key={res.id} resource={res} showUnlink={false} onDelete={(id) => deleteResource(id)} />
                 ))}
               </div>
             )}
@@ -265,10 +267,39 @@ export const AdminPage: React.FC = () => {
             </div>
 
             {assessments.length === 0 ? (
-              <EmptyState
-                title="No Assessment Exams Configured"
-                description="Assessments are attached directly to learning modules to evaluate employee competency."
-              />
+              <div className="space-y-4">
+                <div className="p-6 bg-card border border-border rounded-2xl shadow-sm text-center max-w-xl mx-auto space-y-3">
+                  <Award className="w-10 h-10 text-amber-500 mx-auto" />
+                  <h3 className="text-base font-bold text-foreground">No Active Competency Exams</h3>
+                  <p className="text-xs text-muted-foreground">
+                    Assessments are linked directly to curriculum modules. Click below to initialize an evaluation exam for your curriculum module:
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+                  {learningPaths.flatMap(p => p.modules || []).map(mod => (
+                    <div key={mod.id} className="bg-card border border-border/80 rounded-2xl p-4 shadow-sm flex items-center justify-between gap-4">
+                      <div>
+                        <span className="text-[10px] font-mono font-bold text-muted-foreground uppercase">Curriculum Module</span>
+                        <h4 className="text-xs font-bold text-foreground mt-0.5">{mod.title}</h4>
+                      </div>
+                      <button
+                        onClick={async () => {
+                          await createAssessment({
+                            module_id: mod.id,
+                            title: `${mod.title} Evaluation Exam`,
+                            passing_marks: mod.passing_percentage || 80,
+                            max_attempts: 3,
+                          });
+                        }}
+                        className="px-3.5 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-sm transition-all flex items-center gap-1.5 shrink-0"
+                      >
+                        <Plus className="w-3.5 h-3.5" /> Create Assessment Exam
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {assessments.map(ass => (
@@ -364,7 +395,9 @@ export const AdminPage: React.FC = () => {
           assessment={activeAssessmentForImport}
           onClose={() => setActiveAssessmentForImport(null)}
           onImportSuccess={() => {
+            const current = activeAssessmentForImport;
             setActiveAssessmentForImport(null);
+            setActiveAssessmentForQuestions(current);
           }}
         />
       )}
@@ -394,11 +427,17 @@ export const AdminPage: React.FC = () => {
 
       {isCreateResourceOpen && (
         <CreateResourceModal
+          targetModuleId={targetModuleForResource}
           onClose={() => {
             setIsCreateResourceOpen(false);
             setTargetModuleForResource(null);
           }}
           onCreate={handleCreateResource}
+          onAttachExisting={async (resId, modId) => {
+            await attachResourceToModule({ resourceId: resId, moduleId: modId });
+            setIsCreateResourceOpen(false);
+            setTargetModuleForResource(null);
+          }}
         />
       )}
     </div>

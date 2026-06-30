@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import type { AdminLearningPath, AdminModule, AdminAssessment } from './adminTypes';
 import { ModuleCard } from './ModuleCard';
+import { EditModuleModal } from './AdminModals';
 import { useModules } from '@/hooks/useModules';
 import { useResources } from '@/hooks/useResources';
 
@@ -34,6 +35,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
   onDeletePath,
 }) => {
   const [filterQuery, setFilterQuery] = useState<string>('');
+  const [editingModule, setEditingModule] = useState<AdminModule | null>(null);
   const { updateModule, deleteModule } = useModules();
   const { detachResourceFromModule } = useResources();
 
@@ -48,7 +50,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
   const totalResources = modules.reduce((acc, m) => acc + (m.resources?.length || 0), 0);
   const totalQuestions = modules.reduce((acc, m) => acc + (m.assessment?.question_count || 0), 0);
 
-  const handleEditModule = async (updatedMod: AdminModule) => {
+  const handleUpdateModuleSubmit = async (updatedMod: AdminModule) => {
     try {
       await updateModule({
         id: updatedMod.id,
@@ -59,6 +61,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
           passing_percentage: updatedMod.passing_percentage,
         },
       });
+      setEditingModule(null);
     } catch (err) {
       console.error('Failed to update module:', err);
     }
@@ -212,7 +215,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
               <ModuleCard
                 key={module.id}
                 module={module}
-                onEditModule={handleEditModule}
+                onEditModule={(mod) => setEditingModule(mod)}
                 onDeleteModule={handleDeleteModule}
                 onAddResource={(modId) => onOpenCreateResource(modId)}
                 onUnlinkResource={handleUnlinkResource}
@@ -223,6 +226,14 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
           </div>
         )}
       </div>
+
+      {editingModule && (
+        <EditModuleModal
+          module={editingModule}
+          onClose={() => setEditingModule(null)}
+          onUpdate={handleUpdateModuleSubmit}
+        />
+      )}
     </div>
   );
 };

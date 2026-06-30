@@ -18,8 +18,9 @@ async def get_system_compliance(db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=501, detail=str(e))
 
 @router.get("/overview", response_model=AnalyticsOverview)
-async def get_analytics_overview():
+async def get_analytics_overview(db: AsyncSession = Depends(get_db)):
     """
-    Retrieve executive analytics dashboard overview metrics.
+    Retrieve executive analytics dashboard overview metrics computed from database.
     """
-    return AnalyticsOverview()
+    service = AnalyticsService(db)
+    return await service.get_analytics_overview()

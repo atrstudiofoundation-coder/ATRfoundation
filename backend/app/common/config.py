@@ -48,7 +48,10 @@ class Settings(BaseSettings):
         port = data.get("POSTGRES_PORT")
         db = data.get("POSTGRES_DB")
         
-        return f"postgresql://{user}:{password}@{server}:{port}/{db}"
+        import urllib.parse
+        quoted_user = urllib.parse.quote_plus(str(user)) if user else ""
+        quoted_password = urllib.parse.quote_plus(str(password)) if password else ""
+        return f"postgresql://{quoted_user}:{quoted_password}@{server}:{port}/{db}"
 
     @field_validator("SQLALCHEMY_DATABASE_URI_ASYNC", mode="before")
     @classmethod
@@ -64,7 +67,10 @@ class Settings(BaseSettings):
         port = data.get("POSTGRES_PORT")
         db = data.get("POSTGRES_DB")
         
-        return f"postgresql+asyncpg://{user}:{password}@{server}:{port}/{db}"
+        import urllib.parse
+        quoted_user = urllib.parse.quote_plus(str(user)) if user else ""
+        quoted_password = urllib.parse.quote_plus(str(password)) if password else ""
+        return f"postgresql+asyncpg://{quoted_user}:{quoted_password}@{server}:{port}/{db}"
 
 
 settings = Settings()

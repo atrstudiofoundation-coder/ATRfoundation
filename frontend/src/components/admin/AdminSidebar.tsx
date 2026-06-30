@@ -42,9 +42,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
         {/* Workspace Brand Header */}
         <div className="px-3 py-2 bg-secondary/50 rounded-xl border border-border/60 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-display font-bold text-sm shadow-sm">
-              ATR
-            </div>
+            <img src="/logo.jpg" alt="ATR Studio Logo" className="h-9 w-9 rounded-xl object-cover shadow-sm border border-border/80" />
             <div>
               <h2 className="text-xs font-bold uppercase tracking-wider text-foreground">ATR Foundation</h2>
               <p className="text-[10px] text-muted-foreground font-mono">Admin Studio Workspace</p>
@@ -116,7 +114,7 @@ export const AdminSidebar: React.FC<AdminSidebarProps> = ({
                 >
                   <div className="truncate pr-2">
                     <span className="truncate block font-medium">{lp.title}</span>
-                    <span className="text-[10px] opacity-70 font-mono block">{lp.modules.length} Modules</span>
+                    <span className="text-[10px] opacity-70 font-mono block">{lp.modules?.length || 0} Modules</span>
                   </div>
                   <ChevronRight className={`w-3.5 h-3.5 shrink-0 transition-transform ${isSelected ? 'translate-x-0.5 text-accent-foreground' : 'opacity-0 group-hover:opacity-100'}`} />
                 </button>

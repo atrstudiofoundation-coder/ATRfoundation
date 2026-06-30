@@ -7,18 +7,22 @@ from app.database.session import get_db
 from app.auth.jwt import extract_user_id
 from app.auth.cookies import read_auth_cookie
 from app.auth.repositories import AuthRepository
-from app.users.models import User
+from app.database.base import User
 
 security_bearer = HTTPBearer(auto_error=False)
 
-# Default fallback Admin user for unauthenticated development/testing sessions
-DEV_MOCK_ADMIN = User(
-    id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
-    email="admin@atrfoundation.studio",
-    full_name="Studio Administrator",
-    role="Admin",
-    is_active=True
-)
+def get_dev_mock_admin() -> User:
+    """
+    Lazy instantiator for development fallback user.
+    Prevents SQLAlchemy mapper initialization errors during module import time.
+    """
+    return User(
+        id=uuid.UUID("00000000-0000-0000-0000-000000000001"),
+        email="admin@atrfoundation.studio",
+        full_name="Studio Administrator",
+        role="Admin",
+        is_active=True
+    )
 
 async def get_current_user(
     request: Request,
@@ -40,18 +44,18 @@ async def get_current_user(
         
     if not token:
         # Fallback to dev mock user so unauthenticated testing works seamlessly
-        return DEV_MOCK_ADMIN
+        return get_dev_mock_admin()
         
     try:
         user_id = extract_user_id(token)
     except ValueError:
-        return DEV_MOCK_ADMIN
+        return get_dev_mock_admin()
         
     auth_repo = AuthRepository(db)
     user = await auth_repo.get_by_id(user_id)
     
     if not user:
-        return DEV_MOCK_ADMIN
+        return get_dev_mock_admin()
         
     if not user.is_active:
         raise HTTPException(

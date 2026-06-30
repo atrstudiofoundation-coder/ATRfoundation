@@ -5,12 +5,14 @@ import type { AdminResource } from './adminTypes';
 interface ResourceCardProps {
   resource: AdminResource;
   onUnlink?: (resourceId: string) => void;
+  onDelete?: (resourceId: string) => void;
   showUnlink?: boolean;
 }
 
 export const ResourceCard: React.FC<ResourceCardProps> = ({
   resource,
   onUnlink,
+  onDelete,
   showUnlink = true,
 }) => {
   const getIconAndColor = () => {
@@ -47,44 +49,61 @@ export const ResourceCard: React.FC<ResourceCardProps> = ({
   const Icon = config.icon;
 
   return (
-    <div className="group relative bg-card hover:bg-secondary/40 border border-border/70 rounded-xl p-3.5 transition-all duration-200 shadow-sm flex items-start justify-between gap-3">
-      <div className="flex items-start gap-3 min-w-0">
-        <div className={`p-2.5 rounded-lg border shrink-0 ${config.bg}`}>
-          <Icon className="w-4 h-4" />
-        </div>
-        <div className="min-w-0">
-          <div className="flex items-center gap-2 mb-1">
-            <h4 className="text-xs font-semibold text-foreground truncate">{resource.title}</h4>
-            <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium border ${config.bg}`}>
-              {config.badge}
-            </span>
+    <div className="group relative bg-card hover:bg-secondary/30 border border-border/80 hover:border-primary/40 rounded-2xl p-4 transition-all duration-200 shadow-sm flex flex-col justify-between gap-3">
+      <div className="flex items-start justify-between gap-3 min-w-0">
+        <div className="flex items-start gap-3 min-w-0">
+          <div className={`p-3 rounded-xl border shrink-0 ${config.bg}`}>
+            <Icon className="w-4 h-4" />
           </div>
-          {resource.description && (
-            <p className="text-[11px] text-muted-foreground line-clamp-1 mb-1.5">{resource.description}</p>
-          )}
-          {resource.resource_url && (
-            <a
-              href={resource.resource_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-1 text-[11px] font-mono text-primary hover:underline"
+          <div className="min-w-0 space-y-1">
+            <div className="flex items-center gap-2 flex-wrap">
+              <h4 className="text-xs font-bold text-foreground truncate">{resource.title}</h4>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${config.bg}`}>
+                {config.badge}
+              </span>
+            </div>
+            {resource.description && (
+              <p className="text-[11px] text-muted-foreground line-clamp-2 leading-relaxed">{resource.description}</p>
+            )}
+          </div>
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex items-center gap-1 shrink-0">
+          {onDelete && (
+            <button
+              onClick={() => onDelete(resource.id)}
+              className="text-muted-foreground/70 hover:text-destructive p-1.5 rounded-xl hover:bg-destructive/10 transition-colors"
+              title="Delete Resource"
             >
-              <LinkIcon className="w-3 h-3" />
-              <span className="truncate max-w-[200px]">{resource.resource_url}</span>
-              <ExternalLink className="w-3 h-3 opacity-70" />
-            </a>
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+          {showUnlink && onUnlink && (
+            <button
+              onClick={() => onUnlink(resource.id)}
+              className="text-muted-foreground/70 hover:text-destructive p-1.5 rounded-xl hover:bg-destructive/10 transition-colors"
+              title="Unlink Resource"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           )}
         </div>
       </div>
 
-      {showUnlink && onUnlink && (
-        <button
-          onClick={() => onUnlink(resource.id)}
-          className="text-muted-foreground/60 hover:text-destructive p-1.5 rounded-lg hover:bg-destructive/10 transition-colors opacity-0 group-hover:opacity-100 shrink-0"
-          title="Unlink Resource"
-        >
-          <Trash2 className="w-3.5 h-3.5" />
-        </button>
+      {resource.resource_url && (
+        <div className="pt-2 border-t border-border/60 flex items-center justify-between">
+          <a
+            href={resource.resource_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-[11px] font-mono text-primary hover:underline truncate max-w-[85%]"
+          >
+            <LinkIcon className="w-3.5 h-3.5 shrink-0" />
+            <span className="truncate">{resource.resource_url}</span>
+            <ExternalLink className="w-3 h-3 opacity-70 shrink-0" />
+          </a>
+        </div>
       )}
     </div>
   );

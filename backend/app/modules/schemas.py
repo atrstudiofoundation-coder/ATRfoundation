@@ -3,22 +3,33 @@ from datetime import datetime
 from typing import Optional, List
 from pydantic import BaseModel, ConfigDict
 
-# LearningPath Schemas
-class LearningPathBase(BaseModel):
+from app.resources.schemas import ResourceRead
+from app.assessments.schemas import AssessmentRead
+
+# Module Schemas
+class ModuleBase(BaseModel):
+    learning_path_id: uuid.UUID
     title: str
     description: Optional[str] = None
-    is_active: bool = True
+    estimated_duration_minutes: int
+    passing_percentage: int
 
-class LearningPathCreate(LearningPathBase):
-    pass
+class ModuleCreate(ModuleBase):
+    display_order: Optional[int] = None
 
-class LearningPathUpdate(BaseModel):
+class ModuleUpdate(BaseModel):
+    learning_path_id: Optional[uuid.UUID] = None
     title: Optional[str] = None
     description: Optional[str] = None
-    is_active: Optional[bool] = None
+    estimated_duration_minutes: Optional[int] = None
+    passing_percentage: Optional[int] = None
+    display_order: Optional[int] = None
 
-class LearningPathRead(LearningPathBase):
+class ModuleRead(ModuleBase):
     id: uuid.UUID
+    display_order: int
+    resources: List[ResourceRead] = []
+    assessment: Optional[AssessmentRead] = None
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
@@ -37,28 +48,23 @@ class ModuleResourceRead(ModuleResourceBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-# Module Schemas
-class ModuleBase(BaseModel):
-    learning_path_id: uuid.UUID
+# LearningPath Schemas
+class LearningPathBase(BaseModel):
     title: str
     description: Optional[str] = None
-    estimated_duration_minutes: int
-    passing_percentage: int
-    display_order: int
+    is_active: bool = True
 
-class ModuleCreate(ModuleBase):
+class LearningPathCreate(LearningPathBase):
     pass
 
-class ModuleUpdate(BaseModel):
-    learning_path_id: Optional[uuid.UUID] = None
+class LearningPathUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
-    estimated_duration_minutes: Optional[int] = None
-    passing_percentage: Optional[int] = None
-    display_order: Optional[int] = None
+    is_active: Optional[bool] = None
 
-class ModuleRead(ModuleBase):
+class LearningPathRead(LearningPathBase):
     id: uuid.UUID
+    modules: List[ModuleRead] = []
     created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)

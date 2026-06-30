@@ -25,13 +25,16 @@ export const QuizImportModal: React.FC<QuizImportModalProps> = ({
 
   const handleFileSelected = (file: File) => {
     setSelectedFile(file);
-    const reader = new FileReader();
-    reader.onload = (evt) => {
-      if (evt.target?.result) {
-        setFileContent(evt.target.result as string);
-      }
-    };
-    reader.readAsText(file);
+    const ext = file.name.split('.').pop()?.toLowerCase();
+    if (ext === 'txt' || ext === 'json' || ext === 'xml' || ext === 'md') {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        if (evt.target?.result) {
+          setFileContent(evt.target.result as string);
+        }
+      };
+      reader.readAsText(file);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -70,11 +73,16 @@ export const QuizImportModal: React.FC<QuizImportModalProps> = ({
         formData,
       });
 
+      if (!questions || questions.length === 0) {
+        throw new Error('No valid questions matching required schema were parsed.');
+      }
+
       setParsedQuestions(questions);
       setStatus('success');
     } catch (err: any) {
       setStatus('error');
-      setErrorMessage(err.message || 'Validation failed. Check file format or schema syntax.');
+      const backendMsg = err.response?.data?.detail;
+      setErrorMessage(backendMsg || err.message || 'Validation failed. Check required schema fields.');
     }
   };
 
@@ -100,23 +108,25 @@ export const QuizImportModal: React.FC<QuizImportModalProps> = ({
         {/* Body */}
         <div className="p-6 space-y-5">
           <p className="text-xs text-muted-foreground">
-            Ingest quiz questions directly from document text, JSON structures, or XML templates into <span className="font-semibold text-foreground">{assessment.title}</span>.
+            Ingest quiz questions directly from Word documents (.docx), PDF files (.pdf), Markdown, or JSON into <span className="font-semibold text-foreground">{assessment.title}</span>.
           </p>
 
           {/* Drag Drop Area */}
           <div
             onDragOver={handleDragOver}
             onDrop={handleDrop}
+            onClick={() => document.getElementById('modal-quiz-upload')?.click()}
             className="border-2 border-dashed border-border hover:border-primary/50 transition-all rounded-xl p-6 flex flex-col items-center justify-center bg-accent/10 cursor-pointer group"
           >
             <Upload className="w-8 h-8 text-muted-foreground group-hover:text-primary transition-colors mb-2" />
             <p className="text-xs font-semibold text-foreground mb-0.5">
-              {selectedFile ? `Selected: ${selectedFile.name}` : 'Drag & drop quiz files (.json, .xml, .txt)'}
+              {selectedFile ? `Selected: ${selectedFile.name}` : 'Drag & drop quiz files (.docx, .pdf, .txt, .md, .json)'}
             </p>
-            <p className="text-[10px] text-muted-foreground">Max file size 5MB</p>
+            <p className="text-[10px] text-muted-foreground">Supports Word, PDF, Text, Markdown and JSON formats</p>
             <input
               type="file"
               id="modal-quiz-upload"
+              accept=".docx,.pdf,.txt,.md,.json,.xml"
               className="hidden"
               onChange={(e) => {
                 const files = e.target.files;
@@ -127,7 +137,10 @@ export const QuizImportModal: React.FC<QuizImportModalProps> = ({
             />
             <button
               type="button"
-              onClick={() => document.getElementById('modal-quiz-upload')?.click()}
+              onClick={(e) => {
+                e.stopPropagation();
+                document.getElementById('modal-quiz-upload')?.click();
+              }}
               className="mt-3 px-3 py-1 bg-card hover:bg-secondary text-foreground border border-border text-xs rounded-lg font-medium"
             >
               Browse Computer
