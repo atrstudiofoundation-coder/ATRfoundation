@@ -148,8 +148,8 @@ interface CreateModuleModalProps {
 export const CreateModuleModal: React.FC<CreateModuleModalProps> = ({ pathId, onClose, onCreate }) => {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-  const [duration, setDuration] = useState(45);
-  const [passingScore, setPassingScore] = useState(80);
+  const [duration, setDuration] = useState<string | number>(45);
+  const [passingScore, setPassingScore] = useState<string | number>(80);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -162,8 +162,8 @@ export const CreateModuleModal: React.FC<CreateModuleModalProps> = ({ pathId, on
         learning_path_id: pathId,
         title,
         description,
-        estimated_duration_minutes: duration,
-        passing_percentage: passingScore,
+        estimated_duration_minutes: Number(duration) || 30,
+        passing_percentage: Number(passingScore) || 80,
       });
       onClose();
     } catch (err) {
@@ -210,7 +210,7 @@ export const CreateModuleModal: React.FC<CreateModuleModalProps> = ({ pathId, on
               <input
                 type="number"
                 value={duration}
-                onChange={(e) => setDuration(parseInt(e.target.value) || 30)}
+                onChange={(e) => setDuration(e.target.value === '' ? '' : Number(e.target.value))}
                 className="w-full text-xs p-2.5 rounded-xl border border-input bg-card font-mono"
               />
             </div>
@@ -219,7 +219,7 @@ export const CreateModuleModal: React.FC<CreateModuleModalProps> = ({ pathId, on
               <input
                 type="number"
                 value={passingScore}
-                onChange={(e) => setPassingScore(parseInt(e.target.value) || 80)}
+                onChange={(e) => setPassingScore(e.target.value === '' ? '' : Number(e.target.value))}
                 className="w-full text-xs p-2.5 rounded-xl border border-input bg-card font-mono"
               />
             </div>
@@ -245,8 +245,8 @@ interface EditModuleModalProps {
 export const EditModuleModal: React.FC<EditModuleModalProps> = ({ module, onClose, onUpdate }) => {
   const [title, setTitle] = useState(module.title);
   const [description, setDescription] = useState(module.description || '');
-  const [duration, setDuration] = useState(module.estimated_duration_minutes || 45);
-  const [passingScore, setPassingScore] = useState(module.passing_percentage || 80);
+  const [duration, setDuration] = useState<string | number>(module.estimated_duration_minutes || 45);
+  const [passingScore, setPassingScore] = useState<string | number>(module.passing_percentage || 80);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -259,8 +259,8 @@ export const EditModuleModal: React.FC<EditModuleModalProps> = ({ module, onClos
         ...module,
         title,
         description,
-        estimated_duration_minutes: duration,
-        passing_percentage: passingScore,
+        estimated_duration_minutes: Number(duration) || 30,
+        passing_percentage: Number(passingScore) || 80,
       });
       onClose();
     } catch (err) {
@@ -305,7 +305,7 @@ export const EditModuleModal: React.FC<EditModuleModalProps> = ({ module, onClos
               <input
                 type="number"
                 value={duration}
-                onChange={(e) => setDuration(parseInt(e.target.value) || 30)}
+                onChange={(e) => setDuration(e.target.value === '' ? '' : Number(e.target.value))}
                 className="w-full text-xs p-2.5 rounded-xl border border-input bg-card font-mono"
               />
             </div>
@@ -314,7 +314,7 @@ export const EditModuleModal: React.FC<EditModuleModalProps> = ({ module, onClos
               <input
                 type="number"
                 value={passingScore}
-                onChange={(e) => setPassingScore(parseInt(e.target.value) || 80)}
+                onChange={(e) => setPassingScore(e.target.value === '' ? '' : Number(e.target.value))}
                 className="w-full text-xs p-2.5 rounded-xl border border-input bg-card font-mono"
               />
             </div>
