@@ -16,6 +16,13 @@ export const LandingPage: React.FC = () => {
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' } | null>(null);
 
+  // Access Code for New User Verification
+  const [showAccessCodeModal, setShowAccessCodeModal] = useState<boolean>(false);
+  const [tempCredential, setTempCredential] = useState<string | null>(null);
+  const [accessCodeInput, setAccessCodeInput] = useState<string>('');
+  const [accessCodeError, setAccessCodeError] = useState<string | null>(null);
+  const [isSubmittingAccessCode, setIsSubmittingAccessCode] = useState<boolean>(false);
+
   // Splash Screen Timer (1.5 seconds)
   useEffect(() => {
     if (isAuthenticated) {
@@ -56,6 +63,35 @@ export const LandingPage: React.FC = () => {
     return () => clearTimeout(timer);
   };
 
+  const handleGoogleSuccess = async (credential: string, accessCode?: string) => {
+    setIsLoggingIn(true);
+    setAccessCodeError(null);
+    if (accessCode) {
+      setIsSubmittingAccessCode(true);
+    }
+    try {
+      await loginWithGoogle(credential, navigate, accessCode);
+      setShowAccessCodeModal(false);
+      setTempCredential(null);
+      setAccessCodeInput('');
+    } catch (err: any) {
+      if (err?.message === 'access_code_required') {
+        setTempCredential(credential);
+        setShowAccessCodeModal(true);
+      } else if (err?.message === 'invalid_access_code') {
+        setAccessCodeError('The access code you entered is invalid. Please try again.');
+      } else {
+        setToast({
+          message: getFriendlyErrorMessage(err?.message || ''),
+          type: 'error'
+        });
+      }
+    } finally {
+      setIsLoggingIn(false);
+      setIsSubmittingAccessCode(false);
+    }
+  };
+
   const getFriendlyErrorMessage = (errorMsg: string): string => {
     const msg = errorMsg.toLowerCase();
     if (msg.includes('popup_closed') || msg.includes('closed') || msg.includes('dismissed')) {
@@ -83,13 +119,12 @@ export const LandingPage: React.FC = () => {
   // Render Splash Screen
   if (showSplash) {
     return (
-      <div 
-        className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background text-foreground transition-opacity duration-300 select-none ${
-          splashFadeOut ? 'opacity-0' : 'opacity-100'
-        }`}
+      <div
+        className={`fixed inset-0 z-50 flex flex-col items-center justify-center bg-background text-foreground transition-opacity duration-300 select-none ${splashFadeOut ? 'opacity-0' : 'opacity-100'
+          }`}
       >
-        {/* Subtle Architectural Grid Pattern (approx 2% opacity) */}
-        <div 
+        {/* Subtle Architectural Grid Pattern */}
+        <div
           className="absolute inset-0 pointer-events-none opacity-[0.02] dark:opacity-[0.03]"
           style={{
             backgroundImage: `
@@ -107,7 +142,7 @@ export const LandingPage: React.FC = () => {
           <div className="inline-flex items-center justify-center h-14 w-14 rounded-input bg-primary text-primary-foreground text-xl font-bold font-display shadow-sm">
             ATR
           </div>
-          
+
           <div className="space-y-1.5">
             <h1 className="text-2xl font-bold tracking-wider font-display uppercase">Design Studio</h1>
             <p className="text-xs uppercase tracking-widest text-primary font-semibold font-mono">Foundation</p>
@@ -123,10 +158,19 @@ export const LandingPage: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground selection:bg-primary/10 flex flex-col relative">
-      {/* Background grid */}
-      <div 
-        className="absolute inset-0 pointer-events-none opacity-[0.015] dark:opacity-[0.02]"
+    <div className="min-h-screen bg-background text-foreground selection:bg-primary/10 flex flex-col relative overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div
+        className="absolute inset-0 bg-cover bg-[position:35%_bottom] transition-all duration-700 ease-in-out"
+        style={{
+          backgroundImage: `url('/background.jpg')`,
+        }}
+      />
+
+
+      {/* Architectural blueprint lines on top of background image */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.025] dark:opacity-[0.04]"
         style={{
           backgroundImage: `
             linear-gradient(var(--primary) 1px, transparent 1px),
@@ -137,56 +181,55 @@ export const LandingPage: React.FC = () => {
       />
 
       {/* HEADER NAVBAR */}
-      <header className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border/40 transition-colors duration-200">
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm font-display shadow-sm">
+      <header className="relative z-10 bg-transparent border-b border-white/10">
+        <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+          {/* Left menu items */}
+          <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-widest text-white/80">
+            <span onClick={handleExploreJourney} className="hover:text-white cursor-pointer transition-colors">Curriculum</span>
+            <span onClick={handleExploreJourney} className="hover:text-white cursor-pointer transition-colors">Workspaces</span>
+            <span onClick={handleExploreJourney} className="hover:text-white cursor-pointer transition-colors">Studio Guide</span>
+          </div>
+
+          {/* Logo Center */}
+          <div className="flex items-center gap-3 md:absolute md:left-1/2 md:-translate-x-1/2">
+            <div className="h-9 w-9 rounded-xl bg-white text-black flex items-center justify-center font-bold text-sm font-display shadow-universal">
               ATR
             </div>
             <div>
-              <span className="text-sm font-bold font-display uppercase tracking-wider block">ATR DESIGN STUDIO</span>
-              <span className="text-[10px] font-mono text-muted-foreground uppercase tracking-widest block -mt-1">Foundation</span>
+              <span className="text-sm font-bold font-display uppercase tracking-wider block text-white">ATR DESIGN STUDIO</span>
+              <span className="text-[9px] font-mono text-white/60 uppercase tracking-widest block -mt-1">Foundation</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button 
+          {/* Right Controls */}
+          <div className="flex items-center gap-4">
+            <button
               onClick={toggleTheme}
-              className="p-2 hover:bg-secondary rounded-button text-muted-foreground hover:text-foreground transition-all duration-200"
+              className="p-2 hover:bg-white/10 rounded-button text-white/80 hover:text-white transition-all duration-200"
               aria-label="Toggle theme"
             >
-              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+              {theme === 'dark' ? <Sun className="w-4.5 h-4.5" /> : <Moon className="w-4.5 h-4.5" />}
             </button>
-            
-            {/* Real Google Sign In Navbar Access */}
+
             <div className="relative inline-block overflow-hidden rounded-button hover:scale-[1.02] active:scale-95 transition-all duration-200">
               <button
                 disabled={isLoggingIn}
-                className="px-4 py-1.5 bg-secondary hover:bg-secondary/90 text-foreground text-xs font-semibold rounded-button border border-border/80 flex items-center gap-2 disabled:opacity-50"
+                className="px-5 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-button border border-white/25 backdrop-blur-md flex items-center gap-2 disabled:opacity-50"
               >
                 {isLoggingIn && (
-                  <span className="h-3 w-3 border-2 border-primary border-t-transparent rounded-full animate-spin shrink-0" />
+                  <span className="h-3.5 w-3.5 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0" />
                 )}
-                <span>Sign In</span>
+                <span>SIGN IN</span>
               </button>
               {!isLoggingIn && (
-                <div 
+                <div
                   className="absolute inset-0 opacity-[0.01] z-10 cursor-pointer [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:absolute [&_iframe]:inset-0 [&_iframe]:scale-[3]"
                   onClick={handleGoogleClick}
                 >
                   <GoogleLogin
                     onSuccess={async (credentialResponse) => {
                       if (credentialResponse.credential) {
-                        setIsLoggingIn(true);
-                        try {
-                          await loginWithGoogle(credentialResponse.credential, navigate);
-                        } catch (err: any) {
-                          setToast({
-                            message: getFriendlyErrorMessage(err?.message || ''),
-                            type: 'error'
-                          });
-                          setIsLoggingIn(false);
-                        }
+                        await handleGoogleSuccess(credentialResponse.credential);
                       }
                     }}
                     onError={() => {
@@ -206,54 +249,45 @@ export const LandingPage: React.FC = () => {
       </header>
 
       {/* HERO SECTION */}
-      <section className="flex-1 max-w-7xl w-full mx-auto px-6 py-12 md:py-20 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative">
-        <div className="lg:col-span-6 space-y-6 text-left animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-[11px] font-bold font-mono uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5" /> Core Curriculum Onboarding
+      <section className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="lg:col-span-7 bg-black/50 border border-white/10 backdrop-blur-xl p-8 sm:p-10 rounded-card shadow-universal space-y-6 text-left animate-in fade-in slide-in-from-left-4 duration-500 max-w-xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 backdrop-blur-md text-[10px] font-bold font-mono uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5 text-accent" /> CORE CURRICULUM ONBOARDING
           </div>
-          
-          <h2 className="text-4xl sm:text-6xl font-extrabold font-display tracking-tight text-foreground leading-[1.1]">
+
+          <h2 className="text-5xl sm:text-7.5xl font-extrabold font-display tracking-tight text-white leading-[1.05] drop-shadow-sm">
             ATR Foundation
           </h2>
-          
-          <h3 className="text-xl sm:text-2xl font-semibold text-foreground/90 font-display leading-snug">
-            Every great landscape begins with a strong foundation.
+
+          <h3 className="text-xl sm:text-2xl font-medium text-white/90 font-display leading-snug max-w-xl">
+            Every great architectural and landscape masterpiece begins with an unyielding foundation.
           </h3>
-          
-          <p className="text-sm sm:text-base text-muted-foreground max-w-lg leading-relaxed">
-            Learn the design principles, workflows, and studio standards behind every ATR Design Studio project.
+
+          <p className="text-sm sm:text-base text-white/70 max-w-lg leading-relaxed">
+            Enter the digital design studio. Explore core curriculum modules, link dynamic CAD and rendering assets, and validate your structural standards.
           </p>
 
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <div className="flex flex-wrap items-center gap-4 pt-4">
             {/* Real Google Sign In Hero Access */}
             <div className="relative inline-block overflow-hidden rounded-button hover:scale-[1.02] active:scale-95 transition-all duration-200">
               <button
                 disabled={isLoggingIn}
-                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs sm:text-sm font-semibold rounded-button shadow-universal flex items-center justify-center gap-2 disabled:opacity-50"
+                className="px-8 py-3.5 bg-white hover:bg-white/90 text-black text-xs sm:text-sm font-bold rounded-button shadow-universal flex items-center justify-center gap-2.5 disabled:opacity-50"
               >
                 {isLoggingIn && (
-                  <span className="h-4 w-4 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin shrink-0" />
+                  <span className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin shrink-0" />
                 )}
-                <span>Begin Foundation</span>
+                <span>BEGIN CURRICULUM</span>
               </button>
               {!isLoggingIn && (
-                <div 
+                <div
                   className="absolute inset-0 opacity-[0.01] z-10 cursor-pointer [&_iframe]:w-full [&_iframe]:h-full [&_iframe]:absolute [&_iframe]:inset-0 [&_iframe]:scale-[3]"
                   onClick={handleGoogleClick}
                 >
                   <GoogleLogin
                     onSuccess={async (credentialResponse) => {
                       if (credentialResponse.credential) {
-                        setIsLoggingIn(true);
-                        try {
-                          await loginWithGoogle(credentialResponse.credential, navigate);
-                        } catch (err: any) {
-                          setToast({
-                            message: getFriendlyErrorMessage(err?.message || ''),
-                            type: 'error'
-                          });
-                          setIsLoggingIn(false);
-                        }
+                        await handleGoogleSuccess(credentialResponse.credential);
                       }
                     }}
                     onError={() => {
@@ -271,80 +305,23 @@ export const LandingPage: React.FC = () => {
 
             <button
               onClick={handleExploreJourney}
-              className="px-6 py-3 bg-secondary hover:bg-secondary/90 text-foreground text-xs sm:text-sm font-semibold rounded-button border border-border/80 flex items-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all duration-200"
+              className="px-6 py-3.5 bg-white/10 hover:bg-white/20 text-white text-xs sm:text-sm font-bold rounded-button border border-white/20 backdrop-blur-sm flex items-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all duration-200"
             >
-              <span>Explore the Journey</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <span>EXPLORE THE JOURNEY</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* ARCHITECTURAL SVG ILLUSTRATION */}
-        <div className="lg:col-span-6 flex justify-center items-center relative w-full aspect-square max-w-[480px] lg:max-w-none mx-auto select-none animate-in fade-in slide-in-from-bottom-2 duration-300">
-          <div className="absolute inset-0 bg-secondary/35 dark:bg-card/40 rounded-card border border-border/40 -z-10 shadow-universal" />
-          
-          <svg className="w-full h-full p-6 text-foreground/40 dark:text-foreground/20" viewBox="0 0 400 400" fill="none">
-            {/* Blueprint Grid Lines */}
-            <line x1="50" y1="50" x2="350" y2="50" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
-            <line x1="50" y1="200" x2="350" y2="200" stroke="currentColor" strokeWidth="0.5" />
-            <line x1="50" y1="350" x2="350" y2="350" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
-            <line x1="50" y1="50" x2="50" y2="350" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
-            <line x1="200" y1="50" x2="200" y2="350" stroke="currentColor" strokeWidth="0.5" />
-            <line x1="350" y1="50" x2="350" y2="350" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" />
-
-            {/* Contour Lines (Topography curves) */}
-            <path d="M 50,300 Q 150,280 200,240 T 350,150" stroke="currentColor" strokeWidth="1" strokeDasharray="6 2" />
-            <path d="M 50,270 Q 130,240 180,210 T 350,120" stroke="currentColor" strokeWidth="0.75" />
-            <path d="M 50,330 Q 170,310 220,270 T 350,180" stroke="currentColor" strokeWidth="0.75" />
-
-            {/* Architectural Layout Guide Circles */}
-            <circle cx="200" cy="200" r="100" stroke="currentColor" strokeWidth="0.75" />
-            <circle cx="200" cy="200" r="140" stroke="currentColor" strokeWidth="0.5" strokeDasharray="3 3" />
-            <circle cx="200" cy="200" r="5" fill="var(--primary)" />
-
-            {/* Axis / Geometry Guidelines */}
-            <line x1="200" y1="200" x2="290" y2="110" stroke="var(--primary)" strokeWidth="1.5" />
-            <circle cx="290" cy="110" r="3" fill="var(--primary)" />
-            <line x1="200" y1="200" x2="110" y2="290" stroke="currentColor" strokeWidth="1" />
-
-            {/* Stylized Geometrical Trees (Landscape Design symbols) */}
-            {/* Tree 1: Forest Green Center Accent */}
-            <g transform="translate(140, 120)">
-              <circle cx="0" cy="0" r="24" stroke="var(--primary)" strokeWidth="1.5" fill="var(--primary)" fillOpacity="0.05" />
-              <circle cx="0" cy="0" r="18" stroke="var(--primary)" strokeWidth="0.75" strokeDasharray="2 2" />
-              <line x1="-24" y1="0" x2="24" y2="0" stroke="var(--primary)" strokeWidth="0.75" />
-              <line x1="0" y1="-24" x2="0" y2="24" stroke="var(--primary)" strokeWidth="0.75" />
-              <circle cx="0" cy="0" r="3" fill="var(--primary)" />
-            </g>
-
-            {/* Tree 2: Secondary Accent */}
-            <g transform="translate(280, 260)">
-              <circle cx="0" cy="0" r="20" stroke="currentColor" strokeWidth="1.25" fill="currentColor" fillOpacity="0.02" />
-              <line x1="-14" y1="-14" x2="14" y2="14" stroke="currentColor" strokeWidth="0.75" />
-              <line x1="14" y1="-14" x2="-14" y2="14" stroke="currentColor" strokeWidth="0.75" />
-              <circle cx="0" cy="0" r="14" stroke="currentColor" strokeWidth="0.75" />
-              <circle cx="0" cy="0" r="2" fill="currentColor" />
-            </g>
-
-            {/* Tree 3: Small Accent */}
-            <g transform="translate(100, 220)">
-              <circle cx="0" cy="0" r="14" stroke="var(--accent)" strokeWidth="1" fill="var(--accent)" fillOpacity="0.05" />
-              <line x1="-14" y1="0" x2="14" y2="0" stroke="var(--accent)" strokeWidth="0.5" />
-              <line x1="0" y1="-14" x2="0" y2="14" stroke="var(--accent)" strokeWidth="0.5" />
-              <circle cx="0" cy="0" r="2" fill="var(--accent)" />
-            </g>
-
-            {/* Landscape Pathways */}
-            <path d="M 280,50 L 280,180 L 350,250" stroke="currentColor" strokeWidth="1" />
-            <path d="M 285,50 L 285,178 L 350,243" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 1" />
-          </svg>
-        </div>
+        {/* Floating Architectural / Landscape Layout Card on the right */}
+        {/* Right side is kept completely empty to showcase the beautiful architecture background image */}
+        <div className="lg:col-span-5 hidden lg:block" />
       </section>
 
       {/* FEATURE SECTION */}
-      <section id="features-section" className="bg-secondary/30 border-y border-border/40 py-16 transition-colors duration-200">
+      <section id="features-section" className="relative z-10 bg-secondary/35 backdrop-blur-md border-y border-border/40 py-16 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-6">
-          <div className="max-w-2xl text-left space-y-2 mb-12">
+          <div className="max-w-2xl text-left space-y-2 mb-12 animate-in fade-in duration-500">
             <span className="text-xs uppercase tracking-widest text-primary font-bold font-mono">Curriculum Values</span>
             <h3 className="text-2xl sm:text-3xl font-bold font-display text-foreground">Designed for Professional Excellence</h3>
             <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -354,7 +331,7 @@ export const LandingPage: React.FC = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-card border border-border/70 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
+            <div className="bg-card/60 backdrop-blur-md border border-border/75 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
               <div className="h-10 w-10 bg-primary/10 rounded-input flex items-center justify-center text-primary">
                 <BookOpen className="w-5 h-5" />
               </div>
@@ -365,7 +342,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-card border border-border/70 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
+            <div className="bg-card/60 backdrop-blur-md border border-border/75 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
               <div className="h-10 w-10 bg-primary/10 rounded-input flex items-center justify-center text-primary">
                 <Compass className="w-5 h-5" />
               </div>
@@ -376,7 +353,7 @@ export const LandingPage: React.FC = () => {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-card border border-border/70 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
+            <div className="bg-card/60 backdrop-blur-md border border-border/75 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
               <div className="h-10 w-10 bg-primary/10 rounded-input flex items-center justify-center text-primary">
                 <Award className="w-5 h-5" />
               </div>
@@ -390,14 +367,14 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* FOOTER */}
-      <footer className="border-t border-border/40 bg-background py-8 transition-colors duration-200">
+      <footer className="relative z-10 border-t border-border/40 bg-background/90 backdrop-blur-md py-8 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted-foreground">
           <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 text-left">
             <span className="font-bold text-foreground">ATR Design Studio</span>
             <span className="hidden sm:inline text-border">|</span>
-            <span>Built by ATR Design Studio</span>
+            <span>Built by Mayank Gangrediwar</span>
             <span className="hidden sm:inline text-border">|</span>
-            <span>Pune, India</span>
+            <span>Nagpur, India</span>
           </div>
           <div>
             <span>© 2026</span>
@@ -414,6 +391,74 @@ export const LandingPage: React.FC = () => {
           <div>
             <h4 className="text-xs font-bold text-foreground font-display">Authentication Status</h4>
             <p className="text-xs text-muted-foreground mt-1 leading-relaxed">{toast.message}</p>
+          </div>
+        </div>
+      )}
+      {/* Premium Access Code Entry Modal */}
+      {showAccessCodeModal && (
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-300">
+          <div className="bg-card border border-border rounded-card p-6 sm:p-8 max-w-md w-full shadow-universal space-y-6 text-left relative animate-in zoom-in-95 duration-200">
+            <div className="space-y-2">
+              <h3 className="text-xl font-bold font-display text-foreground">Restricted Studio Access</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                A new user registration was detected. Please enter the valid Studio Access Code to register your account.
+              </p>
+            </div>
+
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (tempCredential) {
+                  handleGoogleSuccess(tempCredential, accessCodeInput);
+                }
+              }}
+              className="space-y-4"
+            >
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Access Code</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. ATR-STUDIO-YYYY"
+                  value={accessCodeInput}
+                  onChange={(e) => {
+                    setAccessCodeInput(e.target.value);
+                    setAccessCodeError(null);
+                  }}
+                  className="w-full px-4 py-3 bg-secondary/50 border border-border/80 rounded-input text-sm focus:outline-none focus:ring-2 focus:ring-primary/30 transition-all font-mono"
+                />
+                {accessCodeError && (
+                  <p className="text-xs text-destructive font-medium mt-1 animate-in fade-in duration-200">{accessCodeError}</p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowAccessCodeModal(false);
+                    setTempCredential(null);
+                    setAccessCodeInput('');
+                    setAccessCodeError(null);
+                    setIsLoggingIn(false);
+                  }}
+                  className="flex-1 py-3 bg-secondary hover:bg-secondary/80 text-foreground text-xs font-bold rounded-button transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingAccessCode || !accessCodeInput.trim()}
+                  className="flex-1 py-3 bg-primary text-primary-foreground hover:bg-primary/95 text-xs font-bold rounded-button transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50"
+                >
+                  {isSubmittingAccessCode ? (
+                    <span className="h-3.5 w-3.5 border-2 border-primary-foreground border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    <span>Register Account</span>
+                  )}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
