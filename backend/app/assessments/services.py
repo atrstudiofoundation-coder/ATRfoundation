@@ -278,6 +278,38 @@ class AssessmentService:
             submitted_at=datetime.utcnow()
         )
         await self.attempt_repo.create(attempt)
+
+        # Update/create ModuleProgress if there is a module linked to this assessment
+        from app.modules.models import ModuleProgress
+        if assessment.module_id:
+            prog_result = await self.attempt_repo.db.execute(
+                select(ModuleProgress).filter(
+                    ModuleProgress.user_id == target_user_id,
+                    ModuleProgress.module_id == assessment.module_id
+                )
+            )
+            prog_obj = prog_result.scalars().first()
+            
+            target_status = "completed" if passed else "in_progress"
+            target_percentage = 100 if passed else 50
+            
+            if not prog_obj:
+                prog_obj = ModuleProgress(
+                    id=uuid.uuid4(),
+                    user_id=target_user_id,
+                    module_id=assessment.module_id,
+                    progress_percentage=target_percentage,
+                    status=target_status,
+                    completed_at=datetime.utcnow() if passed else None
+                )
+                self.attempt_repo.db.add(prog_obj)
+            else:
+                if target_status == "completed" or prog_obj.status != "completed":
+                    prog_obj.status = target_status
+                    prog_obj.progress_percentage = max(prog_obj.progress_percentage, target_percentage)
+                    if passed:
+                        prog_obj.completed_at = datetime.utcnow()
+
         await self.attempt_repo.db.commit()
 
         return AssessmentAttemptRead(

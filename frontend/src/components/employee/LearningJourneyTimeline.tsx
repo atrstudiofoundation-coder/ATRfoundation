@@ -20,7 +20,7 @@ export const LearningJourneyTimeline: React.FC<LearningJourneyTimelineProps> = (
   return (
     <div className="max-w-3xl mx-auto py-8 px-4 space-y-10 animate-in fade-in duration-300">
       {/* GLOBAL STATUS BAR & HERO SUMMARY */}
-      <div className="bg-card border border-border/80 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 relative overflow-hidden">
+      <div className="bg-card border border-border/60 rounded-card p-6 sm:p-8 shadow-universal space-y-6 relative overflow-hidden">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <span className="text-[11px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-3 py-1 rounded-full border border-primary/20">
@@ -36,7 +36,7 @@ export const LearningJourneyTimeline: React.FC<LearningJourneyTimelineProps> = (
 
           <button
             onClick={onResumeLearning}
-            className="px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-2xl shadow-md shadow-primary/20 flex items-center justify-center gap-2 shrink-0 transition-all transform hover:-translate-y-0.5"
+            className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center justify-center gap-2 shrink-0 transition-all hover:scale-[1.02] active:scale-95 duration-200"
           >
             <PlayCircle className="w-4 h-4" />
             <span>Resume Learning</span>
@@ -76,15 +76,15 @@ export const LearningJourneyTimeline: React.FC<LearningJourneyTimelineProps> = (
               {/* Node Icon Indicator */}
               <div className="shrink-0 mt-1">
                 {isCompleted ? (
-                  <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md shadow-emerald-500/20">
+                  <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-input bg-emerald-500 text-white flex items-center justify-center shadow-md">
                     <CheckCircle2 className="w-5 h-5" />
                   </div>
                 ) : isCurrent ? (
-                  <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shadow-lg shadow-primary/30 ring-4 ring-primary/20 animate-pulse">
+                  <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-input bg-primary text-primary-foreground flex items-center justify-center shadow-universal ring-4 ring-primary/20 animate-pulse">
                     <Sparkles className="w-5 h-5" />
                   </div>
                 ) : (
-                  <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-2xl bg-secondary text-muted-foreground border border-border flex items-center justify-center">
+                  <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-input bg-secondary text-muted-foreground border border-border flex items-center justify-center">
                     <Lock className="w-4 h-4" />
                   </div>
                 )}
@@ -93,9 +93,9 @@ export const LearningJourneyTimeline: React.FC<LearningJourneyTimelineProps> = (
               {/* Module Content Card */}
               <div
                 onClick={() => !isLocked && onSelectModule(module)}
-                className={`flex-1 p-5 sm:p-6 rounded-2xl border transition-all duration-300 ${
+                className={`flex-1 p-5 sm:p-6 rounded-card border transition-all duration-300 ${
                   isCurrent
-                    ? 'bg-card border-primary/60 shadow-md ring-1 ring-primary/20 cursor-pointer hover:border-primary'
+                    ? 'bg-card border-primary/65 shadow-universal cursor-pointer hover:border-primary'
                     : isCompleted
                     ? 'bg-card/90 border-emerald-500/30 hover:border-emerald-500/60 cursor-pointer shadow-sm'
                     : 'bg-secondary/20 border-border/60 opacity-65 cursor-not-allowed'

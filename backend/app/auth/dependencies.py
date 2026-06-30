@@ -31,7 +31,7 @@ async def get_current_user(
 ) -> User:
     """
     Dependency to read JWT from Bearer header or HTTP-Only cookie.
-    If no token is provided during initial setup/development mode, returns active Admin.
+    Raises HTTP 401 Unauthorized if not authenticated.
     """
     token: Optional[str] = None
     
@@ -43,19 +43,27 @@ async def get_current_user(
         token = read_auth_cookie(request)
         
     if not token:
-        # Fallback to dev mock user so unauthenticated testing works seamlessly
-        return get_dev_mock_admin()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not authenticated"
+        )
         
     try:
         user_id = extract_user_id(token)
-    except ValueError:
-        return get_dev_mock_admin()
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=str(e)
+        )
         
     auth_repo = AuthRepository(db)
     user = await auth_repo.get_by_id(user_id)
     
     if not user:
-        return get_dev_mock_admin()
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="User not found"
+        )
         
     if not user.is_active:
         raise HTTPException(
@@ -64,6 +72,7 @@ async def get_current_user(
         )
         
     return user
+
 
 async def get_current_admin_user(current_user: User = Depends(get_current_user)) -> User:
     """

@@ -20,7 +20,9 @@ class LoginRequest(BaseModel):
     password: str
 
 class GoogleOAuthRequest(BaseModel):
-    id_token: str
+    id_token: Optional[str] = None
+    token: Optional[str] = None
+    credential: Optional[str] = None
 
 class CurrentUserResponse(BaseModel):
     id: uuid.UUID
@@ -32,6 +34,29 @@ class CurrentUserResponse(BaseModel):
 
     model_config = ConfigDict(from_attributes=True)
 
+class LearningPathSummary(BaseModel):
+    id: uuid.UUID
+    title: str
+    description: Optional[str] = None
+
+    model_config = ConfigDict(from_attributes=True)
+
+class ProgressSummary(BaseModel):
+    completed_modules: int = 0
+    total_modules: int = 0
+    average_score: float = 0.0
+    hours_spent: float = 0.0
+    completed_module_ids: list[uuid.UUID] = []
+    module_scores: dict[str, float] = {}
+
+class SessionResponse(BaseModel):
+    user: CurrentUserResponse
+    role: str
+    profile: CurrentUserResponse
+    assigned_learning_path: Optional[LearningPathSummary] = None
+    progress_summary: ProgressSummary
+
 class AuthErrorResponse(BaseModel):
     detail: str
     code: Optional[str] = None
+

@@ -1,15 +1,15 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 
 // Layouts
 import { MainLayout } from '@/layouts/MainLayout';
-import { AuthLayout } from '@/layouts/AuthLayout';
 
 // Pages
-import { LoginPage } from '@/pages/LoginPage';
+import { LandingPage } from '@/pages/LandingPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { ModulesPage } from '@/pages/ModulesPage';
 import { ModuleDetailPage } from '@/pages/ModuleDetailPage';
@@ -66,111 +66,113 @@ const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <Navigate to="/dashboard" replace />;
   }
 
-  return <AuthLayout>{children}</AuthLayout>;
+  return <>{children}</>;
 };
 
 export const App: React.FC = () => {
   return (
-    <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
-        <AuthProvider>
-          <BrowserRouter>
-            <Routes>
-              {/* Public Routes */}
-              <Route 
-                path="/" 
-                element={
-                  <PublicRoute>
-                    <LoginPage />
-                  </PublicRoute>
-                } 
-              />
+    <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
+      <QueryClientProvider client={queryClient}>
+        <ThemeProvider>
+          <AuthProvider>
+            <BrowserRouter>
+              <Routes>
+                {/* Public Routes */}
+                <Route 
+                  path="/" 
+                  element={
+                    <PublicRoute>
+                      <LandingPage />
+                    </PublicRoute>
+                  } 
+                />
 
-              {/* Protected Shared Routes */}
-              <Route 
-                path="/dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <DashboardPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/modules" 
-                element={
-                  <ProtectedRoute>
-                    <ModulesPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/modules/:id" 
-                element={
-                  <ProtectedRoute>
-                    <ModuleDetailPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/quizzes/:id" 
-                element={
-                  <ProtectedRoute>
-                    <QuizzesPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/resources" 
-                element={
-                  <ProtectedRoute>
-                    <ResourcesPage />
-                  </ProtectedRoute>
-                } 
-              />
+                {/* Protected Shared Routes */}
+                <Route 
+                  path="/dashboard" 
+                  element={
+                    <ProtectedRoute>
+                      <DashboardPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/modules" 
+                  element={
+                    <ProtectedRoute>
+                      <ModulesPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/modules/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <ModuleDetailPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/quizzes/:id" 
+                  element={
+                    <ProtectedRoute>
+                      <QuizzesPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/resources" 
+                  element={
+                    <ProtectedRoute>
+                      <ResourcesPage />
+                    </ProtectedRoute>
+                  } 
+                />
 
-              {/* Protected Employee Only Routes */}
-              <Route 
-                path="/assessments" 
-                element={
-                  <ProtectedRoute allowedRoles={['employee']}>
-                    <AssessmentsPage />
-                  </ProtectedRoute>
-                } 
-              />
+                {/* Protected Employee Only Routes */}
+                <Route 
+                  path="/assessments" 
+                  element={
+                    <ProtectedRoute allowedRoles={['employee']}>
+                      <AssessmentsPage />
+                    </ProtectedRoute>
+                  } 
+                />
 
-              {/* Protected Admin Only Routes */}
-              <Route 
-                path="/analytics" 
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <AnalyticsPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/admin" 
-                element={
-                  <ProtectedRoute allowedRoles={['admin']}>
-                    <AdminPage />
-                  </ProtectedRoute>
-                } 
-              />
+                {/* Protected Admin Only Routes */}
+                <Route 
+                  path="/analytics" 
+                  element={
+                    <ProtectedRoute allowedRoles={['admin']}>
+                      <AnalyticsPage />
+                    </ProtectedRoute>
+                  } 
+                />
+                <Route 
+                  path="/admin" 
+                  element={
+                    <ProtectedRoute allowedRoles={['admin']}>
+                      <AdminPage />
+                    </ProtectedRoute>
+                  } 
+                />
 
-              {/* 404 Route */}
-              <Route 
-                path="/404" 
-                element={
-                  <MainLayout>
-                    <NotFoundPage />
-                  </MainLayout>
-                } 
-              />
-              <Route path="*" element={<Navigate to="/404" replace />} />
-            </Routes>
-          </BrowserRouter>
-        </AuthProvider>
-      </ThemeProvider>
-    </QueryClientProvider>
+                {/* 404 Route */}
+                <Route 
+                  path="/404" 
+                  element={
+                    <MainLayout>
+                      <NotFoundPage />
+                    </MainLayout>
+                  } 
+                />
+                <Route path="*" element={<Navigate to="/404" replace />} />
+              </Routes>
+            </BrowserRouter>
+          </AuthProvider>
+        </ThemeProvider>
+      </QueryClientProvider>
+    </GoogleOAuthProvider>
   );
 };
 

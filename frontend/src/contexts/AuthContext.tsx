@@ -1,80 +1,117 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from '@/types';
+import { authApi } from '@/lib/api/auth';
 
 interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginAsEmployee: () => void;
-  loginAsAdmin: () => void;
-  logout: () => void;
+  loginWithGoogle: (credential: string, navigate?: (path: string) => void) => Promise<void>;
+  logout: () => Promise<void>;
+  restoreSession: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const defaultAdmin: User = {
-    id: 'admin-1',
-    email: 'director@atrdesign.com',
-    name: 'Marcus Vance',
-    role: 'admin',
-    department: 'Design Standards Committee',
-    startDate: '2018-03-15',
-    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120'
+  const [user, setUser] = useState<User | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  const restoreSession = async () => {
+    try {
+      const session = await authApi.getCurrentUser();
+      const apiUser = session.user;
+      
+      const mappedUser: User = {
+        id: apiUser.id,
+        email: apiUser.email,
+        name: apiUser.full_name,
+        role: apiUser.role.toLowerCase() as 'admin' | 'employee',
+        avatarUrl: (apiUser as any).profile_picture || apiUser.avatar_url || undefined,
+        department: apiUser.role === 'ADMIN' ? 'Design Standards Committee' : 'Landscape Architecture',
+        startDate: apiUser.created_at ? new Date(apiUser.created_at).toISOString().split('T')[0] : '2026-06-01',
+        completedModuleIds: session.progress_summary?.completed_module_ids || [],
+        moduleScores: session.progress_summary?.module_scores || {},
+      };
+      
+      setUser(mappedUser);
+      setIsAuthenticated(true);
+    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const [user, setUser] = useState<User | null>(() => {
-    const saved = localStorage.getItem('atr-mock-user');
-    return saved ? JSON.parse(saved) : defaultAdmin;
-  });
-  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    restoreSession();
+  }, []);
 
-  const loginAsEmployee = () => {
+
+  const loginWithGoogle = async (credential: string, navigate?: (path: string) => void) => {
     setIsLoading(true);
-    const mockUser: User = {
-      id: 'emp-1',
-      email: 'onboardee@atrdesign.com',
-      name: 'Sarah Chen',
-      role: 'employee',
-      department: 'Landscape Architecture',
-      startDate: '2026-06-01',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=120'
-    };
-    setUser(mockUser);
-    localStorage.setItem('atr-mock-user', JSON.stringify(mockUser));
-    setIsLoading(false);
+    try {
+      await authApi.googleLogin({ credential });
+      
+      // Fetch session immediately
+      const session = await authApi.getCurrentUser();
+      const apiUser = session.user;
+      
+      const mappedUser: User = {
+        id: apiUser.id,
+        email: apiUser.email,
+        name: apiUser.full_name,
+        role: apiUser.role.toLowerCase() as 'admin' | 'employee',
+        avatarUrl: (apiUser as any).profile_picture || apiUser.avatar_url || undefined,
+        department: apiUser.role === 'ADMIN' ? 'Design Standards Committee' : 'Landscape Architecture',
+        startDate: apiUser.created_at ? new Date(apiUser.created_at).toISOString().split('T')[0] : '2026-06-01',
+        completedModuleIds: session.progress_summary?.completed_module_ids || [],
+        moduleScores: session.progress_summary?.module_scores || {},
+      };
+      
+      setUser(mappedUser);
+      setIsAuthenticated(true);
+
+      if (navigate) {
+        if (mappedUser.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/dashboard');
+        }
+      }
+    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const loginAsAdmin = () => {
+  const logout = async () => {
     setIsLoading(true);
-    const mockUser: User = {
-      id: 'admin-1',
-      email: 'director@atrdesign.com',
-      name: 'Marcus Vance',
-      role: 'admin',
-      department: 'Design Standards Committee',
-      startDate: '2018-03-15',
-      avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120'
-    };
-    setUser(mockUser);
-    localStorage.setItem('atr-mock-user', JSON.stringify(mockUser));
-    setIsLoading(false);
-  };
-
-  const logout = () => {
-    setUser(null);
-    localStorage.removeItem('atr-mock-user');
+    try {
+      await authApi.logout();
+    } catch (err) {
+      console.error('Logout API call failed:', err);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+      setIsLoading(false);
+    }
   };
 
   return (
     <AuthContext.Provider
       value={{
         user,
-        isAuthenticated: !!user,
+        isAuthenticated,
         isLoading,
-        loginAsEmployee,
-        loginAsAdmin,
-        logout
+        loginWithGoogle,
+        logout,
+        restoreSession
       }}
     >
       {children}

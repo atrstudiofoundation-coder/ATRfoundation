@@ -5,3 +5,4 @@ export * from './modules';
 export * from './resources';
 export * from './assessments';
 export * from './analytics';
+export * from './users';

@@ -12,6 +12,7 @@ import {
 import type { AdminLearningPath, AdminModule, AdminAssessment } from './adminTypes';
 import { ModuleCard } from './ModuleCard';
 import { EditModuleModal } from './AdminModals';
+import { ConfirmationModal } from '@/components/ui/ConfirmationModal';
 import { useModules } from '@/hooks/useModules';
 import { useResources } from '@/hooks/useResources';
 
@@ -36,6 +37,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
 }) => {
   const [filterQuery, setFilterQuery] = useState<string>('');
   const [editingModule, setEditingModule] = useState<AdminModule | null>(null);
+  const [moduleToDeleteId, setModuleToDeleteId] = useState<string | null>(null);
   const { updateModule, deleteModule } = useModules();
   const { detachResourceFromModule } = useResources();
 
@@ -67,9 +69,11 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
     }
   };
 
-  const handleDeleteModule = async (moduleId: string) => {
+  const handleDeleteModule = async () => {
+    if (!moduleToDeleteId) return;
     try {
-      await deleteModule(moduleId);
+      await deleteModule(moduleToDeleteId);
+      setModuleToDeleteId(null);
     } catch (err) {
       console.error('Failed to delete module:', err);
     }
@@ -216,7 +220,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
                 key={module.id}
                 module={module}
                 onEditModule={(mod) => setEditingModule(mod)}
-                onDeleteModule={handleDeleteModule}
+                onDeleteModule={(id) => setModuleToDeleteId(id)}
                 onAddResource={(modId) => onOpenCreateResource(modId)}
                 onUnlinkResource={handleUnlinkResource}
                 onManageQuestions={onManageQuestions}
@@ -232,6 +236,17 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
           module={editingModule}
           onClose={() => setEditingModule(null)}
           onUpdate={handleUpdateModuleSubmit}
+        />
+      )}
+
+      {moduleToDeleteId && (
+        <ConfirmationModal
+          isOpen={!!moduleToDeleteId}
+          title="Delete Module"
+          message="Are you sure you want to delete this module? This will delete all of its contents, resources, and assessments. This action cannot be undone."
+          confirmLabel="Delete Module"
+          onConfirm={handleDeleteModule}
+          onClose={() => setModuleToDeleteId(null)}
         />
       )}
     </div>

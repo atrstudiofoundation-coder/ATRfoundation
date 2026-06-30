@@ -6,6 +6,8 @@ export interface User {
   avatarUrl?: string;
   department?: string;
   startDate?: string;
+  completedModuleIds?: string[];
+  moduleScores?: Record<string, number>;
 }
 
 export interface LearningModule {

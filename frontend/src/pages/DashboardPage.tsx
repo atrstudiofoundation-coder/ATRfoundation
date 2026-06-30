@@ -1,7 +1,6 @@
 import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Progress } from '@/components/ui/Progress';
 import { Button } from '@/components/ui/Button';
 import { SkeletonCard, EmptyState } from '@/components/ui/States';
 import { Link } from 'react-router-dom';
@@ -16,8 +15,7 @@ import {
   ArrowRight,
   TrendingUp,
   UserCheck,
-  CheckCircle2,
-  AlertCircle
+  CheckCircle2
 } from 'lucide-react';
 
 export const DashboardPage: React.FC = () => {
@@ -47,7 +45,7 @@ export const DashboardPage: React.FC = () => {
               : `Administrator Portal: Monitoring onboarding compliance and knowledge assessments.`}
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-accent/30 border border-accent/80 rounded-full px-4 py-1.5 text-xs text-accent-foreground font-semibold">
+        <div className="flex items-center gap-2 bg-secondary border border-border rounded-full px-4 py-1.5 text-xs text-foreground/85 font-semibold">
           <UserCheck className="w-4 h-4 text-primary" />
           <span>Active Role: <span className="capitalize">{user.role}</span></span>
         </div>
@@ -61,9 +59,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Curriculum Modules</p>
-                  <p className="text-3xl font-display font-bold">{totalModulesCount}</p>
+                  <p className="text-3xl font-display font-bold text-primary">{totalModulesCount}</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <BookOpen className="w-5 h-5" />
                 </div>
               </CardContent>
@@ -73,9 +71,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Pass Rate Average</p>
-                  <p className="text-3xl font-display font-bold">{analytics?.average_pass_rate ?? 0}%</p>
+                  <p className="text-3xl font-display font-bold text-primary">{analytics?.average_pass_rate ?? 0}%</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <Award className="w-5 h-5" />
                 </div>
               </CardContent>
@@ -85,9 +83,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Studio Reference Assets</p>
-                  <p className="text-3xl font-display font-bold">{resources.length}</p>
+                  <p className="text-3xl font-display font-bold text-primary">{resources.length}</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <Clock className="w-5 h-5" />
                 </div>
               </CardContent>
@@ -123,12 +121,18 @@ export const DashboardPage: React.FC = () => {
                   <EmptyState title="No Active Modules" description="Your curriculum path is being set up by studio administrators." />
                 ) : (
                   <div className="divide-y divide-border">
-                    {pathModules.map((mod, idx) => (
+                    {pathModules.map((mod) => (
                       <div key={mod.id} className="py-4 flex justify-between items-center first:pt-0">
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <CheckCircle2 className="w-4 h-4 text-primary" />
-                            <h4 className="font-display font-bold text-base">{mod.title}</h4>
+                            {user.completedModuleIds?.includes(mod.id) ? (
+                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                            ) : (
+                              <CheckCircle2 className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+                            )}
+                            <h4 className={`font-display font-bold text-base transition-colors ${
+                              user.completedModuleIds?.includes(mod.id) ? 'text-muted-foreground/60 line-through' : 'text-foreground'
+                            }`}>{mod.title}</h4>
                           </div>
                           <p className="text-xs text-muted-foreground line-clamp-1">{mod.description}</p>
                         </div>
@@ -148,10 +152,10 @@ export const DashboardPage: React.FC = () => {
                 <CardDescription>Direct shortcuts to your learning workspace.</CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="p-4 bg-accent/35 rounded-lg border border-accent space-y-3">
-                  <span className="text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded font-semibold uppercase">Curriculum</span>
+                <div className="p-4 bg-secondary/80 rounded-input border border-border/80 space-y-3">
+                  <span className="text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-[4px] font-semibold uppercase">Curriculum</span>
                   <h4 className="font-display font-bold text-sm">View Studio Modules</h4>
-                  <p className="text-xs text-muted-foreground">Access interactive lessons and take competency evaluation tests.</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Access interactive lessons and take competency evaluation tests.</p>
                   <Button variant="default" size="sm" className="w-full justify-between" asChild>
                     <Link to="/modules">
                       Go to Modules <ArrowRight className="w-4 h-4" />
@@ -159,10 +163,10 @@ export const DashboardPage: React.FC = () => {
                   </Button>
                 </div>
 
-                <div className="p-4 bg-card rounded-lg border border-border space-y-3">
-                  <span className="text-[10px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded font-semibold uppercase">Library</span>
+                <div className="p-4 bg-card rounded-input border border-border space-y-3">
+                  <span className="text-[10px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-[4px] font-semibold uppercase">Library</span>
                   <h4 className="font-display font-bold text-sm">Explore Reference Assets</h4>
-                  <p className="text-xs text-muted-foreground">Review DWG specs, PDF manuals, and video guides.</p>
+                  <p className="text-xs text-muted-foreground leading-relaxed">Review DWG specs, PDF manuals, and video guides.</p>
                   <Button variant="outline" size="sm" className="w-full justify-between" asChild>
                     <Link to="/resources">
                       Open Library <ArrowRight className="w-4 h-4" />
@@ -181,9 +185,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Registered Members</p>
-                  <p className="text-3xl font-display font-bold">{isAnalyticsLoading ? '...' : analytics?.active_employees ?? 0}</p>
+                  <p className="text-3xl font-display font-bold text-primary">{isAnalyticsLoading ? '...' : analytics?.active_employees ?? 0}</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <UserCheck className="w-5 h-5" />
                 </div>
               </CardContent>
@@ -193,9 +197,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Average Pass Rate</p>
-                  <p className="text-3xl font-display font-bold">{isAnalyticsLoading ? '...' : `${analytics?.average_pass_rate ?? 0}%`}</p>
+                  <p className="text-3xl font-display font-bold text-primary">{isAnalyticsLoading ? '...' : `${analytics?.average_pass_rate ?? 0}%`}</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <TrendingUp className="w-5 h-5" />
                 </div>
               </CardContent>
@@ -205,9 +209,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Modules</p>
-                  <p className="text-3xl font-display font-bold">{modules.length}</p>
+                  <p className="text-3xl font-display font-bold text-primary">{modules.length}</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <BookOpen className="w-5 h-5" />
                 </div>
               </CardContent>
@@ -217,9 +221,9 @@ export const DashboardPage: React.FC = () => {
               <CardContent className="pt-6 flex items-center justify-between">
                 <div className="space-y-1">
                   <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Quizzes Evaluated</p>
-                  <p className="text-3xl font-display font-bold">{isAnalyticsLoading ? '...' : analytics?.completed_assessments_count ?? 0}</p>
+                  <p className="text-3xl font-display font-bold text-primary">{isAnalyticsLoading ? '...' : analytics?.completed_assessments_count ?? 0}</p>
                 </div>
-                <div className="p-3 bg-accent rounded-full text-primary">
+                <div className="p-3 bg-secondary rounded-full text-primary">
                   <Award className="w-5 h-5" />
                 </div>
               </CardContent>

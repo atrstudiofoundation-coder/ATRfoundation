@@ -4,6 +4,7 @@ import type {
   Assessment, 
   AssessmentCreate, 
   AssessmentUpdate, 
+  Question,
   QuestionCreate, 
   QuestionUpdate, 
   AttemptSubmit, 
