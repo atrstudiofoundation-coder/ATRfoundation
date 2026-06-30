@@ -8,12 +8,13 @@ def set_auth_cookie(response: Response, token: str) -> None:
     Expires in 7 days.
     """
     max_age_seconds = settings.ACCESS_TOKEN_EXPIRE_DAYS * 24 * 60 * 60
+    samesite_val = "none" if settings.COOKIE_SECURE else "lax"
     response.set_cookie(
         key=settings.AUTH_COOKIE_NAME,
         value=token,
         httponly=True,
         secure=settings.COOKIE_SECURE,
-        samesite="lax",
+        samesite=samesite_val,
         max_age=max_age_seconds
     )
 
@@ -21,11 +22,12 @@ def clear_auth_cookie(response: Response) -> None:
     """
     Clear the HTTP-Only authentication cookie from the response.
     """
+    samesite_val = "none" if settings.COOKIE_SECURE else "lax"
     response.delete_cookie(
         key=settings.AUTH_COOKIE_NAME,
         httponly=True,
         secure=settings.COOKIE_SECURE,
-        samesite="lax"
+        samesite=samesite_val
     )
 
 def read_auth_cookie(request: Request) -> Optional[str]:
