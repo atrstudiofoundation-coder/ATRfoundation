@@ -13,6 +13,7 @@ from app.assessments.services import AssessmentService
 async def test_learning_path_service_create_and_duplicate():
     path_repo = AsyncMock()
     path_repo.get_by_title.return_value = None
+    path_repo.get_by_id.side_effect = lambda path_id: MagicMock(id=path_id, title="BIM Architecture Foundations")
     path_repo.db = AsyncMock()
 
     service = LearningPathService(path_repo)

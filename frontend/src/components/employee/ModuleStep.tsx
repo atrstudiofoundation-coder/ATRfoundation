@@ -26,6 +26,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
   onStartCompetencyCheck,
 }) => {
   const [activeTab, setActiveTab] = useState<'intro' | 'video' | 'resources'>('intro');
+  const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
 
   const resources = module.resources || [];
 
@@ -132,19 +133,84 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
           </div>
         )}
 
-        {activeTab === 'video' && (
-          <div className="space-y-6 animate-in fade-in duration-200">
-            <h3 className="text-lg font-bold text-foreground font-display">Video Masterclass & Walkthrough</h3>
-            
-            {/* Embedded Video Player Simulator */}
-            <div className="relative aspect-video bg-charcoal-900 rounded-2xl overflow-hidden border border-border flex items-center justify-center group shadow-md">
-              <div className="text-center space-y-3 p-4">
-                <div className="h-14 w-14 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-transform cursor-pointer">
-                  <Video className="w-7 h-7 ml-0.5" />
+        {activeTab === 'video' && (() => {
+          const videoResources = resources.filter(r => (r.resource_type || r.type) === 'video');
+          const activeVideoRes = videoResources[selectedVideoIndex] || videoResources[0];
+          const videoUrl = activeVideoRes?.resource_url || activeVideoRes?.url || activeVideoRes?.uploaded_file_path;
+
+          return (
+            <div className="space-y-6 animate-in fade-in duration-200">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                  <h3 className="text-lg font-bold text-foreground font-display">Video Masterclass & Walkthrough</h3>
+                  <p className="text-xs text-muted-foreground">
+                    {videoResources.length > 1 ? `Select from ${videoResources.length} masterclass video sessions below.` : 'Streaming session standards walkthrough.'}
+                  </p>
                 </div>
-                <p className="text-xs text-earth-200 font-mono">Stream Session: {module.title}</p>
+                {activeVideoRes && (
+                  <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20 font-semibold self-start sm:self-auto">
+                    Playing: {activeVideoRes.title}
+                  </span>
+                )}
               </div>
-            </div>
+
+              {/* Multi-Video Playlist selector bar */}
+              {videoResources.length > 1 && (
+                <div className="p-3 bg-secondary/40 border border-border/80 rounded-2xl space-y-2">
+                  <span className="text-[10px] uppercase font-mono font-bold text-muted-foreground tracking-wider block">
+                    Module Playlist ({videoResources.length} Sessions)
+                  </span>
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                    {videoResources.map((vRes, vIdx) => (
+                      <button
+                        key={vRes.id || vIdx}
+                        onClick={() => setSelectedVideoIndex(vIdx)}
+                        className={`px-3.5 py-2 rounded-xl text-xs font-semibold shrink-0 transition-all flex items-center gap-2 ${
+                          selectedVideoIndex === vIdx
+                            ? 'bg-emerald-600 text-white shadow-md ring-1 ring-emerald-500/30'
+                            : 'bg-card text-foreground hover:bg-secondary border border-border/80'
+                        }`}
+                      >
+                        <Video className="w-3.5 h-3.5" />
+                        <span>Part {vIdx + 1}: {vRes.title}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {videoUrl ? (
+                <div className="relative aspect-video bg-black rounded-2xl overflow-hidden border border-border shadow-md">
+                  {videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be') || videoUrl.includes('vimeo.com') ? (
+                    <iframe
+                      src={videoUrl.replace('watch?v=', 'embed/')}
+                      title={activeVideoRes?.title || module.title}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video
+                      controls
+                      src={videoUrl}
+                      className="w-full h-full object-cover"
+                      poster="/logo.jpg"
+                    >
+                      Your browser does not support video playback.
+                    </video>
+                  )}
+                </div>
+              ) : (
+                <div className="relative aspect-video bg-charcoal-900 rounded-2xl overflow-hidden border border-border flex items-center justify-center group shadow-md">
+                  <div className="text-center space-y-3 p-4">
+                    <div className="h-14 w-14 rounded-full bg-primary/90 text-primary-foreground flex items-center justify-center mx-auto shadow-lg group-hover:scale-105 transition-transform cursor-pointer">
+                      <Video className="w-7 h-7 ml-0.5" />
+                    </div>
+                    <p className="text-xs text-earth-200 font-mono">Stream Session: {module.title}</p>
+                    <p className="text-[11px] text-muted-foreground">Attach a video resource in Admin Resources to stream here.</p>
+                  </div>
+                </div>
+              )}
 
             <div className="flex justify-between items-center pt-4">
               <button
@@ -162,7 +228,8 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
               </button>
             </div>
           </div>
-        )}
+          );
+        })()}
 
         {activeTab === 'resources' && (
           <div className="space-y-6 animate-in fade-in duration-200">

@@ -1,13 +1,26 @@
 from typing import List, Optional, Tuple
 import uuid
 from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.base_repository import BaseRepository
 from app.modules.models import LearningPath, Module, ModuleProgress, ModuleResource
+from app.assessments.models import Assessment
 
 class LearningPathRepository(BaseRepository[LearningPath]):
     def __init__(self, db: AsyncSession):
         super().__init__(LearningPath, db)
+
+    async def get_by_id(self, id: uuid.UUID) -> Optional[LearningPath]:
+        result = await self.db.execute(
+            select(LearningPath)
+            .options(
+                selectinload(LearningPath.modules).selectinload(Module.module_resources_assoc).selectinload(ModuleResource.resource),
+                selectinload(LearningPath.modules).selectinload(Module.assessment).selectinload(Assessment.questions)
+            )
+            .filter(LearningPath.id == id)
+        )
+        return result.scalars().first()
 
     async def get_by_title(self, title: str) -> Optional[LearningPath]:
         """
@@ -28,7 +41,10 @@ class LearningPathRepository(BaseRepository[LearningPath]):
         """
         List learning paths with pagination offsets and search filtering.
         """
-        query = select(LearningPath)
+        query = select(LearningPath).options(
+            selectinload(LearningPath.modules).selectinload(Module.module_resources_assoc).selectinload(ModuleResource.resource),
+            selectinload(LearningPath.modules).selectinload(Module.assessment).selectinload(Assessment.questions)
+        )
         count_query = select(func.count()).select_from(LearningPath)
 
         if active_only:
@@ -52,12 +68,27 @@ class ModuleRepository(BaseRepository[Module]):
     def __init__(self, db: AsyncSession):
         super().__init__(Module, db)
 
+    async def get_by_id(self, id: uuid.UUID) -> Optional[Module]:
+        result = await self.db.execute(
+            select(Module)
+            .options(
+                selectinload(Module.module_resources_assoc).selectinload(ModuleResource.resource),
+                selectinload(Module.assessment).selectinload(Assessment.questions)
+            )
+            .filter(Module.id == id)
+        )
+        return result.scalars().first()
+
     async def get_by_learning_path(self, learning_path_id: uuid.UUID) -> List[Module]:
         """
         Fetch modules under a specific learning path, ordered by display_order.
         """
         result = await self.db.execute(
             select(Module)
+            .options(
+                selectinload(Module.module_resources_assoc).selectinload(ModuleResource.resource),
+                selectinload(Module.assessment).selectinload(Assessment.questions)
+            )
             .filter(Module.learning_path_id == learning_path_id)
             .order_by(Module.display_order.asc())
         )
@@ -83,7 +114,10 @@ class ModuleRepository(BaseRepository[Module]):
         """
         List modules with pagination offsets and search filtering.
         """
-        query = select(Module)
+        query = select(Module).options(
+            selectinload(Module.module_resources_assoc).selectinload(ModuleResource.resource),
+            selectinload(Module.assessment).selectinload(Assessment.questions)
+        )
         count_query = select(func.count()).select_from(Module)
 
         if learning_path_id:

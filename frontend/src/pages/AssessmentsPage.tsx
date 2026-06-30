@@ -1,6 +1,6 @@
 import React from 'react';
-import { EmployeeJourneyWorkspace } from '@/components/employee/EmployeeJourneyWorkspace';
+import { EmployeeAssessmentsWorkspace } from '@/components/employee/EmployeeAssessmentsWorkspace';
 
 export const AssessmentsPage: React.FC = () => {
-  return <EmployeeJourneyWorkspace />;
+  return <EmployeeAssessmentsWorkspace />;
 };

@@ -2,6 +2,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { resourcesApi } from '@/lib/api/resources';
 import type { Resource, ResourceCreate, ResourceUpdate, PaginatedResponse } from '@/types/api';
 import { MODULES_QUERY_KEY } from './useModules';
+import { LEARNING_PATHS_QUERY_KEY } from './useLearningPaths';
 
 export const RESOURCES_QUERY_KEY = ['resources'];
 
@@ -41,6 +42,7 @@ export const useResources = (params?: { page?: number; page_size?: number; searc
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: RESOURCES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: MODULES_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: LEARNING_PATHS_QUERY_KEY });
     },
   });
 
@@ -50,6 +52,7 @@ export const useResources = (params?: { page?: number; page_size?: number; searc
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: RESOURCES_QUERY_KEY });
       queryClient.invalidateQueries({ queryKey: MODULES_QUERY_KEY });
+      queryClient.invalidateQueries({ queryKey: LEARNING_PATHS_QUERY_KEY });
     },
   });
 

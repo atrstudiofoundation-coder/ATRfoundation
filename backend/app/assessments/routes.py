@@ -3,7 +3,7 @@ import uuid
 from fastapi import APIRouter, Depends, Query, status, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_db
-from app.auth.dependencies import get_current_admin_user
+from app.auth.dependencies import get_current_admin_user, get_current_user
 from app.users.models import User
 from app.common.pagination import PaginationParams, PaginatedResponse
 from app.assessments.schemas import (
@@ -91,12 +91,16 @@ async def delete_assessment(
 # ADMIN QUESTION ENDPOINTS
 # ==========================================
 
+@router.post("/{assessment_id}/questions", response_model=QuestionRead, status_code=status.HTTP_201_CREATED)
 @router.post("/questions", response_model=QuestionRead, status_code=status.HTTP_201_CREATED)
 async def create_question(
     question_in: QuestionCreate,
+    assessment_id: Optional[uuid.UUID] = None,
     db: AsyncSession = Depends(get_db),
     admin: User = Depends(get_current_admin_user)
 ):
+    if assessment_id is not None:
+        question_in.assessment_id = assessment_id
     service = get_service(db)
     return await service.create_question(question_in)
 
@@ -169,18 +173,16 @@ async def list_attempts_for_user(user_id: uuid.UUID, db: AsyncSession = Depends(
         raise HTTPException(status_code=501, detail=str(e))
 
 
+@router.post("/{quiz_id}/submit", response_model=AssessmentAttemptRead)
 @router.post("/quiz/{quiz_id}/submit", response_model=AssessmentAttemptRead)
 async def submit_quiz(
     quiz_id: uuid.UUID, 
     submission: AssessmentSubmitRequest, 
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
 ):
     """
     Submit quiz answers, perform automatic grading, and save the score attempt.
     """
     service = get_service(db)
-    try:
-        dummy_user_id = uuid.uuid4()
-        return await service.submit_assessment(quiz_id, dummy_user_id, submission)
-    except NotImplementedError as e:
-        raise HTTPException(status_code=501, detail=str(e))
+    return await service.submit_assessment(quiz_id, current_user.id, submission)

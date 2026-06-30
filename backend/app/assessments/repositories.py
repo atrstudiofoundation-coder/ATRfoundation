@@ -1,6 +1,7 @@
 from typing import List, Optional, Tuple
 import uuid
 from sqlalchemy import select, func
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.common.base_repository import BaseRepository
 from app.assessments.models import Assessment, Question, Attempt, Answer
@@ -9,12 +10,18 @@ class AssessmentRepository(BaseRepository[Assessment]):
     def __init__(self, db: AsyncSession):
         super().__init__(Assessment, db)
 
+    async def get_by_id(self, id: uuid.UUID) -> Optional[Assessment]:
+        result = await self.db.execute(
+            select(Assessment).options(selectinload(Assessment.questions)).filter(Assessment.id == id)
+        )
+        return result.scalars().first()
+
     async def get_by_module_id(self, module_id: uuid.UUID) -> Optional[Assessment]:
         """
         Fetch assessment tied 1-to-1 to a module.
         """
         result = await self.db.execute(
-            select(Assessment).filter(Assessment.module_id == module_id)
+            select(Assessment).options(selectinload(Assessment.questions)).filter(Assessment.module_id == module_id)
         )
         return result.scalars().first()
 
@@ -27,7 +34,7 @@ class AssessmentRepository(BaseRepository[Assessment]):
         """
         List assessments with pagination and optional search filter.
         """
-        query = select(Assessment)
+        query = select(Assessment).options(selectinload(Assessment.questions))
         count_query = select(func.count()).select_from(Assessment)
 
         if search:

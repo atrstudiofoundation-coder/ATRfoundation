@@ -21,8 +21,9 @@ export const CompetencyReportStep: React.FC<CompetencyReportStepProps> = ({
   onContinue,
 }) => {
   const passingScore = module.assessment?.passing_marks ?? module.passing_percentage ?? 80;
-  const finalScore = attemptResult ? Math.round(attemptResult.score_percentage) : scorePercent;
-  const isQualified = attemptResult ? attemptResult.passed : finalScore >= passingScore;
+  const rawPct = attemptResult ? (attemptResult.score_percentage ?? attemptResult.percentage ?? 0) : scorePercent;
+  const finalScore = isNaN(rawPct) ? 0 : Math.round(rawPct);
+  const isQualified = attemptResult ? (attemptResult.passed ?? (attemptResult.status === 'pass') ?? (finalScore >= passingScore)) : finalScore >= passingScore;
 
   // Derive topic metrics
   const topics = Object.entries(topicScores);

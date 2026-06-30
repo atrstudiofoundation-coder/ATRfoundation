@@ -25,7 +25,7 @@ class LearningPathService:
         )
         await self.path_repo.create(path)
         await self.path_repo.db.commit()
-        return path
+        return await self.get_learning_path_by_id(path.id)
 
     async def get_learning_path_by_id(self, path_id: uuid.UUID) -> LearningPath:
         path = await self.path_repo.get_by_id(path_id)
@@ -61,7 +61,7 @@ class LearningPathService:
             
         await self.path_repo.update(path)
         await self.path_repo.db.commit()
-        return path
+        return await self.get_learning_path_by_id(path_id)
 
     async def delete_learning_path(self, path_id: uuid.UUID) -> None:
         path = await self.get_learning_path_by_id(path_id)
@@ -85,17 +85,22 @@ class ModuleService:
         if not path:
             raise EntityNotFoundException("LearningPath", str(module_in.learning_path_id))
             
+        display_order = module_in.display_order
+        if display_order is None:
+            max_order = await self.module_repo.get_max_display_order(module_in.learning_path_id)
+            display_order = max_order + 1
+
         module = Module(
             learning_path_id=module_in.learning_path_id,
             title=module_in.title,
             description=module_in.description,
             estimated_duration_minutes=module_in.estimated_duration_minutes,
             passing_percentage=module_in.passing_percentage,
-            display_order=module_in.display_order
+            display_order=display_order
         )
         await self.module_repo.create(module)
         await self.module_repo.db.commit()
-        return module
+        return await self.get_module_by_id(module.id)
 
     async def get_module_by_id(self, module_id: uuid.UUID) -> Module:
         module = await self.module_repo.get_by_id(module_id)
@@ -139,7 +144,7 @@ class ModuleService:
             
         await self.module_repo.update(module)
         await self.module_repo.db.commit()
-        return module
+        return await self.get_module_by_id(module_id)
 
     async def delete_module(self, module_id: uuid.UUID) -> None:
         module = await self.get_module_by_id(module_id)

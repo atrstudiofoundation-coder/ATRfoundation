@@ -30,6 +30,10 @@ class Assessment(Base):
         "Attempt", back_populates="assessment", cascade="all, delete-orphan"
     )
 
+    @property
+    def question_count(self) -> int:
+        return len(self.questions) if self.questions else 0
+
 
 class Question(Base):
     __tablename__ = "questions"

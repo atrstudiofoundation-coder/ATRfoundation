@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import type { AdminModule, AdminAssessment } from './adminTypes';
 import { ResourceCard } from './ResourceCard';
+import { useAssessments } from '@/hooks/useAssessments';
 
 interface ModuleCardProps {
   module: AdminModule;
@@ -35,6 +36,24 @@ export const ModuleCard: React.FC<ModuleCardProps> = ({
   onImportQuestions,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(module.display_order === 1);
+  const [isInitializingAssessment, setIsInitializingAssessment] = useState<boolean>(false);
+  const { createAssessment } = useAssessments();
+
+  const handleInitializeAssessment = async () => {
+    try {
+      setIsInitializingAssessment(true);
+      await createAssessment({
+        module_id: module.id,
+        title: `${module.title} Evaluation Exam`,
+        passing_marks: module.passing_percentage || 80,
+        max_attempts: 3,
+      });
+    } catch (err) {
+      console.error('Failed to initialize assessment:', err);
+    } finally {
+      setIsInitializingAssessment(false);
+    }
+  };
 
   const getStatusBadge = () => {
     switch (module.assessment_status) {
@@ -177,8 +196,15 @@ export const ModuleCard: React.FC<ModuleCardProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="p-4 text-center border border-dashed border-border rounded-xl bg-card">
-                <p className="text-xs text-muted-foreground mb-2">No evaluation configured for this module.</p>
+              <div className="p-4 text-center border border-dashed border-border rounded-xl bg-card flex flex-col items-center justify-center gap-2">
+                <p className="text-xs text-muted-foreground">No competency exam configured for this module yet.</p>
+                <button
+                  onClick={handleInitializeAssessment}
+                  disabled={isInitializingAssessment}
+                  className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-sm transition-all flex items-center gap-1.5"
+                >
+                  <Plus className="w-3.5 h-3.5" /> {isInitializingAssessment ? 'Initializing Exam...' : 'Create Assessment Exam'}
+                </button>
               </div>
             )}
           </div>

@@ -1,4 +1,5 @@
 import re
+import json
 from typing import List, Optional, Any
 
 class ParsedQuestion:
@@ -41,26 +42,88 @@ class ParsedQuestion:
 class QuestionParser:
     def parse(self, text: str) -> List[ParsedQuestion]:
         """
-        Parses raw text of quiz questions into a structured list of ParsedQuestion objects.
-        Supports multi-line inputs and precise line-number tracking.
+        Parses raw text or JSON of quiz questions into a structured list of ParsedQuestion objects.
         """
+        stripped_text = text.strip()
+        # 1. Attempt JSON Parsing first
+        if stripped_text.startswith("{") or stripped_text.startswith("["):
+            try:
+                data = json.loads(stripped_text)
+                items = []
+                if isinstance(data, list):
+                    items = data
+                elif isinstance(data, dict):
+                    if "questions" in data and isinstance(data["questions"], list):
+                        items = data["questions"]
+                    else:
+                        items = [data]
+                
+                parsed_list: List[ParsedQuestion] = []
+                for idx, item in enumerate(items):
+                    if not isinstance(item, dict):
+                        continue
+                    pq = ParsedQuestion(idx + 1)
+                    pq.question = str(item.get("question") or item.get("text") or "").strip()
+                    pq.options = [str(opt).strip() for opt in item.get("options", []) if str(opt).strip()]
+                    pq.raw_options = list(pq.options)
+                    
+                    ans = item.get("answer") if "answer" in item else item.get("answers")
+                    if ans is not None:
+                        pq.answer_raw = str(ans)
+                        if isinstance(ans, list):
+                            processed_ans = []
+                            for a in ans:
+                                if isinstance(a, int):
+                                    processed_ans.append(a)
+                                elif isinstance(a, str) and a.strip().isdigit():
+                                    processed_ans.append(int(a.strip()))
+                                elif isinstance(a, str) and len(a.strip()) == 1 and a.strip().isalpha():
+                                    processed_ans.append(ord(a.strip().upper()) - ord('A'))
+                            pq.answer = processed_ans
+                        elif isinstance(ans, int):
+                            pq.answer = [ans]
+                        elif isinstance(ans, str):
+                            if ans.strip().isdigit():
+                                pq.answer = [int(ans.strip())]
+                            else:
+                                letters = re.findall(r'[A-Z]', ans.upper())
+                                pq.answer = [ord(char) - ord('A') for char in letters]
+                    
+                    if "topic" in item and item["topic"]:
+                        pq.topic = str(item["topic"]).strip()
+                    if "difficulty" in item and item["difficulty"]:
+                        pq.difficulty = str(item["difficulty"]).strip()
+                    if "marks" in item and item["marks"] is not None:
+                        try:
+                            pq.marks = int(item["marks"])
+                            pq.marks_raw = str(pq.marks)
+                        except (ValueError, TypeError):
+                            pass
+                    if "explanation" in item and item["explanation"]:
+                        pq.explanation = str(item["explanation"]).strip()
+
+                    parsed_list.append(pq)
+                
+                if parsed_list:
+                    return parsed_list
+            except Exception:
+                pass  # Fall back to text parsing
+
+        # 2. Plain Text Regex Parsing
         lines = text.splitlines()
         questions: List[ParsedQuestion] = []
         current_question: Optional[ParsedQuestion] = None
         
-        # State tracking: 'idle', 'question', 'options', 'answer', 'topic', 'difficulty', 'marks', 'explanation'
         state = 'idle'
         
         for idx, line_raw in enumerate(lines):
             line_num = idx + 1
             line_stripped = line_raw.strip()
             
-            # Detect section transitions
             if line_stripped.lower().startswith("question:"):
                 if current_question:
                     questions.append(current_question)
                 current_question = ParsedQuestion(line_num)
-                # Capture inline text if present on same line
                 inline_content = line_raw[line_raw.lower().find("question:") + 9:].strip()
                 if inline_content:
                     current_question.question = inline_content
@@ -123,7 +186,6 @@ class QuestionParser:
                     current_question.explanation = inline_content
                 continue
             
-            # If line is content, process based on state
             if not current_question:
                 continue
                 
@@ -168,7 +230,6 @@ class QuestionParser:
                         current_question.marks_raw = line_stripped
                         
             elif state == 'explanation':
-                # Preserve format layout of explanation
                 if current_question.explanation:
                     current_question.explanation += "\n" + line_raw
                 else:
@@ -177,14 +238,12 @@ class QuestionParser:
         if current_question:
             questions.append(current_question)
             
-        # Post-parse cleanup and formatting
         for q in questions:
             q.question = q.question.strip()
             q.topic = q.topic.strip()
             q.difficulty = q.difficulty.strip()
             q.explanation = q.explanation.strip()
             
-            # Clean marks representation
             q.marks_raw = q.marks_raw.strip()
             if q.marks_raw:
                 try:
@@ -192,11 +251,12 @@ class QuestionParser:
                 except ValueError:
                     q.marks = None
                     
-            # Parse letters to list of indices
             q.answer_raw = q.answer_raw.strip()
-            if q.answer_raw:
-                # Matches uppercase letter options, e.g. 'A', 'C'
+            if q.answer_raw and not q.answer:
                 letters = re.findall(r'[A-Z]', q.answer_raw.upper())
-                q.answer = [ord(char) - ord('A') for char in letters]
+                if letters:
+                    q.answer = [ord(char) - ord('A') for char in letters]
+                elif q.answer_raw.isdigit():
+                    q.answer = [int(q.answer_raw)]
                 
         return questions

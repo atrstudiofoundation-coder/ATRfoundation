@@ -14,8 +14,8 @@ class SystemComplianceStats(BaseModel):
     cohort_progress: list[UserProgressSummary]
 
 class AnalyticsOverview(BaseModel):
-    total_users: int = 48
-    active_employees: int = 48
-    total_learning_paths: int = 1
-    average_pass_rate: float = 92.0
-    completed_assessments_count: int = 12
+    total_users: int
+    active_employees: int
+    total_learning_paths: int
+    average_pass_rate: float
+    completed_assessments_count: int

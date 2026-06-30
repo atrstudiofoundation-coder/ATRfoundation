@@ -24,7 +24,7 @@ class QuestionValidator:
             })
             
         # 3. Answer validation
-        if not q.answer_raw:
+        if not q.answer_raw and not q.answer:
             errors.append({
                 "line": q.answer_line,
                 "message": "Answer field is missing."
@@ -32,7 +32,7 @@ class QuestionValidator:
         elif not q.answer:
             errors.append({
                 "line": q.answer_line,
-                "message": f"Invalid answer format: '{q.answer_raw}'. Answer must specify valid letter option(s) (e.g. A, B)."
+                "message": f"Invalid answer format: '{q.answer_raw}'."
             })
         else:
             # Ensure answer indices map to existing options
@@ -44,30 +44,37 @@ class QuestionValidator:
                         "message": f"Selected answer Option '{option_letter}' is out of range for the {len(q.options)} available options."
                     })
                     
-        # 4. Topic exists
+        # 4. Topic validation
         if not q.topic:
             errors.append({
                 "line": q.topic_line,
-                "message": "Topic field is missing."
+                "message": "Required field 'topic' is missing in question schema."
             })
             
-        # 5. Difficulty exists
+        # 5. Difficulty validation
         if not q.difficulty:
             errors.append({
                 "line": q.difficulty_line,
-                "message": "Difficulty field is missing."
+                "message": "Required field 'difficulty' is missing in question schema."
             })
             
-        # 6. Marks is integer and exists
+        # 6. Marks validation
         if not q.marks_raw:
             errors.append({
                 "line": q.marks_line,
-                "message": "Marks value is missing."
+                "message": "Required field 'marks' is missing in question schema."
             })
         elif q.marks is None:
             errors.append({
                 "line": q.marks_line,
-                "message": f"Marks must be an integer, got '{q.marks_raw}'."
+                "message": f"Field 'marks' must be an integer, got '{q.marks_raw}'."
+            })
+
+        # 7. Explanation validation
+        if not q.explanation:
+            errors.append({
+                "line": q.explanation_line,
+                "message": "Required field 'explanation' is missing in question schema."
             })
             
         return errors

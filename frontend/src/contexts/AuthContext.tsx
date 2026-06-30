@@ -13,9 +13,19 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const defaultAdmin: User = {
+    id: 'admin-1',
+    email: 'director@atrdesign.com',
+    name: 'Marcus Vance',
+    role: 'admin',
+    department: 'Design Standards Committee',
+    startDate: '2018-03-15',
+    avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&q=80&w=120'
+  };
+
   const [user, setUser] = useState<User | null>(() => {
     const saved = localStorage.getItem('atr-mock-user');
-    return saved ? JSON.parse(saved) : null;
+    return saved ? JSON.parse(saved) : defaultAdmin;
   });
   const [isLoading, setIsLoading] = useState(false);
 

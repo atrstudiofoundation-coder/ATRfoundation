@@ -14,6 +14,8 @@ export const WelcomeStep: React.FC<WelcomeStepProps> = ({ journey, onStart }) =>
 
   return (
     <div className="min-h-[80vh] flex flex-col items-center justify-center text-center px-4 max-w-3xl mx-auto py-12 animate-in fade-in zoom-in-95 duration-500">
+      <img src="/logo.jpg" alt="ATR Studio Logo" className="h-20 w-20 rounded-3xl object-cover mb-6 shadow-md border-2 border-border" />
+
       {/* Studio Badge */}
       <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-accent/40 border border-accent text-accent-foreground text-xs font-semibold mb-8 shadow-sm">
         <Sparkles className="w-3.5 h-3.5 text-primary" />
