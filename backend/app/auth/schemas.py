@@ -23,6 +23,7 @@ class GoogleOAuthRequest(BaseModel):
     id_token: Optional[str] = None
     token: Optional[str] = None
     credential: Optional[str] = None
+    access_code: Optional[str] = None
 
 class CurrentUserResponse(BaseModel):
     id: uuid.UUID

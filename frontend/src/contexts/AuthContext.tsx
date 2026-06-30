@@ -6,7 +6,7 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  loginWithGoogle: (credential: string, navigate?: (path: string) => void) => Promise<void>;
+  loginWithGoogle: (credential: string, navigate?: (path: string) => void, accessCode?: string) => Promise<void>;
   logout: () => Promise<void>;
   restoreSession: () => Promise<void>;
 }
@@ -50,10 +50,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
 
-  const loginWithGoogle = async (credential: string, navigate?: (path: string) => void) => {
+  const loginWithGoogle = async (credential: string, navigate?: (path: string) => void, accessCode?: string) => {
     setIsLoading(true);
     try {
-      await authApi.googleLogin({ credential });
+      await authApi.googleLogin({ credential, access_code: accessCode } as any);
       
       // Fetch session immediately
       const session = await authApi.getCurrentUser();

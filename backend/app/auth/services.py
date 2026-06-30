@@ -97,6 +97,10 @@ class AuthService:
             
         user = await self.auth_repo.get_by_email(email)
         if not user:
+            if not request.access_code:
+                raise ValueError("access_code_required")
+            if not self.validate_studio_access_code(request.access_code):
+                raise ValueError("invalid_access_code")
             user = await self.create_first_login_user(
                 email=email,
                 full_name=name,
