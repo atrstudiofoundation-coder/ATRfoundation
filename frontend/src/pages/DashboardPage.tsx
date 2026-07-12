@@ -265,13 +265,8 @@ export const DashboardPage: React.FC = () => {
   const pathModules = primaryPath?.modules ?? modules ?? [];
   const totalModulesCount = pathModules.length;
 
-  // Find active onboarding focal person (defaults to Mayank Gangrediwar)
-  const firstProgress = compliance?.cohort_progress?.[0] || {
-    user_name: 'Mayank Gangrediwar',
-    department: 'Studio Design',
-    progress_percent: 100,
-    status: 'Completed'
-  };
+  // Find active onboarding focal person
+  const firstProgress = compliance?.cohort_progress?.[0];
 
   return (
     <div className="space-y-8 animate-fade-in relative z-10">
@@ -584,7 +579,12 @@ export const DashboardPage: React.FC = () => {
 
               <CardContent className="space-y-6 relative z-10">
                 {/* Spotlight/Active Member Panel - Upgraded Progress Board */}
-                <div className="p-5 bg-[#F5F1E8] rounded-input border border-border/80 space-y-5 shadow-inner relative overflow-hidden">
+                {isComplianceLoading ? (
+                  <SkeletonCard />
+                ) : !firstProgress ? (
+                  <EmptyState title="No Employee Progress" description="Once employees begin their onboarding curriculum, their live progress will be tracked here." />
+                ) : (
+                  <div className="p-5 bg-[#F5F1E8] rounded-input border border-border/80 space-y-5 shadow-inner relative overflow-hidden">
                   {/* Decorative drafting crosshair mark in the corner */}
                   <div className="absolute top-2 right-2 text-primary/10 font-mono text-[9px] pointer-events-none">
                     CAD REF: SH-01
@@ -668,6 +668,7 @@ export const DashboardPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
+                )}
 
                 {/* Progress Overview Line Chart */}
                 <ProgressOverviewChart />

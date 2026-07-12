@@ -139,13 +139,13 @@ export const LandingPage: React.FC = () => {
         <div className="absolute inset-4 sm:inset-8 border border-border/20 pointer-events-none rounded-card" />
 
         <div className="text-center space-y-6 max-w-sm px-4">
-          <div className="inline-flex items-center justify-center h-14 w-14 rounded-input bg-primary text-primary-foreground text-xl font-bold font-display shadow-sm">
+          <div className="inline-flex items-center justify-center h-14 w-14 rounded-input bg-[#4F6F52] text-white text-xl font-bold font-display shadow-sm border border-[#739072]/30">
             ATR
           </div>
 
           <div className="space-y-1.5">
-            <h1 className="text-2xl font-bold tracking-wider font-display uppercase">Design Studio</h1>
-            <p className="text-xs uppercase tracking-widest text-primary font-semibold font-mono">Foundation</p>
+            <h1 className="text-2xl font-bold tracking-wider font-display uppercase text-[#2F3A33] dark:text-[#F5F1E8]">Design Studio</h1>
+            <p className="text-xs uppercase tracking-widest text-[#739072] font-semibold font-mono">Foundation</p>
           </div>
 
           <div className="pt-8 flex flex-col items-center gap-2">
@@ -192,7 +192,7 @@ export const LandingPage: React.FC = () => {
 
           {/* Logo Center */}
           <div className="flex items-center gap-3 md:absolute md:left-1/2 md:-translate-x-1/2">
-            <div className="h-9 w-9 rounded-xl bg-white text-black flex items-center justify-center font-bold text-sm font-display shadow-universal">
+            <div className="h-9 w-9 rounded-xl bg-[#F5F1E8] text-[#2F3A33] flex items-center justify-center font-bold text-sm font-display shadow-md border border-[#F5F1E8]/20">
               ATR
             </div>
             <div>
@@ -251,8 +251,8 @@ export const LandingPage: React.FC = () => {
       {/* HERO SECTION */}
       <section className="relative z-10 flex-1 max-w-7xl w-full mx-auto px-6 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         <div className="lg:col-span-7 bg-black/50 border border-white/10 backdrop-blur-xl p-8 sm:p-10 rounded-card shadow-universal space-y-6 text-left animate-in fade-in slide-in-from-left-4 duration-500 max-w-xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-white border border-white/20 backdrop-blur-md text-[10px] font-bold font-mono uppercase tracking-wider">
-            <Sparkles className="w-3.5 h-3.5 text-accent" /> CORE CURRICULUM ONBOARDING
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#4F6F52]/80 text-[#F5F1E8] border border-[#739072]/50 backdrop-blur-md text-[10px] font-bold font-mono uppercase tracking-wider shadow-sm">
+            <Sparkles className="w-3.5 h-3.5 text-[#F5F1E8]" /> CORE CURRICULUM ONBOARDING
           </div>
 
           <h2 className="text-5xl sm:text-7.5xl font-extrabold font-display tracking-tight text-white leading-[1.05] drop-shadow-sm">
@@ -272,10 +272,10 @@ export const LandingPage: React.FC = () => {
             <div className="relative inline-block overflow-hidden rounded-button hover:scale-[1.02] active:scale-95 transition-all duration-200">
               <button
                 disabled={isLoggingIn}
-                className="px-8 py-3.5 bg-white hover:bg-white/90 text-black text-xs sm:text-sm font-bold rounded-button shadow-universal flex items-center justify-center gap-2.5 disabled:opacity-50"
+                className="px-8 py-3.5 bg-[#4F6F52] hover:bg-[#4F6F52]/90 text-white text-xs sm:text-sm font-bold rounded-button shadow-md flex items-center justify-center gap-2.5 disabled:opacity-50 transition-all duration-200 border border-[#739072]/30"
               >
                 {isLoggingIn && (
-                  <span className="h-4 w-4 border-2 border-black border-t-transparent rounded-full animate-spin shrink-0" />
+                  <span className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin shrink-0" />
                 )}
                 <span>BEGIN CURRICULUM</span>
               </button>
@@ -340,46 +340,46 @@ export const LandingPage: React.FC = () => {
       </section>
 
       {/* FEATURE SECTION */}
-      <section id="features-section" className="relative z-10 bg-secondary/35 backdrop-blur-md border-y border-border/40 py-16 transition-colors duration-200">
+      <section id="features-section" className="relative z-10 bg-[#F5F1E8] dark:bg-[#2F3A33]/90 backdrop-blur-md border-y border-[#739072]/20 py-16 transition-colors duration-200">
         <div className="max-w-7xl mx-auto px-6">
           <div className="max-w-2xl text-left space-y-2 mb-12 animate-in fade-in duration-500">
-            <span className="text-xs uppercase tracking-widest text-primary font-bold font-mono">Curriculum Values</span>
-            <h3 className="text-2xl sm:text-3xl font-bold font-display text-foreground">Designed for Professional Excellence</h3>
-            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            <span className="text-xs uppercase tracking-widest text-[#4F6F52] dark:text-[#739072] font-bold font-mono">Curriculum Values</span>
+            <h3 className="text-2xl sm:text-3xl font-bold font-display text-[#2F3A33] dark:text-[#F5F1E8]">Designed for Professional Excellence</h3>
+            <p className="text-xs sm:text-sm text-[#2F3A33]/70 dark:text-[#F5F1E8]/70 leading-relaxed">
               Transition smoothly from onboarding theory directly into landscape design execution.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-card/60 backdrop-blur-md border border-border/75 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
-              <div className="h-10 w-10 bg-primary/10 rounded-input flex items-center justify-center text-primary">
+            <div className="bg-white dark:bg-black/40 backdrop-blur-md border border-[#739072]/20 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-[#4F6F52]/40 hover:shadow-md transition-all duration-300 group">
+              <div className="h-10 w-10 bg-[#4F6F52]/10 dark:bg-[#4F6F52]/20 rounded-input flex items-center justify-center text-[#4F6F52] group-hover:bg-[#4F6F52] group-hover:text-white transition-colors duration-300">
                 <BookOpen className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold text-foreground">Learn the Standards</h4>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              <h4 className="text-base font-bold text-[#2F3A33] dark:text-[#F5F1E8]">Learn the Standards</h4>
+              <p className="text-xs sm:text-sm text-[#2F3A33]/70 dark:text-[#F5F1E8]/70 leading-relaxed">
                 Master the principles, workflows, and expectations used across every ATR project.
               </p>
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-card/60 backdrop-blur-md border border-border/75 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
-              <div className="h-10 w-10 bg-primary/10 rounded-input flex items-center justify-center text-primary">
+            <div className="bg-white dark:bg-black/40 backdrop-blur-md border border-[#739072]/20 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-[#739072]/40 hover:shadow-md transition-all duration-300 group">
+              <div className="h-10 w-10 bg-[#739072]/10 dark:bg-[#739072]/20 rounded-input flex items-center justify-center text-[#739072] group-hover:bg-[#739072] group-hover:text-white transition-colors duration-300">
                 <Compass className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold text-foreground">Validate Your Skills</h4>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              <h4 className="text-base font-bold text-[#2F3A33] dark:text-[#F5F1E8]">Validate Your Skills</h4>
+              <p className="text-xs sm:text-sm text-[#2F3A33]/70 dark:text-[#F5F1E8]/70 leading-relaxed">
                 Complete competency checks that reinforce understanding before joining live work.
               </p>
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-card/60 backdrop-blur-md border border-border/75 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-primary/45 hover:shadow-universal transition-all duration-300">
-              <div className="h-10 w-10 bg-primary/10 rounded-input flex items-center justify-center text-primary">
+            <div className="bg-white dark:bg-black/40 backdrop-blur-md border border-[#C17767]/20 rounded-card p-6 shadow-sm space-y-4 hover:-translate-y-[2px] hover:border-[#C17767]/40 hover:shadow-md transition-all duration-300 group">
+              <div className="h-10 w-10 bg-[#C17767]/10 dark:bg-[#C17767]/20 rounded-input flex items-center justify-center text-[#C17767] group-hover:bg-[#C17767] group-hover:text-white transition-colors duration-300">
                 <Award className="w-5 h-5" />
               </div>
-              <h4 className="text-base font-bold text-foreground">Join Live Projects</h4>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
+              <h4 className="text-base font-bold text-[#2F3A33] dark:text-[#F5F1E8]">Join Live Projects</h4>
+              <p className="text-xs sm:text-sm text-[#2F3A33]/70 dark:text-[#F5F1E8]/70 leading-relaxed">
                 Build confidence and contribute to real projects with a strong foundation.
               </p>
             </div>
