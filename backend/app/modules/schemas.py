@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Dict, Any
 from pydantic import BaseModel, ConfigDict
 
 from app.resources.schemas import ResourceRead
@@ -13,6 +13,8 @@ class ModuleBase(BaseModel):
     description: Optional[str] = None
     estimated_duration_minutes: int
     passing_percentage: int
+    agenda: Optional[List[Dict[str, Any]]] = None
+    workshop_steps: Optional[List[str]] = None
 
 class ModuleCreate(ModuleBase):
     display_order: Optional[int] = None
@@ -24,6 +26,8 @@ class ModuleUpdate(BaseModel):
     estimated_duration_minutes: Optional[int] = None
     passing_percentage: Optional[int] = None
     display_order: Optional[int] = None
+    agenda: Optional[List[Dict[str, Any]]] = None
+    workshop_steps: Optional[List[str]] = None
 
 class ModuleRead(ModuleBase):
     id: uuid.UUID

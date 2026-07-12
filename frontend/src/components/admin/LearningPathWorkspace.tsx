@@ -61,6 +61,8 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
           description: updatedMod.description,
           estimated_duration_minutes: updatedMod.estimated_duration_minutes,
           passing_percentage: updatedMod.passing_percentage,
+          agenda: updatedMod.agenda,
+          workshop_steps: updatedMod.workshop_steps,
         },
       });
       setEditingModule(null);
@@ -225,6 +227,7 @@ export const LearningPathWorkspace: React.FC<LearningPathWorkspaceProps> = ({
                 onUnlinkResource={handleUnlinkResource}
                 onManageQuestions={onManageQuestions}
                 onImportQuestions={onImportQuestions}
+                onUpdateModule={handleUpdateModuleSubmit}
               />
             ))}
           </div>

@@ -6,7 +6,7 @@ import { useTheme } from '@/contexts/ThemeContext';
 import { GoogleLogin } from '@react-oauth/google';
 
 export const LandingPage: React.FC = () => {
-  const { loginWithGoogle, isAuthenticated } = useAuth();
+  const { loginWithGoogle, loginWithDevMock, isAuthenticated } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
 
@@ -310,6 +310,27 @@ export const LandingPage: React.FC = () => {
               <span>EXPLORE THE JOURNEY</span>
               <ArrowRight className="w-4 h-4" />
             </button>
+
+            {import.meta.env.DEV && (
+              <button
+                onClick={async () => {
+                  try {
+                    setIsLoggingIn(true);
+                    await loginWithDevMock(navigate);
+                  } catch (err: any) {
+                    setToast({
+                      message: err.message || 'Developer bypass failed',
+                      type: 'error'
+                    });
+                  } finally {
+                    setIsLoggingIn(false);
+                  }
+                }}
+                className="px-6 py-3.5 bg-[#C17767] hover:bg-[#C17767]/90 text-white text-xs sm:text-sm font-bold rounded-button flex items-center gap-1.5 hover:scale-[1.02] active:scale-95 transition-all duration-200 shadow-md"
+              >
+                <span>BYPASS LOGIN (DEV)</span>
+              </button>
+            )}
           </div>
         </div>
 

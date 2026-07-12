@@ -8,6 +8,7 @@ import { CompetencyReportStep } from './CompetencyReportStep';
 import { FoundationCompleteStep } from './FoundationCompleteStep';
 import { useLearningPaths } from '@/hooks/useLearningPaths';
 import { useAuth } from '@/contexts/AuthContext';
+import { modulesApi } from '@/lib/api/modules';
 import { SkeletonCard, EmptyState, ErrorState } from '@/components/ui/States';
 import type { AttemptRead } from '@/types/api';
 import type { AdminLearningPath } from '@/components/admin/adminTypes';
@@ -218,7 +219,6 @@ export const EmployeeJourneyWorkspace: React.FC<EmployeeJourneyWorkspaceProps> =
           onStartCompetencyCheck={() => setCurrentStep('competency_check')}
           onMarkAsCompleted={async () => {
             try {
-              const { modulesApi } = await import('@/lib/api/modules');
               await modulesApi.complete(activeModule.id);
               
               setCompletedModuleIds(prev => {

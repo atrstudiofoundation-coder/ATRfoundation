@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Landscape Consultant — Training Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1a3a2a;
+    --moss: #2d5a3d;
+    --sage: #4a7c59;
+    --leaf: #6aaa78;
+    --mint: #a8d5b5;
+    --cream: #f5f0e8;
+    --parchment: #ede8dc;
+    --sand: #c8b89a;
+    --bark: #7a5c3a;
+    --charcoal: #2a2a2a;
+    --gold: #c9a84c;
+    --gold-light: #e8c96e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--charcoal);
+    overflow-x: hidden;
+  }
+
+  /* HERO */
+  .hero {
+    background: var(--forest);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 60px 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 80%, rgba(74,124,89,0.25) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 20%, rgba(45,90,61,0.3) 0%, transparent 60%);
+  }
+
+  .hero-leaf {
+    position: absolute;
+    font-size: 180px;
+    opacity: 0.04;
+    top: -20px;
+    right: -30px;
+    transform: rotate(30deg);
+    pointer-events: none;
+  }
+  .hero-leaf2 {
+    position: absolute;
+    font-size: 120px;
+    opacity: 0.05;
+    bottom: 30px;
+    left: -10px;
+    transform: rotate(-20deg);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(201,168,76,0.15);
+    border: 1px solid rgba(201,168,76,0.4);
+    color: var(--gold-light);
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 7px 16px;
+    border-radius: 100px;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 72px);
+    font-weight: 700;
+    color: var(--cream);
+    line-height: 1.1;
+    max-width: 820px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 20px;
+  }
+
+  .hero h1 span {
+    color: var(--gold-light);
+    font-style: italic;
+  }
+
+  .hero-sub {
+    color: rgba(245,240,232,0.65);
+    font-size: 17px;
+    max-width: 560px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+    margin-bottom: 48px;
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    position: relative;
+    z-index: 1;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .stat {
+    text-align: center;
+  }
+
+  .stat-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    color: var(--gold-light);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .stat-label {
+    color: rgba(245,240,232,0.5);
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .hero-divider {
+    width: 1px;
+    height: 50px;
+    background: rgba(245,240,232,0.15);
+    align-self: center;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: rgba(245,240,232,0.35);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 1;
+    animation: bounce 2s infinite;
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(6px); }
+  }
+
+  /* INTRO STRIP */
+  .intro-strip {
+    background: var(--gold);
+    padding: 18px 24px;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--forest);
+    letter-spacing: 0.5px;
+  }
+
+  /* SECTION */
+  .section {
+    padding: 80px 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 700;
+    color: var(--forest);
+    line-height: 1.2;
+    margin-bottom: 16px;
+  }
+
+  .section-desc {
+    color: #555;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 680px;
+    margin-bottom: 56px;
+  }
+
+  /* MODULE CARDS */
+  .modules-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 28px;
+  }
+
+  .module-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(0,0,0,0.07);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    cursor: pointer;
+  }
+
+  .module-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 48px rgba(26,58,42,0.12);
+  }
+
+  .module-card.expanded .card-body {
+    display: block;
+  }
+
+  .card-header {
+    padding: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .module-number {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    background: var(--forest);
+    color: var(--gold-light);
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .module-meta { flex: 1; }
+
+  .module-tag {
+    font-size: 10px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 5px;
+  }
+
+  .module-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--forest);
+    line-height: 1.3;
+    margin-bottom: 8px;
+  }
+
+  .module-badges {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 10px;
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-time {
+    background: rgba(201,168,76,0.12);
+    color: #8a6a1a;
+    border: 1px solid rgba(201,168,76,0.3);
+  }
+
+  .badge-workshop {
+    background: rgba(74,124,89,0.1);
+    color: var(--moss);
+    border: 1px solid rgba(74,124,89,0.25);
+  }
+
+  .card-toggle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    border: 1.5px solid #ddd;
+    background: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #888;
+    font-size: 14px;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+
+  .module-card.expanded .card-toggle {
+    background: var(--forest);
+    border-color: var(--forest);
+    color: white;
+    transform: rotate(45deg);
+  }
+
+  .card-divider {
+    height: 1px;
+    background: var(--parchment);
+    margin: 0 24px;
+  }
+
+  .card-body {
+    display: none;
+    padding: 24px;
+  }
+
+  .card-body-inner {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .cb-section-title {
+    font-size: 11px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--sage);
+    margin-bottom: 10px;
+  }
+
+  .objective-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: #444;
+  }
+
+  /* Agenda timeline */
+  .agenda-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .agenda-item {
+    display: flex;
+    gap: 14px;
+    position: relative;
+  }
+
+  .agenda-item:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    left: 17px;
+    top: 28px;
+    bottom: -2px;
+    width: 1px;
+    background: var(--mint);
+  }
+
+  .agenda-time {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--sage);
+    width: 36px;
+    flex-shrink: 0;
+    padding-top: 6px;
+    text-align: right;
+  }
+
+  .agenda-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--sage);
+    flex-shrink: 0;
+    margin-top: 8px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .agenda-content {
+    padding-bottom: 16px;
+    flex: 1;
+  }
+
+  .agenda-phase {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--moss);
+    margin-bottom: 3px;
+  }
+
+  .agenda-detail {
+    font-size: 13px;
+    color: #555;
+    line-height: 1.6;
+  }
+
+  /* Resources */
+  .resource-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .resource-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    text-decoration: none;
+    color: inherit;
+    transition: background 0.15s;
+  }
+
+  .resource-item:hover {
+    background: var(--parchment);
+  }
+
+  .resource-icon {
+    font-size: 16px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .resource-info { flex: 1; }
+
+  .resource-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--forest);
+    line-height: 1.4;
+    margin-bottom: 2px;
+  }
+
+  .resource-source {
+    font-size: 11px;
+    color: #888;
+  }
+
+  /* Workshop box */
+  .workshop-box {
+    background: linear-gradient(135deg, var(--forest) 0%, var(--moss) 100%);
+    border-radius: 10px;
+    padding: 16px;
+    color: white;
+  }
+
+  .workshop-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 14px;
+    color: var(--gold-light);
+    margin-bottom: 8px;
+  }
+
+  .workshop-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .ws-step {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    font-size: 12px;
+    color: rgba(245,240,232,0.8);
+    line-height: 1.5;
+  }
+
+  .ws-num {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.3);
+    color: var(--gold-light);
+    font-size: 10px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* ADDITIONAL MODULES SECTION */
+  .added-strip {
+    background: var(--forest);
+    padding: 56px 24px;
+    text-align: center;
+  }
+
+  .added-strip .section-label { color: var(--gold-light); }
+  .added-strip .section-title { color: var(--cream); margin-bottom: 8px; }
+  .added-strip p { color: rgba(245,240,232,0.6); font-size: 15px; max-width: 540px; margin: 0 auto; }
+
+  /* FOOTER */
+  footer {
+    background: var(--charcoal);
+    padding: 40px 24px;
+    text-align: center;
+  }
+
+  footer p {
+    color: rgba(255,255,255,0.35);
+    font-size: 13px;
+    line-height: 1.8;
+  }
+
+  footer strong { color: rgba(255,255,255,0.6); }
+
+  @media (max-width: 640px) {
+    .hero-stats { gap: 24px; }
+    .hero-divider { display: none; }
+    .modules-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-leaf">🌿</div>
+  <div class="hero-leaf2">🍃</div>
+  <div class="hero-badge">🌱 Landscape Consultant Training Academy</div>
+  <h1>Train Once.<br><span>Empower Always.</span></h1>
+  <p class="hero-sub">A self-paced, structured training system so your team learns deeply — and your time stays where it matters most.</p>
+  <div class="hero-stats">
+    <div class="stat">
+      <div class="stat-num">15</div>
+      <div class="stat-label">Modules</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="stat">
+      <div class="stat-num">≤2h</div>
+      <div class="stat-label">Per Module</div>
+    </div>
+    <div class="hero-divider"></div>
+    <div class="stat">
+      <div class="stat-num">100%</div>
+      <div class="stat-label">Self-Learn Ready</div>
+    </div>
+  </div>
+  <div class="scroll-hint">↓ explore modules</div>
+</section>
+
+<div class="intro-strip">
+  Each module = 1 video watch + 1 article read + 1 hands-on workshop. Click any card to expand full training plan.
+</div>
+
+<!-- MODULES -->
+<div class="section">
+  <div class="section-label">Core Curriculum</div>
+  <div class="section-title">Training Modules</div>
+  <p class="section-desc">Each module is designed to be completed independently within 2 hours. Interns can self-navigate using the resources listed — no hand-holding required.</p>
+
+  <div class="modules-grid" id="modulesGrid"></div>
+</div>
+
+<!-- ADDED MODULES NOTE -->
+<div class="added-strip">
+  <div class="section-label">Bhaveshh's Addition</div>
+  <div class="section-title" style="font-size:28px;">3 Modules Added Beyond Your List</div>
+  <p>Client Communication & Design Presentation, Site Reading & Sun-Wind Analysis, and Design Documentation & Drawing Standards were added — these are the most common skill gaps that lead to early exits.</p>
+</div>
+
+<footer>
+  <p><strong>Landscape Consultant Training Academy</strong><br>
+  Built for internal use · Version 1.0 · 2026<br>
+  Each module designed for ≤ 2 hours · Self-paced · Workshop-included</p>
+</footer>
+
+<script>
+const modules = [
+  {
+    number: "01",
+    tag: "Philosophy & Culture",
+    title: "Vastu Plants & Sacred Landscape Principles",
+    time: "90 min",
+    objective: "Understand the principles of Vastu Shastra as applied to landscape design — directional significance, plant symbolism, energy flow, and how to translate these into a design brief.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Vastu for Landscape Design (YouTube: search 'Vastu Shastra plants directions' — 15 min overview video)" },
+      { time: "15–45", phase: "Article Read", detail: "Read: 'Vastu Plants by Direction' on VastuShastri.com or similar reference — note N/S/E/W plant lists" },
+      { time: "45–75", phase: "Workshop", detail: "Take a site plan (blank or real). Mark the 8 directions. Assign 3 plant species per direction based on Vastu principles. Write a one-paragraph rationale." },
+      { time: "75–90", phase: "Debrief", detail: "Self-check: Can you explain Vastu plant logic to a client in 2 minutes without notes?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Vastu Plants & Directions Explained (15 min)", source: "YouTube — search 'Vastu plants east west north south'" },
+      { icon: "📖", title: "Vastu Shastra for Home Gardens — Plant Guide", source: "vastuplus.com / architectural digest india" },
+      { icon: "📄", title: "Directional Plant Chart (printable reference)", source: "Intern to compile from reading as deliverable" }
+    ],
+    workshop: {
+      title: "🪴 Workshop: Vastu Planting Plan",
+      steps: [
+        "Print or sketch a basic square site plan",
+        "Mark all 8 compass directions clearly",
+        "Assign 2–3 Vastu-appropriate plants per direction",
+        "Write a 100-word client-facing note explaining your choices",
+        "Submit to senior for 10-min verbal review"
+      ]
+    }
+  },
+  {
+    number: "02",
+    tag: "Sensory Design",
+    title: "Water & Sound Features — Healing Journey Design",
+    time: "100 min",
+    objective: "Learn how water features function as therapeutic, sensory, and acoustic elements in landscape design — types, placement logic, material selection, and sound zoning.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'Therapeutic Garden Water Features' or 'Healing Gardens Design' — any 15–20 min documentary/design video" },
+      { time: "20–50", phase: "Article Read", detail: "Read: 'Sound Landscape Design' — how decibel levels and water flow speed affect user mood. ASLA.org has free resources." },
+      { time: "50–85", phase: "Workshop", detail: "Design a 'Sound Journey Path' — a 20m garden path with 3 distinct water feature zones (entry, middle, rest point). Label flow rate, sound level, material." },
+      { time: "85–100", phase: "Debrief", detail: "Explain your design choices aloud as if presenting to a wellness resort client." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Healing Gardens & Water Features Documentary", source: "YouTube — search 'therapeutic landscape water sound'" },
+      { icon: "📖", title: "ASLA: Therapeutic Gardens Design Guide", source: "asla.org (free access)" },
+      { icon: "📖", title: "Water in the Garden: Fountains, Ponds & Falls", source: "Architectural Digest / Houzz editorial" }
+    ],
+    workshop: {
+      title: "💧 Workshop: Sound Journey Map",
+      steps: [
+        "Draw a 20m linear garden path",
+        "Place 3 water features along the path",
+        "Label each: type, flow speed, approx. sound level (soft/medium/strong)",
+        "Note seating or pause points adjacent to each feature",
+        "Write: 'Why this sequence creates a calming journey'"
+      ]
+    }
+  },
+  {
+    number: "03",
+    tag: "Space Structuring",
+    title: "Green Visual Barriers — Species & Layering",
+    time: "90 min",
+    objective: "Master the art of using plants as living walls, screens, and spatial dividers — understanding canopy, mid-layer, and ground cover layering logic with appropriate species selection.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'Layered Planting Design' or 'How to Create Privacy Screens with Plants' — 10–15 min" },
+      { time: "15–45", phase: "Article Read", detail: "Read about 3-tier layering (canopy/understorey/groundcover) and fast vs slow growing privacy screens. Sourced from gardendesign.com or similar." },
+      { time: "45–80", phase: "Workshop", detail: "Given a 15m boundary wall, design a 3-layer planting screen: show species names, heights, spacing, and density. Include one flowering and one evergreen layer." },
+      { time: "80–90", phase: "Debrief", detail: "Can you name 5 fast-growing privacy species suitable for your climate zone off the top of your head?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Layered Planting Design Explained", source: "YouTube — RHS / Garden Design TV channels" },
+      { icon: "📖", title: "Privacy Planting: A Practical Guide to Screens", source: "gardendesign.com" },
+      { icon: "📄", title: "Regional Fast-Growing Screen Plant List", source: "Compile from local nursery catalogue — intern deliverable" }
+    ],
+    workshop: {
+      title: "🌳 Workshop: Boundary Screen Design",
+      steps: [
+        "Sketch a 15m boundary elevation",
+        "Design 3 layers: Canopy (5m+), Mid (1.5–4m), Ground (under 1m)",
+        "Name specific species for each layer",
+        "Mark spacing intervals",
+        "Annotate with: 'This layer does [function] because...'"
+      ]
+    }
+  },
+  {
+    number: "04",
+    tag: "Project Typology",
+    title: "Activity Spaces by Project Type",
+    time: "110 min",
+    objective: "Build a mental framework for how landscape programming differs across project types — residential, resort, hospital, school, wellness — and what activities/spaces to plan for each.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch case study walkthroughs of 2 project types: e.g., a resort landscape + a hospital healing garden (YouTube or Dezeen)" },
+      { time: "20–50", phase: "Article Read", detail: "Read: 'Programming Outdoor Spaces by Use Type' — ASLA or Landscape Architecture Magazine" },
+      { time: "50–90", phase: "Workshop", detail: "Choose 2 project types from the list. For each, create an Activity Matrix: what spaces exist, who uses them, when, and what landscape elements support each activity." },
+      { time: "90–110", phase: "Debrief", detail: "If a client says 'we want a wellness resort', what are the first 5 landscape zones you propose? Answer without notes." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Resort Landscape Design — Case Study", source: "YouTube: MVRDV / SWA / EDSA landscape presentations" },
+      { icon: "🎬", title: "Healing Gardens in Healthcare", source: "YouTube: ASLA award project walkthroughs" },
+      { icon: "📖", title: "Landscape Architecture Magazine: Programming Spaces", source: "landscapearchitecturemagazine.org" }
+    ],
+    workshop: {
+      title: "🏨 Workshop: Activity Matrix",
+      steps: [
+        "Pick any 2 project types (Resort, Hospital, School, etc.)",
+        "Create a table: Zone Name | Users | Time of Use | Key Plants | Key Hardscape",
+        "Fill minimum 5 zones per project type",
+        "Mark which zones overlap between the two types",
+        "Present to peer in 5 minutes as a mock client briefing"
+      ]
+    }
+  },
+  {
+    number: "05",
+    tag: "Climate-Responsive Design",
+    title: "Urban Heat Reduction & Micro-Climate Creation",
+    time: "100 min",
+    objective: "Understand how landscape decisions affect local temperature, humidity, and wind — and how to design intentionally for thermal comfort in Indian urban contexts.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'Urban Heat Island Effect Explained' + one video on 'Cool Pavements / Green Roofs / Tree Canopy cooling' (15–20 min total)" },
+      { time: "20–50", phase: "Article Read", detail: "Read: 'Microclimate Design Strategies' — ArchDaily or Urban Land Institute resources" },
+      { time: "50–85", phase: "Workshop", detail: "Given a 40x40m urban plaza, identify heat stress zones and apply 4 cooling strategies (tree placement, water body, reflective/permeable paving, green wall). Annotate estimated temperature impact." },
+      { time: "85–100", phase: "Debrief", detail: "Name 3 tree species with the best canopy spread-to-height ratio for shade in Indian climate." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Urban Heat Island Effect & Landscape Solutions", source: "YouTube — US EPA / TEDx / NASA visual explainers" },
+      { icon: "📖", title: "Cool Cities: Urban Microclimate Design Guide", source: "ArchDaily / C40 Cities knowledge hub" },
+      { icon: "📖", title: "Trees for Shade in Tropical Climates", source: "ENVIS Centre on Floral Diversity India" }
+    ],
+    workshop: {
+      title: "🌡️ Workshop: Cool Plaza Design",
+      steps: [
+        "Sketch a 40x40m plaza plan",
+        "Shade existing heat sources (hard paving, west-facing walls)",
+        "Place trees for max shade coverage by 3PM",
+        "Add one water feature for evaporative cooling",
+        "Note 2 paving material substitutions to reduce heat absorption"
+      ]
+    }
+  },
+  {
+    number: "06",
+    tag: "Plant Knowledge",
+    title: "Plants by Sun Path & Direction",
+    time: "90 min",
+    objective: "Build a working knowledge of how sun direction affects plant selection — full sun vs shade species, east vs west exposure needs, and reading a site's sun path before specifying.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'How to Read a Sun Path Diagram' or 'Understanding Sun Exposure for Plants' (10–15 min)" },
+      { time: "15–45", phase: "Article Read", detail: "Read: Sun-exposure plant guides from RHS or USDA — categorize at least 20 species by exposure requirement" },
+      { time: "45–75", phase: "Workshop", detail: "Given a site plan with North marked, identify sun/shade zones at 9am, 12pm, 3pm. Assign appropriate species to each zone." },
+      { time: "75–90", phase: "Debrief", detail: "Can you list 5 full-shade, 5 part-shade, and 5 full-sun species appropriate for your region immediately?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Sun Path Diagrams for Garden Design", source: "YouTube — search 'sun path diagram landscape'" },
+      { icon: "📖", title: "RHS: Plants by Sun Exposure", source: "rhs.org.uk/plants/search" },
+      { icon: "🔧", title: "SunCalc.org — Live Sun Path Tool", source: "suncalc.org (free online)" }
+    ],
+    workshop: {
+      title: "☀️ Workshop: Sun Mapping Exercise",
+      steps: [
+        "Use SunCalc.org with your project site address",
+        "Screenshot sun positions at 8am, 12pm, 4pm",
+        "Overlay on site plan — mark shade zones",
+        "Assign 3 species per zone with their light requirement",
+        "Create a one-page 'Sun-Plant Matrix' for the site"
+      ]
+    }
+  },
+  {
+    number: "07",
+    tag: "Ecological Function",
+    title: "Water Purification Species Selection",
+    time: "80 min",
+    objective: "Learn which aquatic and riparian plant species actively purify water — phytoremediation principles, root zone treatment, and how to specify these in water body designs.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'Phytoremediation Explained' or 'Plants that Clean Water' — 10–15 min explainer" },
+      { time: "15–40", phase: "Article Read", detail: "Read about constructed wetlands and root zone treatment systems — CPCB India guidelines or WHO water quality plant resources" },
+      { time: "40–65", phase: "Workshop", detail: "Design a simple constructed wetland for a 500 sqm lake — specify 5 plant species with their purification function (nitrogen removal, BOD reduction, etc.)" },
+      { time: "65–80", phase: "Debrief", detail: "Name the top 5 Indian native aquatic plants for water purification and their specific function." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Phytoremediation & Water Purification Plants", source: "YouTube — search 'aquatic plants water treatment'" },
+      { icon: "📖", title: "Constructed Wetlands for Water Treatment", source: "WHO/CPCB India technical guides" },
+      { icon: "📄", title: "Native Indian Aquatic Plants for Water Bodies", source: "ENVIS Botanical Survey of India" }
+    ],
+    workshop: {
+      title: "💧 Workshop: Wetland Plant Specification",
+      steps: [
+        "Sketch a cross-section of a small water body (500 sqm)",
+        "Mark zones: deep water, shallow, edge, bank",
+        "Assign 1–2 purification species per zone",
+        "Note each species' removal function",
+        "Write a 50-word client note on why these plants were chosen"
+      ]
+    }
+  },
+  {
+    number: "08",
+    tag: "Sustainability",
+    title: "Water Management & Regenerative Landscapes",
+    time: "110 min",
+    objective: "Understand integrated water management in landscape — rainwater harvesting, bioswales, stormwater gardens, and natural filtration — and how to creatively weave these into design.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'Regenerative Landscape Design' by Regenesis Group or any LEED/SITES certified project walkthrough (15–20 min)" },
+      { time: "20–55", phase: "Article Read", detail: "Read: SITES v2 Rating System overview + one case study on bioswale design from Landscape Architecture Magazine" },
+      { time: "55–90", phase: "Workshop", detail: "For a 1-acre mixed-use landscape, design a water journey: from rainfall to infiltration to storage to reuse. Show bioswale, rain garden, and harvesting tank placement." },
+      { time: "90–110", phase: "Debrief", detail: "Walk through your water journey diagram verbally as if presenting to a sustainability-focused client." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Regenerative Landscape Design Principles", source: "YouTube: Regenesis Group / Biomimicry 3.8" },
+      { icon: "📖", title: "SITES v2: Sustainable Sites Initiative Guide", source: "sustainablesites.org (free download)" },
+      { icon: "📖", title: "Bioswale Design Manual", source: "EPA Stormwater Management resources" }
+    ],
+    workshop: {
+      title: "🌧️ Workshop: Water Journey Map",
+      steps: [
+        "Sketch a 1-acre site plan",
+        "Trace the path of a raindrop: where it lands, flows, collects",
+        "Place 1 bioswale, 1 rain garden, 1 collection tank",
+        "Label each with approximate capacity",
+        "Add 2 'design-integrated' moments where water becomes a feature not just infrastructure"
+      ]
+    }
+  },
+  {
+    number: "09",
+    tag: "Food & Production",
+    title: "Edible & Productive Landscapes",
+    time: "90 min",
+    objective: "Design landscapes that are both beautiful and food-producing — permaculture guilds, kitchen gardens, orchard underplanting, and productive edging as design strategy.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'Edible Landscape Design' by Rosalind Creasy or any food forest/permaculture design walkthrough (15 min)" },
+      { time: "15–45", phase: "Article Read", detail: "Read: 'Designing with Edibles' — Fine Gardening or Permaculture Research Institute" },
+      { time: "45–75", phase: "Workshop", detail: "Design an edible border for a 20m x 3m residential garden edge. Include fruiting shrubs, herbs, vegetables, and edible flowers. Must be aesthetically designed, not just functional." },
+      { time: "75–90", phase: "Debrief", detail: "Name 10 edible plants that also function as ornamentals — plants a client wouldn't even know were edible." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Edible Landscape Design with Rosalind Creasy", source: "YouTube — search 'edible landscape design'" },
+      { icon: "📖", title: "Permaculture Guilds for Indian Climates", source: "permacultureindia.org" },
+      { icon: "📖", title: "Fine Gardening: Designing with Edibles", source: "finegardening.com" }
+    ],
+    workshop: {
+      title: "🌿 Workshop: Edible Border Plan",
+      steps: [
+        "Draw a 20m x 3m border in plan view",
+        "Layer: back (tall fruiting shrubs), middle (herbs/vegetables), front (edible groundcover/flowers)",
+        "Name every species and its edible product",
+        "Apply one color/texture design principle so it looks ornamental",
+        "List harvest seasons so something is always producing"
+      ]
+    }
+  },
+  {
+    number: "10",
+    tag: "Ecology",
+    title: "Pollinator Gardens — Species & Habitat Design",
+    time: "90 min",
+    objective: "Learn to design functional pollinator habitats — butterfly gardens, bird attractors, snake/mosquito repellant plant strategies, and soil fertility species.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'How to Design a Pollinator Garden' — National Wildlife Federation or similar (15 min)" },
+      { time: "15–45", phase: "Article Read", detail: "Read species list guides for butterflies, birds, and soil organisms. India-specific pollinator plant guides from WWF India or BNHS." },
+      { time: "45–75", phase: "Workshop", detail: "Design a 10m x 10m pollinator corner: include butterfly attractor zone, bird feeder zone (plants), and one soil-building groundcover section. Name all species." },
+      { time: "75–90", phase: "Debrief", detail: "What are the top 5 Indian native plants that attract maximum butterfly species? Answer without notes." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Designing Pollinator Gardens (Native Plants)", source: "YouTube — NWF / Penn State Extension" },
+      { icon: "📖", title: "WWF India: Native Plants for Pollinators", source: "wwfindia.org" },
+      { icon: "📖", title: "BNHS: Butterfly Attractant Plant Guide India", source: "bnhs.org" }
+    ],
+    workshop: {
+      title: "🦋 Workshop: Pollinator Pocket Garden",
+      steps: [
+        "Sketch a 10x10m corner plan",
+        "Zone it: butterfly nectar area, larval host plant area, bird-attracting area",
+        "Name minimum 3 species per zone",
+        "Add a small water dish feature for insects",
+        "Mark which species repel mosquitoes naturally"
+      ]
+    }
+  },
+  {
+    number: "11",
+    tag: "Restoration",
+    title: "Ecological Restoration Principles",
+    time: "100 min",
+    objective: "Understand ecological restoration as a design discipline — degraded land assessment, native species re-introduction, succession planting, and measurable restoration outcomes.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'Ecological Restoration Explained' — Society for Ecological Restoration or TED talk on rewilding (15–20 min)" },
+      { time: "20–50", phase: "Article Read", detail: "Read: SER International Primer on Ecological Restoration (free PDF) — focus on principles 1–5" },
+      { time: "50–85", phase: "Workshop", detail: "Given a 'degraded urban lot' brief, design Phase 1 restoration: soil remediation species, pioneer plant list, invasive species removal list, and 3-year succession timeline." },
+      { time: "85–100", phase: "Debrief", detail: "What's the difference between restoration, rehabilitation, and reclamation? Explain in 60 seconds." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Ecological Restoration: Rewilding Britain / SER", source: "YouTube — search 'ecological restoration landscape'" },
+      { icon: "📖", title: "SER International Primer on Ecological Restoration", source: "ser.org (free PDF)" },
+      { icon: "📖", title: "Native Species for Ecological Restoration India", source: "FRLHT / WII India native plant databases" }
+    ],
+    workshop: {
+      title: "🌱 Workshop: Restoration Phase Plan",
+      steps: [
+        "Write a one-page 'site degradation assessment' template",
+        "List 5 pioneer species suitable for degraded Indian soil",
+        "Write a Year 1 / Year 2 / Year 3 planting succession plan",
+        "Identify 3 invasive species to remove first",
+        "Define 2 measurable success indicators for the restoration"
+      ]
+    }
+  },
+  {
+    number: "12",
+    tag: "Community Design",
+    title: "Urban Farming — Family-Engaging Spaces",
+    time: "90 min",
+    objective: "Design urban farming spaces that are participatory, family-friendly, and educationally engaging — from rooftop farms to community kitchen gardens and school growing programs.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'Community Garden Design' or 'Urban Farming for Families' — 15 min case study" },
+      { time: "15–45", phase: "Article Read", detail: "Read: 'Designing Community Food Gardens' — ASLA or Urban Agriculture Magazine" },
+      { time: "45–75", phase: "Workshop", detail: "Design a 'Family Farm Zone' for a township: include kids' patch, family plot, community composting, tool storage, and social seating. All within 200 sqm." },
+      { time: "75–90", phase: "Debrief", detail: "How would you sell an urban farm concept to a skeptical housing society?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Community Garden & Urban Farm Design", source: "YouTube — search 'community garden design case study'" },
+      { icon: "📖", title: "Urban Agriculture Magazine: Design Guide", source: "urbanagnews.com" },
+      { icon: "📖", title: "FAO: Urban and Peri-Urban Horticulture", source: "fao.org/urban-agriculture (free)" }
+    ],
+    workshop: {
+      title: "🥕 Workshop: Family Farm Zone Plan",
+      steps: [
+        "Sketch 200 sqm urban farm layout",
+        "Zone: kids patch (sensory/easy crops), adult plots, composting, tools, social seating",
+        "Name 5 crops suitable for kids to grow",
+        "Add one 'learning station' (signage/chalk board planting guide)",
+        "Write a 3-sentence pitch to a housing society committee"
+      ]
+    }
+  },
+  {
+    number: "13",
+    tag: "Therapeutic Design",
+    title: "Sensory Gardens — Design Principles & Detail",
+    time: "100 min",
+    objective: "Learn the five-sense framework for sensory garden design — tactile, auditory, visual, olfactory, gustatory — with detail design principles for inclusive, therapeutic spaces.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'Sensory Garden Design Principles' — any therapeutic landscape walkthrough or RHS sensory garden tour" },
+      { time: "20–50", phase: "Article Read", detail: "Read: 'Design for the Senses' by Clare Cooper Marcus or ASLA therapeutic garden resources" },
+      { time: "50–85", phase: "Workshop", detail: "Design a 15m x 8m sensory trail: assign species and materials to each of the 5 senses. Include one feature per sense with annotation." },
+      { time: "85–100", phase: "Debrief", detail: "Name 3 plants for each of the 5 senses — 15 plants total — from memory." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Sensory Garden Design Walkthrough (RHS)", source: "YouTube — RHS Chelsea / therapeutic landscape tours" },
+      { icon: "📖", title: "Healing Gardens: Design for the Senses", source: "Clare Cooper Marcus — Island Press" },
+      { icon: "📖", title: "ASLA: Therapeutic Landscape Design Guidelines", source: "asla.org/therapeuticlandscapes" }
+    ],
+    workshop: {
+      title: "👃 Workshop: Five-Sense Trail Design",
+      steps: [
+        "Sketch a 15m x 8m path layout",
+        "Mark 5 stations — one per sense",
+        "For each: name the plant/material element and why it activates that sense",
+        "Add accessible pathway width (min 1.2m for wheelchair)",
+        "Write a short description as if it were an exhibit label at each station"
+      ]
+    }
+  },
+  {
+    number: "14",
+    tag: "Climate Action",
+    title: "Carbon Absorbing Landscapes",
+    time: "90 min",
+    objective: "Understand carbon sequestration in landscape design — which species and soil practices store the most carbon, how to specify for carbon-positive outcomes, and communicating this to clients.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'How Trees Capture Carbon' or 'Carbon Farming Explained' — 15 min explainer" },
+      { time: "15–45", phase: "Article Read", detail: "Read: 'Soil Carbon and Landscape Management' — Rodale Institute or Project Drawdown landscaping chapter" },
+      { time: "45–75", phase: "Workshop", detail: "From a planting list of 30 common species, rank the top 10 by carbon sequestration capacity. Propose a 'carbon-positive' planting palette for a 1-acre park." },
+      { time: "75–90", phase: "Debrief", detail: "How would you explain carbon sequestration to a residential client in 60 seconds without jargon?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Carbon Sequestration Through Trees & Soil", source: "YouTube — Project Drawdown / Rodale Institute" },
+      { icon: "📖", title: "Project Drawdown: Land Use Solutions", source: "drawdown.org (free)" },
+      { icon: "📖", title: "i-Tree Tools: Carbon Benefit Calculator", source: "itreetools.org (free software)" }
+    ],
+    workshop: {
+      title: "🌲 Workshop: Carbon Planting Palette",
+      steps: [
+        "Research carbon sequestration rates for 10 species (kg CO2/year)",
+        "Rank them highest to lowest",
+        "Create a 1-acre park planting plan focused on high-sequestration species",
+        "Calculate rough total annual CO2 absorption",
+        "Write a 1-paragraph 'carbon benefit' statement for the client proposal"
+      ]
+    }
+  },
+  {
+    number: "15",
+    tag: "Behavioral Design",
+    title: "Human Psychology for Experiential Landscapes",
+    time: "110 min",
+    objective: "Apply environmental psychology principles to landscape design — prospect-refuge theory, biophilia, wayfinding psychology, dwell triggers, and how people move through and experience outdoor space.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'Environmental Psychology & Space Design' or Colin Ellard lecture on 'Places of the Heart' (15–20 min)" },
+      { time: "20–55", phase: "Article Read", detail: "Read: 'Biophilic Design Patterns' from Terrapin Bright Green (free PDF, 14 patterns)" },
+      { time: "55–90", phase: "Workshop", detail: "Analyse an existing park or garden you know well: identify 5 psychological triggers (where people gather, linger, avoid, feel anxious, feel safe). Annotate on a sketch plan." },
+      { time: "90–110", phase: "Debrief", detail: "Name 4 biophilic design patterns and explain how you'd apply each in a landscape." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Environmental Psychology of Place — Colin Ellard", source: "YouTube / TED — search 'psychology of outdoor spaces'" },
+      { icon: "📖", title: "14 Patterns of Biophilic Design — Terrapin", source: "terrapinbrightgreen.com (free PDF)" },
+      { icon: "📖", title: "The Experience of Landscape — Jay Appleton", source: "Prospect-Refuge Theory — university library / researchgate" }
+    ],
+    workshop: {
+      title: "🧠 Workshop: Psychological Landscape Audit",
+      steps: [
+        "Choose a real park or garden you can visit or know well",
+        "Sketch its layout from memory",
+        "Mark 5 zones: where people gather, linger, rush through, avoid, feel calm",
+        "Annotate WHY — using prospect-refuge, biophilia, or wayfinding logic",
+        "Propose 2 design changes to improve dwell time and comfort"
+      ]
+    }
+  },
+  {
+    number: "16",
+    tag: "★ Added Module",
+    title: "Client Communication & Design Presentation",
+    time: "100 min",
+    objective: "Develop the ability to present landscape design concepts clearly and confidently — verbal presentation, concept storytelling, handling objections, and reading a client's brief correctly.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'How to Present a Design to a Client' — any design presentation masterclass on YouTube (15 min)" },
+      { time: "15–40", phase: "Article Read", detail: "Read: 'The Art of the Design Narrative' — how to structure a verbal design walkthrough" },
+      { time: "40–80", phase: "Workshop", detail: "Take any completed design (even from another module). Prepare and deliver a 5-minute verbal presentation: concept > design logic > plant choices > experience journey. Record yourself." },
+      { time: "80–100", phase: "Debrief", detail: "Play back the recording. Identify 2 things that worked and 2 to improve. Submit to senior with self-assessment." }
+    ],
+    resources: [
+      { icon: "🎬", title: "Design Presentation Skills Masterclass", source: "YouTube — search 'architecture landscape presentation client'" },
+      { icon: "📖", title: "The Design Presentation: Structure & Story", source: "Dezeen / ArchDaily editorial guides" },
+      { icon: "🔧", title: "Loom / Voice Memo — Record your own mock presentation", source: "loom.com (free) or phone voice memo" }
+    ],
+    workshop: {
+      title: "🎤 Workshop: 5-Minute Design Pitch",
+      steps: [
+        "Pick any design from a previous module",
+        "Write a 5-step presentation script: concept / logic / plant story / experience / CTA",
+        "Record yourself presenting for exactly 5 minutes",
+        "Review: Did you use jargon? Did you tell a story? Were you confident?",
+        "Submit recording + 3-bullet self-assessment to senior"
+      ]
+    }
+  },
+  {
+    number: "17",
+    tag: "★ Added Module",
+    title: "Site Reading, Sun & Wind Analysis",
+    time: "90 min",
+    objective: "Learn to read a site before touching a design — understanding slope, drainage direction, sun path, prevailing wind, and how these fundamentally shape every design decision.",
+    agenda: [
+      { time: "0–15", phase: "Video Watch", detail: "Watch: 'Site Analysis for Landscape Architecture' — 15 min tutorial on sun, wind, slope reading" },
+      { time: "15–40", phase: "Article Read", detail: "Read: Site Analysis chapter from any landscape architecture fundamentals textbook or LAF (Landscape Architecture Foundation) resources" },
+      { time: "40–70", phase: "Workshop", detail: "Given a real site (from Google Maps), perform a written site analysis: mark N/S/E/W, identify sun path, note any slope indicators from satellite view, hypothesize prevailing wind." },
+      { time: "70–90", phase: "Debrief", detail: "Without looking at notes: what are the first 6 things you observe when you visit a new site?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Site Analysis for Landscape Architecture", source: "YouTube — search 'site analysis landscape architecture tutorial'" },
+      { icon: "🔧", title: "SunCalc.org + Google Earth for Site Reading", source: "suncalc.org + earth.google.com" },
+      { icon: "📖", title: "Landscape Architecture Fundamentals: Site Analysis", source: "LAF / ASLA student resources" }
+    ],
+    workshop: {
+      title: "🗺️ Workshop: Live Site Analysis",
+      steps: [
+        "Pick any real site on Google Maps (can be a project site or any park)",
+        "Print or sketch the satellite view",
+        "Mark: North, sun arc, possible wind direction, slope flow direction, entry points",
+        "List design constraints and opportunities (min 3 each)",
+        "Write: 'Because of this site's [condition], I would / would not [design decision]'"
+      ]
+    }
+  },
+  {
+    number: "18",
+    tag: "★ Added Module",
+    title: "Design Documentation & Drawing Standards",
+    time: "100 min",
+    objective: "Understand the professional standards for landscape documentation — what drawings to produce, line weights, notation conventions, plant schedule formats, and what a complete drawing set looks like.",
+    agenda: [
+      { time: "0–20", phase: "Video Watch", detail: "Watch: 'What Goes in a Landscape Drawing Set' or any AutoCAD/Sketch-Up landscape documentation tutorial (15–20 min)" },
+      { time: "20–50", phase: "Article Read", detail: "Read: Standard drawing types for landscape projects — concept plan, planting plan, detail drawings, sections, plant schedule. ASLA or LILA resources." },
+      { time: "50–85", phase: "Workshop", detail: "Create a mock plant schedule for a 20-species planting plan: botanical name, common name, size at planting, mature size, spacing, quantity, remarks." },
+      { time: "85–100", phase: "Debrief", detail: "What is the difference between a Concept Plan and a Detailed Planting Plan? When do you submit each?" }
+    ],
+    resources: [
+      { icon: "🎬", title: "Landscape Drawing Set Explained", source: "YouTube — search 'landscape architecture drawing set tutorial'" },
+      { icon: "📖", title: "ASLA Guide to Landscape Documentation Standards", source: "asla.org/practice resources" },
+      { icon: "📄", title: "Plant Schedule Template (Excel/Google Sheets)", source: "Intern to create as a deliverable from this module" }
+    ],
+    workshop: {
+      title: "📐 Workshop: Plant Schedule Builder",
+      steps: [
+        "Choose 20 species from any previous module",
+        "Create a plant schedule table with all standard columns",
+        "Add a 'Design Intent' column — why is each species being used?",
+        "Format it professionally (consistent fonts, units, abbreviations)",
+        "Submit as a reusable template for all future projects"
+      ]
+    }
+  }
+];
+
+function renderModules() {
+  const grid = document.getElementById('modulesGrid');
+  modules.forEach((mod, idx) => {
+    const card = document.createElement('div');
+    card.className = 'module-card';
+    card.innerHTML = `
+      <div class="card-header" onclick="toggleCard(${idx})">
+        <div class="module-number">${mod.number}</div>
+        <div class="module-meta">
+          <div class="module-tag">${mod.tag}</div>
+          <div class="module-title">${mod.title}</div>
+          <div class="module-badges">
+            <span class="badge badge-time">⏱ ${mod.time}</span>
+            <span class="badge badge-workshop">🔨 Workshop Included</span>
+          </div>
+        </div>
+        <button class="card-toggle" onclick="toggleCard(${idx})">+</button>
+      </div>
+      <div class="card-body">
+        <div class="card-divider"></div>
+        <div style="height:1px"></div>
+        <div class="card-body-inner" style="padding:20px 24px 24px">
+          <div>
+            <div class="cb-section-title">Learning Objective</div>
+            <p class="objective-text">${mod.objective}</p>
+          </div>
+          <div>
+            <div class="cb-section-title">Session Agenda</div>
+            <div class="agenda-list">
+              ${mod.agenda.map(a => `
+                <div class="agenda-item">
+                  <div class="agenda-time">${a.time}<br>min</div>
+                  <div class="agenda-dot"></div>
+                  <div class="agenda-content">
+                    <div class="agenda-phase">${a.phase}</div>
+                    <div class="agenda-detail">${a.detail}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div>
+            <div class="cb-section-title">Resources</div>
+            <div class="resource-list">
+              ${mod.resources.map(r => `
+                <div class="resource-item">
+                  <div class="resource-icon">${r.icon}</div>
+                  <div class="resource-info">
+                    <div class="resource-title">${r.title}</div>
+                    <div class="resource-source">${r.source}</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+          <div class="workshop-box">
+            <div class="workshop-title">${mod.workshop.title}</div>
+            <div class="workshop-steps">
+              ${mod.workshop.steps.map((s, i) => `
+                <div class="ws-step">
+                  <div class="ws-num">${i+1}</div>
+                  <div>${s}</div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function toggleCard(idx) {
+  const cards = document.querySelectorAll('.module-card');
+  cards[idx].classList.toggle('expanded');
+}
+
+renderModules();
+</script>
+</body>
+</html>

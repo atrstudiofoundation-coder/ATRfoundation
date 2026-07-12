@@ -1,7 +1,7 @@
 import uuid
 from datetime import datetime
 from typing import List, Optional
-from sqlalchemy import String, Boolean, DateTime, Integer, ForeignKey, Uuid
+from sqlalchemy import String, Boolean, DateTime, Integer, ForeignKey, Uuid, JSON
 from sqlalchemy.sql import func
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from app.database.session import Base
@@ -54,6 +54,8 @@ class Module(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now(), nullable=False
     )
+    agenda: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
+    workshop_steps: Mapped[Optional[list]] = mapped_column(JSON, nullable=True)
 
     # Relationships
     learning_path: Mapped[LearningPath] = relationship("LearningPath", back_populates="modules")

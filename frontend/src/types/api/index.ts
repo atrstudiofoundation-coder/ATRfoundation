@@ -118,6 +118,12 @@ export interface AssessmentUpdate {
   status?: ContentStatus;
 }
 
+export interface ModuleAgendaItem {
+  time: string;
+  phase: string;
+  detail: string;
+}
+
 export interface Module {
   id: string;
   learning_path_id: string;
@@ -129,6 +135,8 @@ export interface Module {
   status?: ContentStatus;
   resources?: Resource[];
   assessment?: Assessment;
+  agenda?: ModuleAgendaItem[];
+  workshop_steps?: string[];
   created_at: string;
   updated_at: string;
 }
@@ -141,6 +149,8 @@ export interface ModuleCreate {
   passing_percentage?: number;
   display_order?: number;
   status?: ContentStatus;
+  agenda?: ModuleAgendaItem[];
+  workshop_steps?: string[];
 }
 
 export interface ModuleUpdate {
@@ -150,6 +160,8 @@ export interface ModuleUpdate {
   passing_percentage?: number;
   display_order?: number;
   status?: ContentStatus;
+  agenda?: ModuleAgendaItem[];
+  workshop_steps?: string[];
 }
 
 export interface LearningPath {

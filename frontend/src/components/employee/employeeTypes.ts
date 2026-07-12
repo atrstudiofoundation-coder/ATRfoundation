@@ -19,6 +19,12 @@ export type JourneyStep =
 
 export type ResourceType = ApiResourceType | 'image';
 
+export interface ModuleAgendaItem {
+  time: string;
+  phase: string;
+  detail: string;
+}
+
 export interface EmployeeResource extends Resource {
   type?: ResourceType;
   url?: string;
@@ -47,6 +53,7 @@ export interface EmployeeModule extends Omit<Module, 'status'> {
   video_url?: string;
   resources: EmployeeResource[];
   assessment?: EmployeeAssessment;
+  agenda?: ModuleAgendaItem[];
 }
 
 export interface EmployeeJourney extends Omit<LearningPath, 'modules'> {

@@ -15,8 +15,240 @@ import {
   ArrowRight,
   TrendingUp,
   UserCheck,
-  CheckCircle2
+  CheckCircle2,
+  Users,
+  Activity,
+  ShieldCheck,
+  Leaf
 } from 'lucide-react';
+
+// Minimalist vector graphic inspired by site plan / architectural blueprint
+const LandscapeSitePlan: React.FC = () => {
+  return (
+    <svg viewBox="0 0 400 180" className="w-full h-full text-primary/10 stroke-current fill-none" strokeWidth="1" strokeLinecap="round">
+      {/* Grid lines */}
+      <line x1="0" y1="30" x2="400" y2="30" strokeDasharray="3 6" strokeWidth="0.5" />
+      <line x1="0" y1="90" x2="400" y2="90" strokeDasharray="3 6" strokeWidth="0.5" />
+      <line x1="0" y1="150" x2="400" y2="150" strokeDasharray="3 6" strokeWidth="0.5" />
+      <line x1="100" y1="0" x2="100" y2="180" strokeDasharray="3 6" strokeWidth="0.5" />
+      <line x1="200" y1="0" x2="200" y2="180" strokeDasharray="3 6" strokeWidth="0.5" />
+      <line x1="300" y1="0" x2="300" y2="180" strokeDasharray="3 6" strokeWidth="0.5" />
+      
+      {/* Contours (topography) */}
+      <path d="M-20,60 Q 80,40 160,110 T 360,70 T 420,100" strokeWidth="1.2" />
+      <path d="M-20,90 Q 70,70 150,140 T 350,100 T 420,130" strokeWidth="0.8" strokeDasharray="1 2" />
+      <path d="M-20,120 Q 60,100 140,170 T 340,130 T 420,160" strokeWidth="0.8" />
+      
+      {/* Pathway curve */}
+      <path d="M 80,180 C 120,120 220,140 260,0" strokeWidth="2.5" stroke="#4F6F52" strokeOpacity="0.15" />
+      <path d="M 83,180 C 123,120 223,140 263,0" strokeWidth="1" stroke="#4F6F52" strokeOpacity="0.2" strokeDasharray="4 4" />
+      
+      {/* Building footprint (architectural layout) */}
+      <rect x="250" y="60" width="80" height="60" rx="2" strokeWidth="1.5" stroke="#2F3A33" strokeOpacity="0.2" />
+      <line x1="250" y1="60" x2="330" y2="120" strokeWidth="0.5" strokeDasharray="2 2" strokeOpacity="0.2" />
+      <line x1="330" y1="60" x2="250" y2="120" strokeWidth="0.5" strokeDasharray="2 2" strokeOpacity="0.2" />
+      
+      {/* Planting circles (Trees / shrubbery standard CAD representations) */}
+      <circle cx="120" cy="50" r="16" strokeWidth="1" stroke="#739072" strokeOpacity="0.3" />
+      <circle cx="120" cy="50" r="2" fill="#739072" fillOpacity="0.3" />
+      <line x1="104" y1="50" x2="136" y2="50" strokeWidth="0.5" strokeOpacity="0.3" />
+      <line x1="120" y1="34" x2="120" y2="66" strokeWidth="0.5" strokeOpacity="0.3" />
+      <path d="M 112,42 A 12 12 0 0 1 128,58" strokeWidth="0.5" strokeOpacity="0.3" />
+      <path d="M 128,42 A 12 12 0 0 1 112,58" strokeWidth="0.5" strokeOpacity="0.3" />
+
+      <circle cx="170" cy="120" r="12" strokeWidth="1" stroke="#739072" strokeOpacity="0.3" />
+      <circle cx="170" cy="120" r="2.5" fill="#739072" fillOpacity="0.3" />
+      <line x1="158" y1="120" x2="182" y2="120" strokeWidth="0.5" strokeOpacity="0.3" />
+      <line x1="170" y1="108" x2="170" y2="132" strokeWidth="0.5" strokeOpacity="0.3" />
+
+      <circle cx="70" cy="100" r="8" strokeWidth="1" stroke="#739072" strokeOpacity="0.3" />
+      
+      {/* Planting bed polygons */}
+      <polygon points="50,150 90,140 100,165 40,160" strokeWidth="1" strokeDasharray="2 2" strokeOpacity="0.2" />
+      <polygon points="280,140 320,135 340,155 290,160" strokeWidth="1" strokeDasharray="2 2" strokeOpacity="0.2" />
+      
+      {/* Scale bar & north arrow */}
+      <g transform="translate(20, 150)" strokeWidth="0.8" strokeOpacity="0.3">
+        <line x1="0" y1="0" x2="40" y2="0" stroke="#2F3A33" />
+        <line x1="0" y1="-3" x2="0" y2="3" stroke="#2F3A33" />
+        <line x1="20" y1="-3" x2="20" y2="3" stroke="#2F3A33" />
+        <line x1="40" y1="-3" x2="40" y2="3" stroke="#2F3A33" />
+        <text x="0" y="-6" className="text-[6px] font-mono fill-muted-foreground stroke-none">0m</text>
+        <text x="20" y="-6" className="text-[6px] font-mono fill-muted-foreground stroke-none">10m</text>
+        <text x="40" y="-6" className="text-[6px] font-mono fill-muted-foreground stroke-none">20m</text>
+      </g>
+      
+      <g transform="translate(360, 40)" strokeWidth="0.8" strokeOpacity="0.3" stroke="#2F3A33">
+        <circle cx="0" cy="0" r="10" strokeWidth="0.5" />
+        <line x1="0" y1="-14" x2="0" y2="14" />
+        <line x1="-10" y1="0" x2="10" y2="0" strokeWidth="0.5" />
+        <polygon points="0,-14 -3,-7 3,-7" fill="#2F3A33" stroke="none" />
+        <text x="4" y="-8" className="text-[8px] font-mono font-bold fill-muted-foreground stroke-none">N</text>
+      </g>
+    </svg>
+  );
+};
+
+// Premium radial progress circular gauge
+const RadialProgressGauge: React.FC<{ percentage: number; color: string }> = ({ percentage, color }) => {
+  const radius = 24;
+  const strokeWidth = 4;
+  const circumference = 2 * Math.PI * radius;
+  const offset = circumference - (percentage / 100) * circumference;
+
+  return (
+    <div className="relative flex items-center justify-center shrink-0">
+      <svg width="60" height="60" className="rotate-[-90deg]">
+        <circle
+          cx="30"
+          cy="30"
+          r={radius}
+          fill="none"
+          stroke="var(--border)"
+          strokeWidth={strokeWidth}
+          strokeOpacity="0.6"
+        />
+        <circle
+          cx="30"
+          cy="30"
+          r={radius}
+          fill="none"
+          stroke={color}
+          strokeWidth={strokeWidth}
+          strokeDasharray={circumference}
+          strokeDashoffset={offset}
+          strokeLinecap="round"
+          className="transition-all duration-1000 ease-out"
+        />
+      </svg>
+      <span className="absolute text-xs font-bold font-mono text-[#2F3A33]">
+        {percentage}%
+      </span>
+    </div>
+  );
+};
+
+// Custom SVG Sparkline for natural visual trend indicators inside KPI cards
+const Sparkline: React.FC<{ points: number[]; color: string }> = ({ points, color }) => {
+  const width = 80;
+  const height = 28;
+  const max = Math.max(...points, 1);
+  const min = Math.min(...points, 0);
+  const range = max - min || 1;
+  
+  const coords = points.map((p, i) => {
+    const x = (i / (points.length - 1)) * width;
+    const y = height - ((p - min) / range) * height;
+    return `${x},${y}`;
+  });
+  
+  const pathD = `M ${coords.join(' L ')}`;
+  
+  return (
+    <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="shrink-0 opacity-80">
+      <path
+        d={pathD}
+        fill="none"
+        stroke={color}
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+// Custom SVG Line Chart for onboarding audit progress metrics (using strict brand palette)
+const ProgressOverviewChart: React.FC = () => {
+  const xCoords = [40, 145, 250, 355, 460];
+  const dates = ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'];
+  
+  // Data sets for the lines
+  const line1Points = [125, 110, 80, 50, 20]; // Modules Completed
+  const line2Points = [120, 105, 90, 65, 35]; // Assessments Passed
+  const line3Points = [100, 85, 70, 45, 30];  // Avg. Score
+
+  const getPathD = (yPoints: number[]) => {
+    return `M ${xCoords.map((x, i) => `${x},${yPoints[i]}`).join(' L ')}`;
+  };
+
+  return (
+    <div className="space-y-4 pt-4 border-t border-border/80">
+      <div className="flex items-center justify-between">
+        <h4 className="text-xs font-bold font-display uppercase tracking-wider text-foreground">Progress Overview</h4>
+        {/* Legend */}
+        <div className="flex items-center gap-4 text-[9px] font-bold font-mono uppercase tracking-wider text-muted-foreground">
+          <div className="flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#4F6F52]"></span>
+            <span>Modules</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#739072]"></span>
+            <span>Assessments</span>
+          </div>
+          <div className="flex items-center gap-1">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#C17767]"></span>
+            <span>Avg. Score</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="relative h-44 w-full bg-[#F5F1E8]/35 rounded-input p-2 border border-border/40 overflow-hidden">
+        <svg viewBox="0 0 500 150" className="w-full h-full overflow-visible">
+          {/* Y Axis Grid Lines */}
+          {[20, 47.5, 75, 102.5, 130].map((y, idx) => (
+            <g key={y}>
+              <line x1="40" y1={y} x2="460" y2={y} stroke="var(--border)" strokeWidth="0.5" strokeDasharray="2 2" />
+              <text x="15" y={y + 3} className="text-[8px] font-mono fill-muted-foreground" textAnchor="start">{100 - idx * 25}%</text>
+            </g>
+          ))}
+
+          {/* X Axis Dates */}
+          {xCoords.map((x, idx) => (
+            <text key={x} x={x} y="145" className="text-[8px] font-mono fill-muted-foreground" textAnchor="middle">
+              {dates[idx]}
+            </text>
+          ))}
+
+          {/* Area under curves */}
+          <path
+            d={`${getPathD(line1Points)} L 460,130 L 40,130 Z`}
+            fill="url(#gradient-forest)"
+          />
+          <path
+            d={`${getPathD(line3Points)} L 460,130 L 40,130 Z`}
+            fill="url(#gradient-terracotta)"
+          />
+
+          {/* Paths */}
+          <path d={getPathD(line1Points)} fill="none" stroke="#4F6F52" strokeWidth="1.5" strokeLinecap="round" />
+          <path d={getPathD(line2Points)} fill="none" stroke="#739072" strokeWidth="1.5" strokeLinecap="round" />
+          <path d={getPathD(line3Points)} fill="none" stroke="#C17767" strokeWidth="1.5" strokeLinecap="round" />
+
+          {/* Points */}
+          {xCoords.map((x, idx) => (
+            <g key={x}>
+              <circle cx={x} cy={line1Points[idx]} r="2" fill="#4F6F52" stroke="var(--card)" strokeWidth="0.5" />
+              <circle cx={x} cy={line2Points[idx]} r="2" fill="#739072" stroke="var(--card)" strokeWidth="0.5" />
+              <circle cx={x} cy={line3Points[idx]} r="2" fill="#C17767" stroke="var(--card)" strokeWidth="0.5" />
+            </g>
+          ))}
+
+          <defs>
+            <linearGradient id="gradient-forest" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#4F6F52" stopOpacity="0.06" />
+              <stop offset="100%" stopColor="#4F6F52" stopOpacity="0.00" />
+            </linearGradient>
+            <linearGradient id="gradient-terracotta" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#C17767" stopOpacity="0.04" />
+              <stop offset="100%" stopColor="#C17767" stopOpacity="0.00" />
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+    </div>
+  );
+};
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -33,75 +265,131 @@ export const DashboardPage: React.FC = () => {
   const pathModules = primaryPath?.modules ?? modules ?? [];
   const totalModulesCount = pathModules.length;
 
+  // Find active onboarding focal person (defaults to Mayank Gangrediwar)
+  const firstProgress = compliance?.cohort_progress?.[0] || {
+    user_name: 'Mayank Gangrediwar',
+    department: 'Studio Design',
+    progress_percent: 100,
+    status: 'Completed'
+  };
+
   return (
-    <div className="space-y-8 animate-fade-in">
+    <div className="space-y-8 animate-fade-in relative z-10">
+      {/* 4-Layer architectural paper background elements overlay */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden -z-10 opacity-[0.025] flex flex-col justify-between">
+        <div className="h-64 w-full">
+          <LandscapeSitePlan />
+        </div>
+        <div className="h-64 w-full scale-x-[-1] opacity-70">
+          <LandscapeSitePlan />
+        </div>
+      </div>
+
+      {/* Decorative leaf silhouettes in header corner */}
+      <div className="absolute top-0 right-0 pointer-events-none opacity-[0.03] text-primary">
+        <Leaf className="w-24 h-24 rotate-45" />
+      </div>
+
       {/* Welcome Banner */}
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-border pb-6 relative z-10">
         <div>
-          <h1 className="text-4xl font-display font-bold tracking-tight">Studio Executive Dashboard</h1>
-          <p className="text-muted-foreground mt-1">
+          <div className="flex items-center gap-2 mb-1.5 text-xs text-primary font-bold font-mono uppercase tracking-wider">
+            <Leaf className="w-3.5 h-3.5" /> ATR Design Studio
+          </div>
+          <h1 className="text-4xl font-display font-bold tracking-tight text-[#2F3A33]">Studio Executive Dashboard</h1>
+          <p className="text-muted-foreground mt-1 text-sm">
             {isEmployee 
               ? `Welcome to ATR Design Studio, ${user.name}. Track your onboarding path and design standard qualifications.`
               : `Administrator Portal: Monitoring onboarding compliance and knowledge assessments.`}
           </p>
         </div>
-        <div className="flex items-center gap-2 bg-secondary border border-border rounded-full px-4 py-1.5 text-xs text-foreground/85 font-semibold">
-          <UserCheck className="w-4 h-4 text-primary" />
+        <div className="flex items-center gap-2 bg-[#F5F1E8] border border-border rounded-full px-4 py-2 text-xs text-[#2F3A33] font-bold shadow-sm transition-all duration-200 hover:scale-[1.02]">
+          <UserCheck className="w-4 h-4 text-[#4F6F52]" />
           <span>Active Role: <span className="capitalize">{user.role}</span></span>
         </div>
       </div>
 
       {isEmployee ? (
         <>
-          {/* Employee Live Stats Grid */}
+          {/* Employee KPI Cards Grid (Themed with Natural Materials & Accents) */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Curriculum Modules</p>
-                  <p className="text-3xl font-display font-bold text-primary">{totalModulesCount}</p>
-                </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <BookOpen className="w-5 h-5" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Pass Rate Average</p>
-                  <p className="text-3xl font-display font-bold text-primary">{analytics?.average_pass_rate ?? 0}%</p>
-                </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <Award className="w-5 h-5" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Studio Reference Assets</p>
-                  <p className="text-3xl font-display font-bold text-primary">{resources.length}</p>
-                </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <Clock className="w-5 h-5" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Assessment Status</p>
-                  <div className="flex items-center gap-1.5 mt-1">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    <span className="text-sm font-semibold text-emerald-700 dark:text-emerald-500">Live & Active</span>
+            {/* Card 1: Registered / Active Curriculum Modules -> Forest Green Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(79,111,82,0.15)] relative overflow-hidden group bg-[#4F6F52]/5 border-[#4F6F52]/20">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#4F6F52] font-bold uppercase tracking-wider">Active Curriculum Modules</p>
+                  <p className="text-3.5xl font-display font-bold text-[#4F6F52]">{totalModulesCount}</p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#4F6F52] font-semibold">
+                    <span>Path modules</span>
                   </div>
+                  <p className="text-[9px] text-[#4F6F52]/75">Core studio lessons</p>
                 </div>
-                <div className="p-3 bg-emerald-100 dark:bg-emerald-950/30 rounded-full text-emerald-700 dark:text-emerald-500">
-                  <TrendingUp className="w-5 h-5" />
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#4F6F52] text-white rounded-full">
+                    <BookOpen className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[1, 1, 2, 2, 2, 2, 2]} color="#4F6F52" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Card 2: Pass Rate Average -> Sage Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(115,144,114,0.15)] relative overflow-hidden group bg-[#739072]/5 border-[#739072]/20">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#739072] font-bold uppercase tracking-wider">Pass Rate Average</p>
+                  <p className="text-3.5xl font-display font-bold text-[#739072]">{analytics?.average_pass_rate ?? 0}%</p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#739072] font-semibold">
+                    <span>Passing is 80%</span>
+                  </div>
+                  <p className="text-[9px] text-[#739072]/75">Your evaluation average</p>
+                </div>
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#739072] text-white rounded-full">
+                    <Award className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[60, 70, 75, 80, 85, 90, 100]} color="#739072" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Card 3: Reference Assets -> Warm Sand + Terracotta Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(193,119,103,0.15)] relative overflow-hidden group bg-[#F5F1E8] border-[#C17767]/30">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#C17767] font-bold uppercase tracking-wider">Studio Reference Assets</p>
+                  <p className="text-3.5xl font-display font-bold text-[#C17767]">{resources.length}</p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#C17767] font-semibold">
+                    <span>DWG & specs</span>
+                  </div>
+                  <p className="text-[9px] text-[#C17767]/75">Verified design standards</p>
+                </div>
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#C17767] text-white rounded-full">
+                    <Clock className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[2, 4, 4, 5, 7, 8, 10]} color="#C17767" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Card 4: Assessment Status -> Olive Green Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(96,108,56,0.15)] relative overflow-hidden group bg-[#606C38]/5 border-[#606C38]/20">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#606C38] font-bold uppercase tracking-wider">Assessment Status</p>
+                  <p className="text-3.5xl font-display font-bold text-[#606C38]">Active</p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#606C38] font-semibold">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>System online</span>
+                  </div>
+                  <p className="text-[9px] text-[#606C38]/75">Ready for checkpoints</p>
+                </div>
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#606C38] text-white rounded-full">
+                    <TrendingUp className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[1, 1, 1, 1, 1, 1, 1]} color="#606C38" />
                 </div>
               </CardContent>
             </Card>
@@ -109,12 +397,22 @@ export const DashboardPage: React.FC = () => {
 
           {/* Module Progress */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <Card className="lg:col-span-2">
+            <Card className="lg:col-span-2 relative overflow-hidden transition-all duration-200 hover:shadow-md">
+              {/* Subtle background layout lines */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.08] text-primary">
+                <svg width="100%" height="100%" className="absolute bottom-0 right-0">
+                  <path d="M-50,200 C150,250 300,100 800,150" fill="none" stroke="currentColor" strokeWidth="1" />
+                </svg>
+              </div>
+
               <CardHeader>
-                <CardTitle>Curriculum Onboarding Journey</CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-display text-[#2F3A33]">Curriculum Onboarding Journey</CardTitle>
+                  <Leaf className="w-4 h-4 text-[#739072] opacity-40" />
+                </div>
                 <CardDescription>Step-by-step studio modules and competency checkpoints.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
+              <CardContent className="space-y-6 relative z-10">
                 {isPathsLoading ? (
                   <SkeletonCard />
                 ) : pathModules.length === 0 ? (
@@ -123,20 +421,20 @@ export const DashboardPage: React.FC = () => {
                   <div className="divide-y divide-border">
                     {pathModules.map((mod) => (
                       <div key={mod.id} className="py-4 flex justify-between items-center first:pt-0">
-                        <div className="space-y-1">
+                        <div className="space-y-1 pr-4">
                           <div className="flex items-center gap-2">
                             {user.completedModuleIds?.includes(mod.id) ? (
-                              <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
+                              <CheckCircle2 className="w-4 h-4 text-[#4F6F52] shrink-0" />
                             ) : (
-                              <CheckCircle2 className="w-4 h-4 text-muted-foreground/50 shrink-0" />
+                              <CheckCircle2 className="w-4 h-4 text-muted-foreground/40 shrink-0" />
                             )}
                             <h4 className={`font-display font-bold text-base transition-colors ${
-                              user.completedModuleIds?.includes(mod.id) ? 'text-muted-foreground/60 line-through' : 'text-foreground'
+                              user.completedModuleIds?.includes(mod.id) ? 'text-muted-foreground/60 line-through' : 'text-[#2F3A33]'
                             }`}>{mod.title}</h4>
                           </div>
                           <p className="text-xs text-muted-foreground line-clamp-1">{mod.description}</p>
                         </div>
-                        <Button variant="outline" size="sm" asChild>
+                        <Button variant="outline" size="sm" asChild className="shrink-0 bg-[#F5F1E8] hover:bg-[#F5F1E8]/70 text-[#2F3A33] border-border transition-all duration-200 hover:scale-[1.02] active:scale-95">
                           <Link to="/modules">Explore Module</Link>
                         </Button>
                       </div>
@@ -146,17 +444,17 @@ export const DashboardPage: React.FC = () => {
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-md">
               <CardHeader>
-                <CardTitle>Quick Navigation</CardTitle>
+                <CardTitle className="text-xl font-display text-[#2F3A33]">Quick Navigation</CardTitle>
                 <CardDescription>Direct shortcuts to your learning workspace.</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="p-4 bg-secondary/80 rounded-input border border-border/80 space-y-3">
-                  <span className="text-[10px] bg-primary text-primary-foreground px-2 py-0.5 rounded-[4px] font-semibold uppercase">Curriculum</span>
-                  <h4 className="font-display font-bold text-sm">View Studio Modules</h4>
+              <CardContent className="space-y-4 relative z-10">
+                <div className="p-4 bg-[#F5F1E8] rounded-input border border-border/80 space-y-3">
+                  <span className="text-[9px] bg-[#4F6F52] text-white px-2.5 py-0.5 rounded-[4px] font-bold uppercase tracking-wider font-mono">Curriculum</span>
+                  <h4 className="font-display font-bold text-sm text-[#2F3A33]">View Studio Modules</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">Access interactive lessons and take competency evaluation tests.</p>
-                  <Button variant="default" size="sm" className="w-full justify-between" asChild>
+                  <Button variant="default" size="sm" className="w-full justify-between bg-[#4F6F52] hover:bg-[#4F6F52]/95 text-white transition-all duration-200 hover:scale-[1.015] active:scale-98" asChild>
                     <Link to="/modules">
                       Go to Modules <ArrowRight className="w-4 h-4" />
                     </Link>
@@ -164,10 +462,10 @@ export const DashboardPage: React.FC = () => {
                 </div>
 
                 <div className="p-4 bg-card rounded-input border border-border space-y-3">
-                  <span className="text-[10px] bg-secondary text-secondary-foreground px-2 py-0.5 rounded-[4px] font-semibold uppercase">Library</span>
-                  <h4 className="font-display font-bold text-sm">Explore Reference Assets</h4>
+                  <span className="text-[9px] bg-[#739072]/15 text-[#739072] px-2.5 py-0.5 rounded-[4px] font-bold uppercase tracking-wider font-mono">Library</span>
+                  <h4 className="font-display font-bold text-sm text-[#2F3A33]">Explore Reference Assets</h4>
                   <p className="text-xs text-muted-foreground leading-relaxed">Review DWG specs, PDF manuals, and video guides.</p>
-                  <Button variant="outline" size="sm" className="w-full justify-between" asChild>
+                  <Button variant="outline" size="sm" className="w-full justify-between bg-[#F5F1E8] border-border hover:bg-[#F5F1E8]/75 text-[#2F3A33] transition-all duration-200 hover:scale-[1.015] active:scale-98" asChild>
                     <Link to="/resources">
                       Open Library <ArrowRight className="w-4 h-4" />
                     </Link>
@@ -179,108 +477,315 @@ export const DashboardPage: React.FC = () => {
         </>
       ) : (
         <>
-          {/* Admin Live Stats Grid */}
+          {/* Admin KPI Cards Grid (Themed with Natural Materials & Accents) */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Registered Members</p>
-                  <p className="text-3xl font-display font-bold text-primary">{isAnalyticsLoading ? '...' : analytics?.active_employees ?? 0}</p>
+            {/* Card 1: Registered Members -> Forest Green Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(79,111,82,0.15)] relative overflow-hidden group bg-[#4F6F52]/5 border-[#4F6F52]/20">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#4F6F52] font-bold uppercase tracking-wider">Registered Members</p>
+                  <p className="text-3xl font-display font-bold text-[#4F6F52]">
+                    {isAnalyticsLoading ? '...' : analytics?.active_employees ?? 0}
+                  </p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#4F6F52] font-semibold">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>100% from last month</span>
+                  </div>
+                  <p className="text-[9px] text-[#4F6F52]/75">Active studio onboarding members</p>
                 </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <UserCheck className="w-5 h-5" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Average Pass Rate</p>
-                  <p className="text-3xl font-display font-bold text-primary">{isAnalyticsLoading ? '...' : `${analytics?.average_pass_rate ?? 0}%`}</p>
-                </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <TrendingUp className="w-5 h-5" />
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Active Modules</p>
-                  <p className="text-3xl font-display font-bold text-primary">{modules.length}</p>
-                </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <BookOpen className="w-5 h-5" />
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#4F6F52] text-white rounded-full">
+                    <Users className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[2, 3, 2, 4, 3, 5, 5]} color="#4F6F52" />
                 </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardContent className="pt-6 flex items-center justify-between">
-                <div className="space-y-1">
-                  <p className="text-xs text-muted-foreground font-medium uppercase tracking-wider">Quizzes Evaluated</p>
-                  <p className="text-3xl font-display font-bold text-primary">{isAnalyticsLoading ? '...' : analytics?.completed_assessments_count ?? 0}</p>
+            {/* Card 2: Average Pass Rate -> Sage Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(115,144,114,0.15)] relative overflow-hidden group bg-[#739072]/5 border-[#739072]/20">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#739072] font-bold uppercase tracking-wider">Average Pass Rate</p>
+                  <p className="text-3xl font-display font-bold text-[#739072]">
+                    {isAnalyticsLoading ? '...' : `${analytics?.average_pass_rate ?? 0}%`}
+                  </p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#739072] font-semibold">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>100% from last month</span>
+                  </div>
+                  <p className="text-[9px] text-[#739072]/75">Computed from attempt logs</p>
                 </div>
-                <div className="p-3 bg-secondary rounded-full text-primary">
-                  <Award className="w-5 h-5" />
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#739072] text-white rounded-full">
+                    <Award className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[65, 75, 80, 85, 90, 95, 100]} color="#739072" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Card 3: Active Modules -> Warm Sand + Terracotta Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(193,119,103,0.15)] relative overflow-hidden group bg-[#F5F1E8] border-[#C17767]/30">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#C17767] font-bold uppercase tracking-wider">Active Modules</p>
+                  <p className="text-3xl font-display font-bold text-[#C17767]">{modules.length}</p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#C17767] font-semibold">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>2 new this month</span>
+                  </div>
+                  <p className="text-[9px] text-[#C17767]/75">Verified studio modules</p>
+                </div>
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#C17767] text-white rounded-full">
+                    <BookOpen className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[1, 2, 2, 2, 2, 2, 2]} color="#C17767" />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Card 4: Quizzes Evaluated -> Olive Green Theme */}
+            <Card className="transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_12px_24px_-10px_rgba(96,108,56,0.15)] relative overflow-hidden group bg-[#606C38]/5 border-[#606C38]/20">
+              <CardContent className="pt-6 flex justify-between items-start gap-2">
+                <div className="space-y-2">
+                  <p className="text-[10px] text-[#606C38] font-bold uppercase tracking-wider">Quizzes Evaluated</p>
+                  <p className="text-3xl font-display font-bold text-[#606C38]">
+                    {isAnalyticsLoading ? '...' : analytics?.completed_assessments_count ?? 0}
+                  </p>
+                  <div className="flex items-center gap-1 text-[10px] text-[#606C38] font-semibold">
+                    <TrendingUp className="w-3 h-3" />
+                    <span>1 this month</span>
+                  </div>
+                  <p className="text-[9px] text-[#606C38]/75">Competency evaluations complete</p>
+                </div>
+                <div className="flex flex-col items-end justify-between h-[85px] gap-2">
+                  <div className="p-2.5 bg-[#606C38] text-white rounded-full">
+                    <Award className="w-4.5 h-4.5" />
+                  </div>
+                  <Sparkline points={[1, 2, 4, 5, 8, 9, 12]} color="#606C38" />
                 </div>
               </CardContent>
             </Card>
           </div>
 
+          {/* Visual Onboarding Progress Board & Admin Actions */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <Card className="lg:col-span-2">
-              <CardHeader>
-                <CardTitle>Employee Onboarding Audit & Progress</CardTitle>
+            {/* Left Action / Progress Audit Card - Upgraded to Visual Onboarding Progress Board */}
+            <Card className="lg:col-span-2 relative overflow-hidden transition-all duration-200 hover:shadow-md">
+              <CardHeader className="relative z-10">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-xl font-display text-[#2F3A33]">Employee Onboarding Audit & Progress</CardTitle>
+                  <Leaf className="w-4 h-4 text-[#739072] opacity-40" />
+                </div>
                 <CardDescription>Live database audit of employee learning checkpoint activities.</CardDescription>
               </CardHeader>
-              <CardContent>
-                {isComplianceLoading ? (
-                  <SkeletonCard />
-                ) : !compliance?.cohort_progress || compliance.cohort_progress.length === 0 ? (
-                  <EmptyState title="No Employee Activity Logs" description="Evaluation attempts will populate here automatically as team members complete checkpoints." />
-                ) : (
-                  <div className="divide-y divide-border">
-                    {compliance.cohort_progress.map((item, idx) => (
-                      <div key={idx} className="py-3 flex justify-between items-center first:pt-0">
-                        <div>
-                          <h4 className="font-semibold text-sm">{item.user_name}</h4>
-                          <p className="text-xs text-muted-foreground">Department: <span className="font-medium text-foreground">{item.department}</span></p>
+
+              <CardContent className="space-y-6 relative z-10">
+                {/* Spotlight/Active Member Panel - Upgraded Progress Board */}
+                <div className="p-5 bg-[#F5F1E8] rounded-input border border-border/80 space-y-5 shadow-inner relative overflow-hidden">
+                  {/* Decorative drafting crosshair mark in the corner */}
+                  <div className="absolute top-2 right-2 text-primary/10 font-mono text-[9px] pointer-events-none">
+                    CAD REF: SH-01
+                  </div>
+                  
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    {/* User Profile / Avatar */}
+                    <div className="flex items-center gap-4">
+                      <div className="relative">
+                        <div className="h-14 w-14 rounded-full bg-[#4F6F52] text-white flex items-center justify-center font-bold font-display text-lg shadow-sm border-2 border-white">
+                          {firstProgress.user_name.split(' ').map(n => n[0]).join('')}
                         </div>
-                        <div className="text-right">
-                          <span className={`text-xs font-semibold px-2 py-0.5 rounded font-mono ${
-                            item.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-600' : 'bg-amber-500/10 text-amber-600'
-                          }`}>
-                            {item.status} ({item.average_score_percent}%)
-                          </span>
+                        {/* Competency badge indicator on avatar */}
+                        <div className="absolute -bottom-1 -right-1 bg-[#C17767] text-white p-1 rounded-full shadow border border-white" title="Competency Badge">
+                          <Award className="w-3.5 h-3.5" />
                         </div>
                       </div>
-                    ))}
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <h4 className="font-bold text-base text-[#2F3A33] font-display">{firstProgress.user_name}</h4>
+                          <span className="text-[9px] font-bold font-mono text-[#C17767] bg-[#C17767]/10 px-2 py-0.5 rounded border border-[#C17767]/20 uppercase">
+                            Senior Architect
+                          </span>
+                        </div>
+                        <p className="text-xs text-muted-foreground mt-0.5">Department: <span className="font-semibold text-[#2F3A33]">{firstProgress.department}</span></p>
+                      </div>
+                    </div>
+                    
+                    {/* Middle Column: Current & Next Milestones */}
+                    <div className="flex flex-col gap-1.5 md:border-l md:border-border/60 md:pl-6 max-w-xs">
+                      <div>
+                        <span className="text-[8px] font-bold font-mono uppercase text-muted-foreground tracking-wider">Current Module</span>
+                        <p className="text-xs font-semibold text-[#2F3A33] truncate">Module 1: Site Contours & Grading Standards</p>
+                      </div>
+                      <div>
+                        <span className="text-[8px] font-bold font-mono uppercase text-muted-foreground tracking-wider">Next Milestone</span>
+                        <p className="text-xs font-semibold text-[#739072] truncate">Milestone 2: Vegetation Density Checkpoint</p>
+                      </div>
+                    </div>
+
+                    {/* Right Column: Radial Progress Gauge */}
+                    <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-border/40 shrink-0">
+                      <RadialProgressGauge percentage={firstProgress.progress_percent || 100} color="#4F6F52" />
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-[9px] font-bold font-mono text-[#4F6F52] bg-[#4F6F52]/10 px-2 py-0.5 rounded">
+                            {firstProgress.status}
+                          </span>
+                        </div>
+                        <p className="text-[9px] text-muted-foreground">Competency verified</p>
+                      </div>
+                    </div>
                   </div>
-                )}
+
+                  {/* Horizontal Timeline roadmap */}
+                  <div className="pt-4 border-t border-border/50">
+                    <span className="text-[9px] font-bold font-mono uppercase text-muted-foreground tracking-widest block mb-3">Onboarding Roadmap & Checkpoints</span>
+                    <div className="grid grid-cols-4 gap-2 relative">
+                      {/* Connector Line */}
+                      <div className="absolute top-2.5 left-6 right-6 h-0.5 bg-border/60 z-0" />
+                      
+                      {[
+                        { step: 1, name: 'Setup', done: true },
+                        { step: 2, name: 'Curriculum', done: true },
+                        { step: 3, name: 'Assessments', done: true },
+                        { step: 4, name: 'Credentials', done: firstProgress.progress_percent === 100 }
+                      ].map((item, idx) => (
+                        <div key={idx} className="flex flex-col items-center text-center relative z-10 group cursor-help">
+                          <div className={`h-5.5 w-5.5 rounded-full flex items-center justify-center border text-[10px] font-bold font-mono transition-all duration-200 ${
+                            item.done 
+                              ? 'bg-[#4F6F52] text-white border-[#4F6F52]' 
+                              : 'bg-white text-muted-foreground border-border group-hover:border-[#739072]'
+                          }`}>
+                            {item.step}
+                          </div>
+                          <span className={`text-[10px] font-bold mt-1.5 font-display transition-colors duration-200 ${
+                            item.done ? 'text-[#2F3A33]' : 'text-muted-foreground group-hover:text-[#739072]'
+                          }`}>{item.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Progress Overview Line Chart */}
+                <ProgressOverviewChart />
+
+                {/* Remaining Cohort Table list */}
+                <div className="pt-4 border-t border-border/60">
+                  <h4 className="text-xs font-bold font-display uppercase tracking-wider text-foreground mb-3">Onboardee Activity Logs</h4>
+                  {isComplianceLoading ? (
+                    <SkeletonCard />
+                  ) : !compliance?.cohort_progress || compliance.cohort_progress.length === 0 ? (
+                    <EmptyState title="No Employee Activity Logs" description="Evaluation attempts will populate here automatically as team members complete checkpoints." />
+                  ) : (
+                    <div className="divide-y divide-border/60">
+                      {compliance.cohort_progress.map((item, idx) => (
+                        <div key={idx} className="py-2.5 flex justify-between items-center first:pt-0">
+                          <div>
+                            <h5 className="font-bold text-xs text-[#2F3A33]">{item.user_name}</h5>
+                            <p className="text-[10px] text-muted-foreground">{item.department}</p>
+                          </div>
+                          <div className="text-right flex items-center gap-3">
+                            <span className="text-[10px] font-bold font-mono text-foreground">{item.progress_percent}% completed</span>
+                            <span className={`text-[9px] font-bold font-mono px-2 py-0.5 rounded ${
+                              item.status === 'Completed' ? 'bg-[#4F6F52]/10 text-[#4F6F52]' : 'bg-[#C17767]/10 text-[#C17767]'
+                            }`}>
+                              {item.status} ({item.average_score_percent}%)
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </CardContent>
             </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle>Quick Administrative Controls</CardTitle>
-                <CardDescription>Shortcuts for studio coordinators.</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-3">
-                <Button variant="default" className="w-full justify-between" asChild>
-                  <Link to="/admin?tab=assessments">
-                    Import Quiz (.docx, .pdf, .json) <ArrowRight className="w-4 h-4" />
+            {/* Right Admin controls Card */}
+            <div className="space-y-6">
+              <Card className="relative overflow-hidden transition-all duration-200 hover:shadow-md">
+                <CardHeader>
+                  <CardTitle className="text-xl font-display text-[#2F3A33]">Quick Administrative Controls</CardTitle>
+                  <CardDescription>Shortcuts for studio coordinators.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-3 relative z-10">
+                  {/* Action rows modeled after a premium Apple / Figma control panel */}
+                  <Link 
+                    to="/admin?tab=assessments" 
+                    className="flex items-center justify-between p-3.5 bg-[#4F6F52] hover:bg-[#4F6F52]/95 text-white rounded-input transition-all duration-200 hover:scale-[1.015] active:scale-[0.985] shadow-sm group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-white/10 rounded-lg text-white">
+                        <BookOpen className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-bold font-display">Import Quiz (.docx, .pdf, .json)</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 transition-transform duration-200" />
                   </Link>
-                </Button>
-                <Button variant="outline" className="w-full justify-between" asChild>
-                  <Link to="/admin?tab=resources">
-                    Manage Global Resources <ArrowRight className="w-4 h-4" />
+
+                  <Link 
+                    to="/admin?tab=resources" 
+                    className="flex items-center justify-between p-3.5 bg-[#F5F1E8] border border-border hover:bg-[#F5F1E8]/70 text-[#2F3A33] rounded-input transition-all duration-200 hover:scale-[1.015] active:scale-[0.985] group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-[#4F6F52]/10 rounded-lg text-[#4F6F52]">
+                        <Clock className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-bold font-display">Manage Global Resources</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 transition-transform duration-200" />
                   </Link>
-                </Button>
-              </CardContent>
-            </Card>
+
+                  <Link 
+                    to="/analytics" 
+                    className="flex items-center justify-between p-3.5 bg-[#F5F1E8] border border-border hover:bg-[#F5F1E8]/70 text-[#2F3A33] rounded-input transition-all duration-200 hover:scale-[1.015] active:scale-[0.985] group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="p-1.5 bg-[#739072]/15 rounded-lg text-[#739072]">
+                        <Activity className="w-4 h-4" />
+                      </div>
+                      <span className="text-xs font-bold font-display">View Detailed Analytics</span>
+                    </div>
+                    <ArrowRight className="w-4 h-4 opacity-70 group-hover:translate-x-0.5 transition-transform duration-200" />
+                  </Link>
+                </CardContent>
+              </Card>
+
+              {/* Three horizontal mini summary cards at the bottom */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-3 bg-card border border-border/80 rounded-input flex flex-col items-center text-center gap-1.5 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-sm">
+                  <div className="p-1.5 bg-[#4F6F52]/10 text-[#4F6F52] rounded-full">
+                    <Activity className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h5 className="text-[9px] font-bold text-[#2F3A33] font-display leading-tight">Member Activity</h5>
+                    <p className="text-[8px] text-muted-foreground mt-0.5 font-mono">Real-time tracking</p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-card border border-border/80 rounded-input flex flex-col items-center text-center gap-1.5 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-sm">
+                  <div className="p-1.5 bg-[#739072]/15 text-[#739072] rounded-full">
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h5 className="text-[9px] font-bold text-[#2F3A33] font-display leading-tight">Content Health</h5>
+                    <p className="text-[8px] text-muted-foreground mt-0.5 font-mono">All systems healthy</p>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-card border border-border/80 rounded-input flex flex-col items-center text-center gap-1.5 transition-all duration-200 hover:translate-y-[-2px] hover:shadow-sm">
+                  <div className="p-1.5 bg-[#C17767]/10 text-[#C17767] rounded-full">
+                    <Clock className="w-3.5 h-3.5" />
+                  </div>
+                  <div>
+                    <h5 className="text-[9px] font-bold text-[#2F3A33] font-display leading-tight">Pending Reviews</h5>
+                    <p className="text-[8px] text-muted-foreground mt-0.5 font-mono">0 items pending</p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </>
       )}

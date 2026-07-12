@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   ChevronDown, 
   ChevronUp, 
-  Clock, 
   FileCheck, 
   Plus, 
   Pencil, 
@@ -10,9 +9,12 @@ import {
   Sparkles, 
   FolderGit2, 
   Award,
-  BookOpen
+  BookOpen,
+  X,
+  Save
 } from 'lucide-react';
 import type { AdminModule, AdminAssessment } from './adminTypes';
+import type { ModuleAgendaItem } from '@/types/api';
 import { ResourceCard } from './ResourceCard';
 import { useAssessments } from '@/hooks/useAssessments';
 
@@ -24,6 +26,7 @@ interface ModuleCardProps {
   onUnlinkResource: (moduleId: string, resourceId: string) => void;
   onManageQuestions: (assessment: AdminAssessment) => void;
   onImportQuestions: (assessment: AdminAssessment) => void;
+  onUpdateModule?: (updatedModule: AdminModule) => Promise<void> | void;
 }
 
 export const ModuleCard: React.FC<ModuleCardProps> = ({
@@ -34,8 +37,43 @@ export const ModuleCard: React.FC<ModuleCardProps> = ({
   onUnlinkResource,
   onManageQuestions,
   onImportQuestions,
+  onUpdateModule,
 }) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(module.display_order === 1);
+  const [isSavingContent, setIsSavingContent] = useState<boolean>(false);
+  const [workshopSteps, setWorkshopSteps] = useState<string[]>(
+    module.workshop_steps?.length ? module.workshop_steps : [
+      "Review the reference materials thoroughly.",
+      "Download the required CAD block templates or site plan templates.",
+      "Apply the module standards to the provided mock layout.",
+      "Submit your deliverable file (DWG or PDF) to your coordinator for review."
+    ]
+  );
+  const [agenda, setAgenda] = useState<ModuleAgendaItem[]>(
+    module.agenda?.length ? module.agenda : [
+      { time: "0-15", phase: "Video Watch", detail: "Watch the introductory module session." },
+      { time: "15-45", phase: "Article Read", detail: "Review the technical documentation and CAD block standards." },
+      { time: "45-75", phase: "Workshop", detail: "Complete the practical workshop assignment." },
+      { time: "75-90", phase: "Debrief", detail: "Take the mandatory Competency Check to verify mastery." }
+    ]
+  );
+
+  const handleSaveContent = async () => {
+    if (!onUpdateModule) return;
+    try {
+      setIsSavingContent(true);
+      await onUpdateModule({
+        ...module,
+        workshop_steps: workshopSteps.filter(s => s.trim() !== ''),
+        agenda: agenda
+      });
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSavingContent(false);
+    }
+  };
+
   const [isInitializingAssessment, setIsInitializingAssessment] = useState<boolean>(false);
   const { createAssessment } = useAssessments();
 
@@ -82,32 +120,19 @@ export const ModuleCard: React.FC<ModuleCardProps> = ({
           </div>
           <div className="min-w-0">
             <h3 className="text-sm sm:text-base font-bold text-foreground truncate">{module.title}</h3>
-            <div className="flex items-center gap-3 mt-1 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <Clock className="w-3.5 h-3.5" /> {module.estimated_duration_minutes} mins
+            <div className="flex items-center gap-2 mt-2">
+              <span className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-wider font-semibold text-[#8a6a1a] bg-[#c9a84c]/10 px-2.5 py-0.5 rounded-full border border-[#c9a84c]/30">
+                ⏱ {module.estimated_duration_minutes} MIN
               </span>
-              <span className="opacity-40">•</span>
-              <span className="flex items-center gap-1">
-                <BookOpen className="w-3.5 h-3.5" /> {module.resources.length} Resources
+              <span className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-wider font-semibold text-[#2d5a3d] bg-[#4a7c59]/10 px-2.5 py-0.5 rounded-full border border-[#4a7c59]/25">
+                <BookOpen className="w-3 h-3" /> {module.resources.length} Res
               </span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-4 shrink-0">
-          {/* Progress Bar indicator */}
-          <div className="hidden md:flex flex-col items-end w-28">
-            <div className="flex items-center justify-between w-full text-[10px] font-mono text-muted-foreground mb-1">
-              <span>Progress</span>
-              <span className="font-semibold text-foreground">{module.progress_percentage}%</span>
-            </div>
-            <div className="w-full h-1.5 bg-secondary rounded-full overflow-hidden">
-              <div
-                className="h-full bg-primary rounded-full transition-all duration-300"
-                style={{ width: `${module.progress_percentage}%` }}
-              ></div>
-            </div>
-          </div>
+
 
           {/* Assessment Status Badge */}
           <span className={`text-xs px-2.5 py-1 rounded-full font-semibold border ${getStatusBadge()}`}>
@@ -128,6 +153,69 @@ export const ModuleCard: React.FC<ModuleCardProps> = ({
           <div>
             <h4 className="text-xs font-bold uppercase tracking-wider text-muted-foreground mb-1">Overview Description</h4>
             <p className="text-xs sm:text-sm text-foreground leading-relaxed">{module.description}</p>
+          </div>
+
+          {/* Inline Content Editors */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="space-y-2 flex flex-col h-56">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between shrink-0">
+                <span>Workshop Action Steps</span>
+                <button type="button" onClick={() => setWorkshopSteps([...workshopSteps, ''])} className="text-primary hover:underline flex items-center gap-1">
+                  <Plus className="w-3 h-3"/> Add Step
+                </button>
+              </label>
+              <div className="space-y-2 overflow-y-auto pr-1 flex-1 bg-card border border-input rounded-xl p-2">
+                {workshopSteps.map((step, idx) => (
+                  <div key={idx} className="flex gap-1.5 items-start">
+                    <span className="flex items-center justify-center w-5 h-5 mt-1.5 rounded bg-primary/10 text-primary text-[10px] font-bold shrink-0">{idx + 1}</span>
+                    <textarea
+                      value={step}
+                      onChange={e => {
+                        const newS = [...workshopSteps]; newS[idx] = e.target.value; setWorkshopSteps(newS);
+                      }}
+                      placeholder="Describe the action step..."
+                      className="flex-1 text-[11px] p-2 border border-input rounded-lg bg-secondary/50 focus:ring-1 focus:ring-primary outline-none resize-none min-h-[44px] leading-relaxed"
+                    />
+                    <button type="button" onClick={() => setWorkshopSteps(workshopSteps.filter((_, i) => i !== idx))} className="p-1.5 mt-1 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors shrink-0"><X className="w-3.5 h-3.5"/></button>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2 flex flex-col h-56">
+              <label className="text-xs font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between shrink-0">
+                <span>Session Agenda Timeline</span>
+                <button type="button" onClick={() => setAgenda([...agenda, {time:'', phase:'', detail:''}])} className="text-primary hover:underline flex items-center gap-1">
+                  <Plus className="w-3 h-3"/> Add
+                </button>
+              </label>
+              <div className="space-y-2 overflow-y-auto pr-1 flex-1 bg-card border border-input rounded-xl p-2">
+                {agenda.map((item, idx) => (
+                  <div key={idx} className="flex gap-1.5">
+                    <input type="text" value={item.time} onChange={e => {
+                      const newA = [...agenda]; newA[idx].time = e.target.value; setAgenda(newA);
+                    }} placeholder="0-15" className="w-12 shrink-0 text-[10px] p-2 border border-input rounded-lg bg-secondary/50 focus:ring-1 focus:ring-primary outline-none font-mono" />
+                    <input type="text" value={item.phase} onChange={e => {
+                      const newA = [...agenda]; newA[idx].phase = e.target.value; setAgenda(newA);
+                    }} placeholder="Phase" className="w-20 shrink-0 text-[10px] p-2 border border-input rounded-lg bg-secondary/50 focus:ring-1 focus:ring-primary outline-none uppercase font-semibold" />
+                    <input type="text" value={item.detail} onChange={e => {
+                      const newA = [...agenda]; newA[idx].detail = e.target.value; setAgenda(newA);
+                    }} placeholder="Detail..." className="flex-1 text-[11px] p-2 border border-input rounded-lg bg-secondary/50 focus:ring-1 focus:ring-primary outline-none" />
+                    <button type="button" onClick={() => setAgenda(agenda.filter((_, i) => i !== idx))} className="p-1.5 text-muted-foreground hover:bg-destructive/10 hover:text-destructive rounded-lg transition-colors shrink-0"><X className="w-3.5 h-3.5"/></button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="lg:col-span-2 flex justify-end pb-2 border-b border-border/60">
+              <button
+                onClick={handleSaveContent}
+                disabled={isSavingContent}
+                className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-sm transition-all flex items-center gap-1.5 disabled:opacity-50"
+              >
+                <Save className="w-3.5 h-3.5" /> {isSavingContent ? 'Saving...' : 'Save Timeline & Workshop'}
+              </button>
+            </div>
           </div>
 
           {/* Resources List Section */}

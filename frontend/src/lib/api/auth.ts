@@ -44,6 +44,11 @@ export const authApi = {
     return response.data;
   },
 
+  devLogin: async (): Promise<TokenResponse> => {
+    const response = await apiClient.post<TokenResponse>('/auth/dev-login');
+    return response.data;
+  },
+
   getCurrentUser: async (): Promise<SessionResponse> => {
     const response = await apiClient.get<SessionResponse>('/auth/me');
     return response.data;

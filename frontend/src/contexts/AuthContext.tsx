@@ -7,6 +7,7 @@ interface AuthContextType {
   isAuthenticated: boolean;
   isLoading: boolean;
   loginWithGoogle: (credential: string, navigate?: (path: string) => void, accessCode?: string) => Promise<void>;
+  loginWithDevMock: (navigate?: (path: string) => void) => Promise<void>;
   logout: () => Promise<void>;
   restoreSession: () => Promise<void>;
 }
@@ -90,6 +91,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
+  const loginWithDevMock = async (navigate?: (path: string) => void) => {
+    setIsLoading(true);
+    try {
+      await authApi.devLogin();
+      
+      const session = await authApi.getCurrentUser();
+      const apiUser = session.user;
+      
+      const mappedUser: User = {
+        id: apiUser.id,
+        email: apiUser.email,
+        name: apiUser.full_name,
+        role: apiUser.role.toLowerCase() as 'admin' | 'employee',
+        avatarUrl: (apiUser as any).profile_picture || apiUser.avatar_url || undefined,
+        department: apiUser.role === 'ADMIN' ? 'Design Standards Committee' : 'Landscape Architecture',
+        startDate: apiUser.created_at ? new Date(apiUser.created_at).toISOString().split('T')[0] : '2026-06-01',
+        completedModuleIds: session.progress_summary?.completed_module_ids || [],
+        moduleScores: session.progress_summary?.module_scores || {},
+      };
+      
+      setUser(mappedUser);
+      setIsAuthenticated(true);
+
+      if (navigate) {
+        navigate('/dashboard');
+      }
+    } catch (err) {
+      setUser(null);
+      setIsAuthenticated(false);
+      throw err;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const logout = async () => {
     setIsLoading(true);
     try {
@@ -110,6 +146,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isAuthenticated,
         isLoading,
         loginWithGoogle,
+        loginWithDevMock,
         logout,
         restoreSession
       }}

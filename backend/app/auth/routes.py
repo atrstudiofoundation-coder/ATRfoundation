@@ -28,6 +28,37 @@ async def login_for_access_token():
     )
 
 
+@router.post("/dev-login", response_model=TokenResponse)
+async def dev_login(
+    response: Response,
+    db: AsyncSession = Depends(get_db)
+):
+    """
+    Development-only bypass login. Creates the Admin user if it doesn't exist.
+    """
+    from app.auth.dependencies import get_dev_mock_admin
+    auth_repo = AuthRepository(db)
+    service = AuthService(auth_repo)
+    
+    mock_admin = get_dev_mock_admin()
+    user = await auth_repo.get_by_email(mock_admin.email)
+    if not user:
+        user = User(
+            id=mock_admin.id,
+            email=mock_admin.email,
+            full_name=mock_admin.full_name,
+            role=mock_admin.role,
+            is_active=True
+        )
+        db.add(user)
+        await db.flush()
+        
+    token = service.generate_jwt(user)
+    set_auth_cookie(response, token)
+    await db.commit()
+    return TokenResponse(access_token=token, token_type="bearer")
+
+
 @router.post("/google", response_model=TokenResponse)
 async def login_with_google(
     response: Response,

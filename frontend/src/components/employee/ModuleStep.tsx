@@ -9,7 +9,6 @@ import {
   ArrowRight, 
   ArrowLeft, 
   ShieldCheck, 
-  Clock,
   CheckCircle2
 } from 'lucide-react';
 import type { EmployeeModule, EmployeeResource } from './employeeTypes';
@@ -27,7 +26,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
   onStartCompetencyCheck,
   onMarkAsCompleted,
 }) => {
-  const [activeTab, setActiveTab] = useState<'intro' | 'video' | 'resources'>('intro');
+  const [activeTab, setActiveTab] = useState<'intro' | 'video' | 'workshop' | 'resources'>('intro');
   const [selectedVideoIndex, setSelectedVideoIndex] = useState<number>(0);
 
   const resources = module.resources || [];
@@ -59,8 +58,11 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
           <span className="text-xs font-mono font-bold bg-primary/10 text-primary px-3 py-1 rounded-full border border-primary/20">
             {module.code || `MOD-${module.display_order || 1}`}
           </span>
-          <span className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
-            <Clock className="w-3.5 h-3.5 text-amber-500" /> {module.estimated_duration_minutes || module.duration_minutes || 45} Minutes
+          <span className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-wider font-semibold text-[#8a6a1a] bg-[#c9a84c]/10 px-3 py-1 rounded-full border border-[#c9a84c]/30">
+            ⏱ {module.estimated_duration_minutes || module.duration_minutes || 45} MIN
+          </span>
+          <span className="flex items-center gap-1.5 text-[10px] uppercase font-mono tracking-wider font-semibold text-[#2d5a3d] bg-[#4a7c59]/10 px-3 py-1 rounded-full border border-[#4a7c59]/25">
+            🔨 Workshop
           </span>
         </div>
 
@@ -68,10 +70,10 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
         <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">{module.subtitle || module.description}</p>
 
         {/* Guided Navigation Tabs */}
-        <div className="flex bg-secondary/50 p-1.5 rounded-button border border-border/60 max-w-md text-xs font-semibold pt-1">
+        <div className="flex flex-wrap bg-secondary/50 p-1.5 rounded-button border border-border/60 max-w-2xl text-xs font-semibold pt-1 gap-1">
           <button
             onClick={() => setActiveTab('intro')}
-            className={`flex-1 py-2 rounded-[10px] transition-all duration-200 ${
+            className={`flex-1 min-w-[120px] py-2 rounded-[10px] transition-all duration-200 ${
               activeTab === 'intro' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -79,19 +81,27 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
           </button>
           <button
             onClick={() => setActiveTab('video')}
-            className={`flex-1 py-2 rounded-[10px] transition-all duration-200 ${
+            className={`flex-1 min-w-[120px] py-2 rounded-[10px] transition-all duration-200 ${
               activeTab === 'video' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             2. Video Session
           </button>
           <button
+            onClick={() => setActiveTab('workshop')}
+            className={`flex-1 min-w-[120px] py-2 rounded-[10px] transition-all duration-200 ${
+              activeTab === 'workshop' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            3. Workshop
+          </button>
+          <button
             onClick={() => setActiveTab('resources')}
-            className={`flex-1 py-2 rounded-[10px] transition-all duration-200 ${
+            className={`flex-1 min-w-[120px] py-2 rounded-[10px] transition-all duration-200 ${
               activeTab === 'resources' ? 'bg-card text-foreground shadow-sm' : 'text-muted-foreground hover:text-foreground'
             }`}
           >
-            3. Resources ({resources.length})
+            4. Resources ({resources.length})
           </button>
         </div>
       </div>
@@ -100,27 +110,36 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
       <div className="bg-card border border-border/60 rounded-card shadow-universal p-6 sm:p-8 space-y-6">
         {activeTab === 'intro' && (
           <div className="space-y-6 animate-in fade-in duration-200">
-            <h3 className="text-lg font-bold text-foreground font-display">Module Introduction</h3>
+            <h3 className="text-lg font-bold text-foreground font-display">Learning Objective</h3>
             <p className="text-sm sm:text-base text-muted-foreground leading-relaxed">
               {module.description}
             </p>
 
-            <div className="p-5 bg-secondary/70 border border-border/80 rounded-input space-y-3">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-foreground/80">Key Onboarding Objectives</h4>
-              <ul className="space-y-2 text-xs sm:text-sm text-foreground">
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <span>Understand core design directives established by ATR Studio Directors.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <span>Review technical documentation and CAD block standards before practical execution.</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-primary shrink-0 mt-0.5" />
-                  <span>Complete the mandatory Competency Check to verify mastery.</span>
-                </li>
-              </ul>
+            <div className="p-5 bg-secondary/70 border border-border/80 rounded-input space-y-4 shadow-inner">
+              <h4 className="text-[11px] font-bold uppercase tracking-widest text-[#4a7c59] font-mono">Session Agenda</h4>
+              <div className="flex flex-col gap-0">
+                {(module.agenda || [
+                  { time: "0-15", phase: "Video Watch", detail: "Watch the introductory module session." },
+                  { time: "15-45", phase: "Article Read", detail: "Review the technical documentation and CAD block standards." },
+                  { time: "45-75", phase: "Workshop", detail: "Complete the practical workshop assignment." },
+                  { time: "75-90", phase: "Debrief", detail: "Take the mandatory Competency Check to verify mastery." }
+                ]).map((item, idx, arr) => (
+                  <div key={idx} className="flex gap-3.5 relative group">
+                    {/* Connecting line */}
+                    {idx !== arr.length - 1 && (
+                      <div className="absolute left-[54.5px] top-[26px] bottom-[-4px] w-[1px] bg-[#a8d5b5]" />
+                    )}
+                    <div className="font-mono text-[10px] text-[#4a7c59] w-[36px] shrink-0 pt-1.5 text-right leading-tight">
+                      {item.time}<br/>min
+                    </div>
+                    <div className="w-2.5 h-2.5 rounded-full bg-[#4a7c59] shrink-0 mt-[10px] relative z-10" />
+                    <div className="pb-4 flex-1">
+                      <div className="text-[11px] font-semibold uppercase tracking-wide text-[#2d5a3d] mb-0.5">{item.phase}</div>
+                      <div className="text-[13px] text-foreground/80 leading-relaxed">{item.detail}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
             <div className="flex justify-end pt-4">
@@ -222,6 +241,50 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
                 Previous
               </button>
               <button
+                onClick={() => setActiveTab('workshop')}
+                className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
+              >
+                <span>Proceed to Workshop</span>
+                <ArrowRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+          );
+        })()}
+
+        {activeTab === 'workshop' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            <h3 className="text-lg font-bold text-foreground font-display">Practical Workshop Session</h3>
+            
+            <div className="p-6 rounded-card text-white shadow-universal border border-transparent bg-gradient-to-br from-[#1a3a2a] to-[#2d5a3d] space-y-5">
+              <h4 className="text-sm font-display text-[#e8c96e] font-semibold border-b border-white/10 pb-3 flex items-center gap-2">
+                <CheckCircle2 className="w-4 h-4 text-[#a8d5b5]" /> Workshop Assignment
+              </h4>
+              <div className="space-y-4">
+                {[
+                  "Review the reference materials thoroughly.",
+                  "Download the required CAD block templates or site plan templates.",
+                  "Apply the module standards to the provided mock layout.",
+                  "Submit your deliverable file (DWG or PDF) to your coordinator for review."
+                ].map((step, idx) => (
+                  <div key={idx} className="flex gap-3 text-sm text-[#f5f0e8]/90">
+                    <div className="w-6 h-6 rounded-full bg-[#c9a84c]/30 text-[#e8c96e] text-xs font-bold flex items-center justify-center shrink-0">
+                      {idx + 1}
+                    </div>
+                    <p className="pt-0.5 leading-relaxed">{step}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center pt-4">
+              <button
+                onClick={() => setActiveTab('video')}
+                className="px-4 py-2 text-xs font-semibold text-muted-foreground hover:bg-secondary rounded-button transition-all duration-200"
+              >
+                Previous
+              </button>
+              <button
                 onClick={() => setActiveTab('resources')}
                 className="px-6 py-3 bg-primary hover:bg-primary/95 text-primary-foreground text-xs font-semibold rounded-button shadow-universal flex items-center gap-2 hover:scale-[1.02] active:scale-95 transition-all duration-200"
               >
@@ -230,8 +293,7 @@ export const ModuleStep: React.FC<ModuleStepProps> = ({
               </button>
             </div>
           </div>
-          );
-        })()}
+        )}
 
         {activeTab === 'resources' && (
           <div className="space-y-6 animate-in fade-in duration-200">
