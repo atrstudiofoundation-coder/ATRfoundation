@@ -567,140 +567,85 @@ export const DashboardPage: React.FC = () => {
 
           {/* Visual Onboarding Progress Board & Admin Actions */}
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Left Action / Progress Audit Card - Upgraded to Visual Onboarding Progress Board */}
-            <Card className="lg:col-span-2 relative overflow-hidden transition-all duration-200 hover:shadow-md">
-              <CardHeader className="relative z-10">
+            {/* Employee Audit Table - Redesigned to be highly professional and sleek */}
+            <Card className="lg:col-span-2 relative overflow-hidden transition-all duration-200 hover:shadow-md border-[#739072]/20">
+              <CardHeader className="border-b border-border/40 pb-4 bg-[#F5F1E8]/30">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-xl font-display text-[#2F3A33]">Employee Onboarding Audit & Progress</CardTitle>
-                  <Leaf className="w-4 h-4 text-[#739072] opacity-40" />
+                  <div className="space-y-1">
+                    <CardTitle className="text-sm font-bold uppercase tracking-widest text-[#2F3A33] font-display flex items-center gap-2">
+                      <Users className="w-4 h-4 text-[#4F6F52]" /> Employee Onboarding Audit
+                    </CardTitle>
+                    <CardDescription className="text-[11px] text-muted-foreground font-mono">Live database audit of employee learning checkpoint activities.</CardDescription>
+                  </div>
+                  <div className="bg-[#4F6F52]/10 text-[#4F6F52] px-3 py-1 rounded-full text-[10px] font-bold font-mono tracking-widest uppercase flex items-center gap-1.5 border border-[#4F6F52]/20 shadow-sm">
+                    <Activity className="w-3 h-3" /> System Active
+                  </div>
                 </div>
-                <CardDescription>Live database audit of employee learning checkpoint activities.</CardDescription>
               </CardHeader>
 
-              <CardContent className="space-y-6 relative z-10">
-                {/* Spotlight/Active Member Panel - Upgraded Progress Board */}
+              <CardContent className="p-0">
                 {isComplianceLoading ? (
-                  <SkeletonCard />
-                ) : !firstProgress ? (
-                  <EmptyState title="No Employee Progress" description="Once employees begin their onboarding curriculum, their live progress will be tracked here." />
+                  <div className="p-6"><SkeletonCard /></div>
+                ) : !compliance?.cohort_progress || compliance.cohort_progress.length === 0 ? (
+                  <div className="p-12 text-center flex flex-col items-center">
+                    <div className="w-12 h-12 rounded-full bg-[#F5F1E8] border border-[#739072]/30 flex items-center justify-center text-[#739072] mb-4">
+                      <ShieldCheck className="w-5 h-5" />
+                    </div>
+                    <h3 className="text-sm font-bold text-[#2F3A33] font-display">No Employee Records Found</h3>
+                    <p className="text-xs text-muted-foreground mt-1 max-w-sm">When studio members register and begin their curriculum, their live progress and assessment scores will be strictly audited here.</p>
+                  </div>
                 ) : (
-                  <div className="p-5 bg-[#F5F1E8] rounded-input border border-border/80 space-y-5 shadow-inner relative overflow-hidden">
-                  {/* Decorative drafting crosshair mark in the corner */}
-                  <div className="absolute top-2 right-2 text-primary/10 font-mono text-[9px] pointer-events-none">
-                    CAD REF: SH-01
+                  <div className="overflow-x-auto">
+                    <table className="w-full text-left text-sm whitespace-nowrap">
+                      <thead className="bg-[#F5F1E8]/50 border-b border-border/60 text-[9px] uppercase font-bold font-mono text-muted-foreground tracking-widest">
+                        <tr>
+                          <th className="px-6 py-3">Employee Name</th>
+                          <th className="px-6 py-3">Department</th>
+                          <th className="px-6 py-3">Status</th>
+                          <th className="px-6 py-3 text-right">Progress</th>
+                          <th className="px-6 py-3 text-right">Avg Score</th>
+                        </tr>
+                      </thead>
+                      <tbody className="divide-y divide-border/40">
+                        {compliance.cohort_progress.map((item, idx) => (
+                          <tr key={idx} className="hover:bg-[#F5F1E8]/20 transition-colors">
+                            <td className="px-6 py-3.5">
+                              <div className="flex items-center gap-3">
+                                <div className="h-7 w-7 rounded bg-[#4F6F52] text-white flex items-center justify-center font-bold font-display text-[10px] shadow-sm">
+                                  {item.user_name.split(' ').map(n => n[0]).join('').substring(0, 2)}
+                                </div>
+                                <span className="font-bold text-[#2F3A33] font-display text-xs">{item.user_name}</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-3.5">
+                              <span className="text-[10px] font-mono text-muted-foreground border border-border/60 bg-card px-2.5 py-0.5 rounded-sm">{item.department}</span>
+                            </td>
+                            <td className="px-6 py-3.5">
+                              <span className={`text-[9px] font-bold font-mono uppercase tracking-widest px-2 py-0.5 rounded-sm ${
+                                item.status === 'Completed' ? 'bg-[#4F6F52]/10 text-[#4F6F52] border border-[#4F6F52]/20' : 
+                                item.status === 'In Progress' ? 'bg-[#C17767]/10 text-[#C17767] border border-[#C17767]/20' : 
+                                'bg-muted text-muted-foreground'
+                              }`}>
+                                {item.status}
+                              </span>
+                            </td>
+                            <td className="px-6 py-3.5 text-right">
+                              <div className="flex items-center justify-end gap-3">
+                                <div className="w-16 h-1 bg-border/80 rounded-full overflow-hidden">
+                                  <div className="h-full bg-[#4F6F52] rounded-full" style={{ width: `${item.progress_percent}%` }} />
+                                </div>
+                                <span className="text-[10px] font-bold font-mono text-[#2F3A33] w-6">{item.progress_percent}%</span>
+                              </div>
+                            </td>
+                            <td className="px-6 py-3.5 text-right">
+                              <span className="text-[11px] font-bold font-mono text-[#2F3A33]">{item.average_score_percent}%</span>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    {/* User Profile / Avatar */}
-                    <div className="flex items-center gap-4">
-                      <div className="relative">
-                        <div className="h-14 w-14 rounded-full bg-[#4F6F52] text-white flex items-center justify-center font-bold font-display text-lg shadow-sm border-2 border-white">
-                          {firstProgress.user_name.split(' ').map(n => n[0]).join('')}
-                        </div>
-                        {/* Competency badge indicator on avatar */}
-                        <div className="absolute -bottom-1 -right-1 bg-[#C17767] text-white p-1 rounded-full shadow border border-white" title="Competency Badge">
-                          <Award className="w-3.5 h-3.5" />
-                        </div>
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <h4 className="font-bold text-base text-[#2F3A33] font-display">{firstProgress.user_name}</h4>
-                          <span className="text-[9px] font-bold font-mono text-[#C17767] bg-[#C17767]/10 px-2 py-0.5 rounded border border-[#C17767]/20 uppercase">
-                            Senior Architect
-                          </span>
-                        </div>
-                        <p className="text-xs text-muted-foreground mt-0.5">Department: <span className="font-semibold text-[#2F3A33]">{firstProgress.department}</span></p>
-                      </div>
-                    </div>
-                    
-                    {/* Middle Column: Current & Next Milestones */}
-                    <div className="flex flex-col gap-1.5 md:border-l md:border-border/60 md:pl-6 max-w-xs">
-                      <div>
-                        <span className="text-[8px] font-bold font-mono uppercase text-muted-foreground tracking-wider">Current Module</span>
-                        <p className="text-xs font-semibold text-[#2F3A33] truncate">Module 1: Site Contours & Grading Standards</p>
-                      </div>
-                      <div>
-                        <span className="text-[8px] font-bold font-mono uppercase text-muted-foreground tracking-wider">Next Milestone</span>
-                        <p className="text-xs font-semibold text-[#739072] truncate">Milestone 2: Vegetation Density Checkpoint</p>
-                      </div>
-                    </div>
-
-                    {/* Right Column: Radial Progress Gauge */}
-                    <div className="flex items-center gap-4 bg-white/50 backdrop-blur-sm p-3 rounded-xl border border-border/40 shrink-0">
-                      <RadialProgressGauge percentage={firstProgress.progress_percent || 100} color="#4F6F52" />
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-[9px] font-bold font-mono text-[#4F6F52] bg-[#4F6F52]/10 px-2 py-0.5 rounded">
-                            {firstProgress.status}
-                          </span>
-                        </div>
-                        <p className="text-[9px] text-muted-foreground">Competency verified</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Horizontal Timeline roadmap */}
-                  <div className="pt-4 border-t border-border/50">
-                    <span className="text-[9px] font-bold font-mono uppercase text-muted-foreground tracking-widest block mb-3">Onboarding Roadmap & Checkpoints</span>
-                    <div className="grid grid-cols-4 gap-2 relative">
-                      {/* Connector Line */}
-                      <div className="absolute top-2.5 left-6 right-6 h-0.5 bg-border/60 z-0" />
-                      
-                      {[
-                        { step: 1, name: 'Setup', done: true },
-                        { step: 2, name: 'Curriculum', done: true },
-                        { step: 3, name: 'Assessments', done: true },
-                        { step: 4, name: 'Credentials', done: firstProgress.progress_percent === 100 }
-                      ].map((item, idx) => (
-                        <div key={idx} className="flex flex-col items-center text-center relative z-10 group cursor-help">
-                          <div className={`h-5.5 w-5.5 rounded-full flex items-center justify-center border text-[10px] font-bold font-mono transition-all duration-200 ${
-                            item.done 
-                              ? 'bg-[#4F6F52] text-white border-[#4F6F52]' 
-                              : 'bg-white text-muted-foreground border-border group-hover:border-[#739072]'
-                          }`}>
-                            {item.step}
-                          </div>
-                          <span className={`text-[10px] font-bold mt-1.5 font-display transition-colors duration-200 ${
-                            item.done ? 'text-[#2F3A33]' : 'text-muted-foreground group-hover:text-[#739072]'
-                          }`}>{item.name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </div>
                 )}
-
-                {/* Progress Overview Line Chart */}
-                <ProgressOverviewChart />
-
-                {/* Remaining Cohort Table list */}
-                <div className="pt-4 border-t border-border/60">
-                  <h4 className="text-xs font-bold font-display uppercase tracking-wider text-foreground mb-3">Onboardee Activity Logs</h4>
-                  {isComplianceLoading ? (
-                    <SkeletonCard />
-                  ) : !compliance?.cohort_progress || compliance.cohort_progress.length === 0 ? (
-                    <EmptyState title="No Employee Activity Logs" description="Evaluation attempts will populate here automatically as team members complete checkpoints." />
-                  ) : (
-                    <div className="divide-y divide-border/60">
-                      {compliance.cohort_progress.map((item, idx) => (
-                        <div key={idx} className="py-2.5 flex justify-between items-center first:pt-0">
-                          <div>
-                            <h5 className="font-bold text-xs text-[#2F3A33]">{item.user_name}</h5>
-                            <p className="text-[10px] text-muted-foreground">{item.department}</p>
-                          </div>
-                          <div className="text-right flex items-center gap-3">
-                            <span className="text-[10px] font-bold font-mono text-foreground">{item.progress_percent}% completed</span>
-                            <span className={`text-[9px] font-bold font-mono px-2 py-0.5 rounded ${
-                              item.status === 'Completed' ? 'bg-[#4F6F52]/10 text-[#4F6F52]' : 'bg-[#C17767]/10 text-[#C17767]'
-                            }`}>
-                              {item.status} ({item.average_score_percent}%)
-                            </span>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
               </CardContent>
             </Card>
 
