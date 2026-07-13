@@ -89,44 +89,7 @@ const LandscapeSitePlan: React.FC = () => {
   );
 };
 
-// Premium radial progress circular gauge
-const RadialProgressGauge: React.FC<{ percentage: number; color: string }> = ({ percentage, color }) => {
-  const radius = 24;
-  const strokeWidth = 4;
-  const circumference = 2 * Math.PI * radius;
-  const offset = circumference - (percentage / 100) * circumference;
 
-  return (
-    <div className="relative flex items-center justify-center shrink-0">
-      <svg width="60" height="60" className="rotate-[-90deg]">
-        <circle
-          cx="30"
-          cy="30"
-          r={radius}
-          fill="none"
-          stroke="var(--border)"
-          strokeWidth={strokeWidth}
-          strokeOpacity="0.6"
-        />
-        <circle
-          cx="30"
-          cy="30"
-          r={radius}
-          fill="none"
-          stroke={color}
-          strokeWidth={strokeWidth}
-          strokeDasharray={circumference}
-          strokeDashoffset={offset}
-          strokeLinecap="round"
-          className="transition-all duration-1000 ease-out"
-        />
-      </svg>
-      <span className="absolute text-xs font-bold font-mono text-[#2F3A33]">
-        {percentage}%
-      </span>
-    </div>
-  );
-};
 
 // Custom SVG Sparkline for natural visual trend indicators inside KPI cards
 const Sparkline: React.FC<{ points: number[]; color: string }> = ({ points, color }) => {
@@ -158,97 +121,6 @@ const Sparkline: React.FC<{ points: number[]; color: string }> = ({ points, colo
   );
 };
 
-// Custom SVG Line Chart for onboarding audit progress metrics (using strict brand palette)
-const ProgressOverviewChart: React.FC = () => {
-  const xCoords = [40, 145, 250, 355, 460];
-  const dates = ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'];
-  
-  // Data sets for the lines
-  const line1Points = [125, 110, 80, 50, 20]; // Modules Completed
-  const line2Points = [120, 105, 90, 65, 35]; // Assessments Passed
-  const line3Points = [100, 85, 70, 45, 30];  // Avg. Score
-
-  const getPathD = (yPoints: number[]) => {
-    return `M ${xCoords.map((x, i) => `${x},${yPoints[i]}`).join(' L ')}`;
-  };
-
-  return (
-    <div className="space-y-4 pt-4 border-t border-border/80">
-      <div className="flex items-center justify-between">
-        <h4 className="text-xs font-bold font-display uppercase tracking-wider text-foreground">Progress Overview</h4>
-        {/* Legend */}
-        <div className="flex items-center gap-4 text-[9px] font-bold font-mono uppercase tracking-wider text-muted-foreground">
-          <div className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#4F6F52]"></span>
-            <span>Modules</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#739072]"></span>
-            <span>Assessments</span>
-          </div>
-          <div className="flex items-center gap-1">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#C17767]"></span>
-            <span>Avg. Score</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="relative h-44 w-full bg-[#F5F1E8]/35 rounded-input p-2 border border-border/40 overflow-hidden">
-        <svg viewBox="0 0 500 150" className="w-full h-full overflow-visible">
-          {/* Y Axis Grid Lines */}
-          {[20, 47.5, 75, 102.5, 130].map((y, idx) => (
-            <g key={y}>
-              <line x1="40" y1={y} x2="460" y2={y} stroke="var(--border)" strokeWidth="0.5" strokeDasharray="2 2" />
-              <text x="15" y={y + 3} className="text-[8px] font-mono fill-muted-foreground" textAnchor="start">{100 - idx * 25}%</text>
-            </g>
-          ))}
-
-          {/* X Axis Dates */}
-          {xCoords.map((x, idx) => (
-            <text key={x} x={x} y="145" className="text-[8px] font-mono fill-muted-foreground" textAnchor="middle">
-              {dates[idx]}
-            </text>
-          ))}
-
-          {/* Area under curves */}
-          <path
-            d={`${getPathD(line1Points)} L 460,130 L 40,130 Z`}
-            fill="url(#gradient-forest)"
-          />
-          <path
-            d={`${getPathD(line3Points)} L 460,130 L 40,130 Z`}
-            fill="url(#gradient-terracotta)"
-          />
-
-          {/* Paths */}
-          <path d={getPathD(line1Points)} fill="none" stroke="#4F6F52" strokeWidth="1.5" strokeLinecap="round" />
-          <path d={getPathD(line2Points)} fill="none" stroke="#739072" strokeWidth="1.5" strokeLinecap="round" />
-          <path d={getPathD(line3Points)} fill="none" stroke="#C17767" strokeWidth="1.5" strokeLinecap="round" />
-
-          {/* Points */}
-          {xCoords.map((x, idx) => (
-            <g key={x}>
-              <circle cx={x} cy={line1Points[idx]} r="2" fill="#4F6F52" stroke="var(--card)" strokeWidth="0.5" />
-              <circle cx={x} cy={line2Points[idx]} r="2" fill="#739072" stroke="var(--card)" strokeWidth="0.5" />
-              <circle cx={x} cy={line3Points[idx]} r="2" fill="#C17767" stroke="var(--card)" strokeWidth="0.5" />
-            </g>
-          ))}
-
-          <defs>
-            <linearGradient id="gradient-forest" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#4F6F52" stopOpacity="0.06" />
-              <stop offset="100%" stopColor="#4F6F52" stopOpacity="0.00" />
-            </linearGradient>
-            <linearGradient id="gradient-terracotta" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="#C17767" stopOpacity="0.04" />
-              <stop offset="100%" stopColor="#C17767" stopOpacity="0.00" />
-            </linearGradient>
-          </defs>
-        </svg>
-      </div>
-    </div>
-  );
-};
 
 export const DashboardPage: React.FC = () => {
   const { user } = useAuth();
@@ -265,8 +137,7 @@ export const DashboardPage: React.FC = () => {
   const pathModules = primaryPath?.modules ?? modules ?? [];
   const totalModulesCount = pathModules.length;
 
-  // Find active onboarding focal person
-  const firstProgress = compliance?.cohort_progress?.[0];
+
 
   return (
     <div className="space-y-8 animate-fade-in relative z-10">
