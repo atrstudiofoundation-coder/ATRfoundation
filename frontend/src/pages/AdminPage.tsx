@@ -139,12 +139,7 @@ export const AdminPage: React.FC = () => {
             <ErrorState message={pathsError?.message || 'Failed to load curriculum learning paths.'} onRetry={refetchPaths} />
           ) : activeLearningPath ? (
             <div className="space-y-8">
-              {/* ATR FOUNDATION HEALTH DASHBOARD CARD */}
-              <ATRFoundationHealthCard
-                learningPath={activeLearningPath}
-                onUpdateStatus={handleUpdatePathStatus}
-                onOpenPreview={() => setIsPreviewModeOpen(true)}
-              />
+
 
               {/* PRIMARY CURRICULUM WORKSPACE */}
               <LearningPathWorkspace
@@ -377,6 +372,17 @@ export const AdminPage: React.FC = () => {
                 />
               </div>
             </div>
+
+            {/* ATR FOUNDATION HEALTH DASHBOARD CARD */}
+            {activeLearningPath && (
+              <div className="max-w-4xl">
+                <ATRFoundationHealthCard
+                  learningPath={activeLearningPath}
+                  onUpdateStatus={handleUpdatePathStatus}
+                  onOpenPreview={() => setIsPreviewModeOpen(true)}
+                />
+              </div>
+            )}
           </div>
         )}
       </main>
